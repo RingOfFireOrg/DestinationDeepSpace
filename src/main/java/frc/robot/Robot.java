@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -81,6 +82,14 @@ public class Robot extends TimedRobot {
       // Put default auto code here
       break;
     }
+  }
+  
+  /**
+   * This function is called when you switch into teleop mode on the driver station.
+   */
+  @Override
+  public void teleopInit(){
+    DriverStation.reportWarning("Team PyroTech", false);
   }
 
   /**
