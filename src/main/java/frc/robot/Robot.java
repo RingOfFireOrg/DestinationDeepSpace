@@ -7,102 +7,56 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
+ * This is a demo program showing the use of the RobotDrive class, specifically
+ * it contains the code necessary to operate a robot with tank drive.
  */
-public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+public class Robot extends IterativeRobot {
+  private DifferentialDrive m_myRobot;
+  private Joystick m_leftStick;
+  private Joystick m_rightStick;
+  private Joystick m_manipulatorStick;
+  private JoystickButton buttonA;
+  private Solenoid left1 = new Solenoid(0);
+  private Solenoid right1 = new Solenoid(1);
+  Pneumatics piston = new Pneumatics(left1, right1);
+  boolean buttonCycle = false;
 
-  /**
-   * This function is run when the robot is first started up and should be used
-   * for any initialization code.
-   */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    m_myRobot = new DifferentialDrive(new VictorSP(2), new VictorSP(1));
+    m_leftStick = new Joystick(1);
+    m_rightStick = new Joystick(2);
+    m_manipulatorStick = new Joystick(0);
+    buttonA = new JoystickButton(m_rightStick, 1);
   }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for
-   * items like diagnostics that you want ran during disabled, autonomous,
-   * teleoperated and test.
-   *
-   * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow
-   * and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-  }
-
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable chooser
-   * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
-   * remove all of the chooser code and uncomment the getString line to get the
-   * auto name from the text box below the Gyro
-   *
-   * <p>
-   * You can add additional auto modes by adding additional comparisons to the
-   * switch structure below with additional strings. If using the SendableChooser
-   * make sure to add them to the chooser code above as well.
-   */
-  @Override
-  public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-    case kCustomAuto:
-      // Put custom auto code here
-      break;
-    case kDefaultAuto:
-    default:
-      // Put default auto code here
-      break;
-    }
-  }
-  
-  /**
-   * This function is called when you switch into teleop mode on the driver station.
-   */
-  @Override
-  public void teleopInit(){
-    DriverStation.reportWarning("Team PyroTech", false);
-  }
-
-  /**
-   * This function is called periodically during operator control.
-   */
   @Override
   public void teleopPeriodic() {
-  }
+    m_myRobot.tankDrive(m_leftStick.getY(), m_rightStick.getY());
 
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
+    if(buttonCycle && buttonA.get()) {
+      //when button pressed, will switch piston state
+      if (left1.get() == false) {
+        left1.set(true);
+        right1.set(false);
+      } else {
+        left1.set(false);
+        right1.set(true);
+      }
+      buttonCycle = false;
+    } 
+
+    if (buttonA.get() == false) {
+      buttonCycle = true;
+    }
+
   }
 }
