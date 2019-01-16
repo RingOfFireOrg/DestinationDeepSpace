@@ -66,8 +66,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // Set the speed of the grabber motor to what the joystick is doing
-    grabber.set(mainStick.getY());
+    double yPos = mainStick.getY();
+
+    if (yPos > 0.5) {
+      grabber.forward();
+    } else if (yPos < -0.5) {
+      grabber.reverse();
+    } else {
+      grabber.stop();
+    }
+
   }
 
   /**
