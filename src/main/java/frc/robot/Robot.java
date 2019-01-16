@@ -68,6 +68,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double yPos = mainStick.getY();
 
+    // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
+    // centered to stop
     if (yPos > 0.25) {
       grabber.forward();
     } else if (yPos < -0.25) {
