@@ -68,9 +68,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double yPos = mainStick.getY();
 
-    if (yPos > 0.5) {
+    if (yPos > 0.25) {
       grabber.forward();
-    } else if (yPos < -0.5) {
+    } else if (yPos < -0.25) {
       grabber.reverse();
     } else {
       grabber.stop();
