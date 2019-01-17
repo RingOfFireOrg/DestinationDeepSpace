@@ -13,7 +13,7 @@ import frc.robot.Prototype_PWM;
  * "Robot")
  */
 public class Robot extends TimedRobot {
-  Prototype_PWM grabber;
+  Prototype_PWM crossbowPwm;
   Joystick mainStick = new Joystick(RobotMap.JOYSTICK_MAIN);
 
   /**
@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    grabber = new Prototype_PWM(RobotMap.PWM_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
+    crossbowPwm = new Prototype_PWM(RobotMap.PWM_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
   }
 
   /**
@@ -71,11 +71,11 @@ public class Robot extends TimedRobot {
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
     if (yPos > 0.25) {
-      grabber.forward();
+      crossbowPwm.forward();
     } else if (yPos < -0.25) {
-      grabber.reverse();
+      crossbowPwm.reverse();
     } else {
-      grabber.stop();
+      crossbowPwm.stop();
     }
 
   }
