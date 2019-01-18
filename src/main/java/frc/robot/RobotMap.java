@@ -7,14 +7,14 @@ public final class RobotMap {
 
     // All PWMs for Robot
     // Example: public static final int PWM_DRIVETRAIN_FRONT_LEFT = 2;
-    public static final int PWM_TEST_ATTACHMENT = 3;
+    public static final int PWM_TEST_ATTACHMENT = 2;
 
     // Digital I/O
     // Example: public static final int IO_UPPER_LIMIT_SW = 6;
 
     // Motor Speeds
-    // Example: public static final double SPEED_DEFAULT_LIFT = 0.5;
-    public static final double SPEED_DEFAULT_TEST = 0.5;
+    // Example: public static final double SPEED_DEFAULT_LIFT = 0.75;
+    public static final double SPEED_DEFAULT_TEST = 0.75;
 
     // Joystick
     // Example: public static final int JOYSTICK_DRIVE_LEFT = 0;
