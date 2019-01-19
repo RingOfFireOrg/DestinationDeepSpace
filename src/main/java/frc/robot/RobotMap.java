@@ -23,4 +23,10 @@ public final class RobotMap {
     // Joystick Buttons
     // Example: public static final int BUTTON_LIFT_UP = 6;
 
+    public static final int BUTTON_GRABBER_OPEN = 4;
+    public static final int BUTTON_GRABBER_CLOSE = 5;
+    // Solenoid
+    public static final int GRABBER_SOLENOID_TOP = 0;
+    public static final int GRABBER_SOLENOID_BOTTOM = 1;
+
 }

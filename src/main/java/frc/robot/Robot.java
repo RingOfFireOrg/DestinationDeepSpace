@@ -5,8 +5,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Prototype_PWM;
 
 /**
@@ -17,6 +18,7 @@ public class Robot extends TimedRobot {
   Prototype_PWM crossbowPwm;
   Joystick mainStick = new Joystick(RobotMap.JOYSTICK_MAIN);
   Compressor compressor = new Compressor(0);
+  DoubleSolenoid grabber = new DoubleSolenoid (RobotMap.GRABBER_SOLENOID_BOTTOM,RobotMap.GRABBER_SOLENOID_TOP);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -79,6 +81,15 @@ public class Robot extends TimedRobot {
       crossbowPwm.reverse();
     } else {
       crossbowPwm.stop();
+    }
+    if(mainStick.getRawButton(RobotMap.BUTTON_GRABBER_CLOSE)){
+      grabber.set(DoubleSolenoid.Value.kReverse); 
+    }
+    else if(mainStick.getRawButton(RobotMap.BUTTON_GRABBER_OPEN)){
+      grabber.set(DoubleSolenoid.Value.kForward);
+    }
+    else  {
+      grabber.set(DoubleSolenoid.Value.kOff);
     }
 
   }
