@@ -4,6 +4,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Prototype_PWM;
@@ -15,6 +16,7 @@ import frc.robot.Prototype_PWM;
 public class Robot extends TimedRobot {
   Prototype_PWM crossbowPwm;
   Joystick mainStick = new Joystick(RobotMap.JOYSTICK_MAIN);
+  Compressor compressor = new Compressor(0);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -23,6 +25,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     crossbowPwm = new Prototype_PWM(RobotMap.PWM_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
+    compressor.setClosedLoopControl(true);
   }
 
   /**
