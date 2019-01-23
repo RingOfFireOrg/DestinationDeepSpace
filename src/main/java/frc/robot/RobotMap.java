@@ -16,6 +16,14 @@ public class RobotMap {
 	    public static final int MOTOR_FRONT_LEFT = 2;
 	    public static final int MOTOR_FRONT_RIGHT = 0;
 	    public static final int MOTOR_BACK_LEFT = 3;
-	    public static final int MOTOR_BACK_RIGHT = 1;
+		public static final int MOTOR_BACK_RIGHT = 1;
+		
+	//DigitalInputs
+		public static final int LIGHT_SENSOR1_LIGHT1 = 10;
+		public static final int LIGHT_SENSOR1_LIGHT2 = 11;
+		public static final int LIGHT_SENSOR2_LIGHT1 = 12;
+		public static final int LIGHT_SENSOR2_LIGHT2 = 13;
+		public static final int LIGHT_SENSOR3_LIGHT1 = 18;
+		public static final int LIGHT_SENSOR3_LIGHT2 = 19;
 
 }

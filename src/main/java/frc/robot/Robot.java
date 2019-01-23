@@ -7,43 +7,38 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing the use of the RobotDrive class, specifically
  * it contains the code necessary to operate a robot with tank drive.
  */
-public class Robot extends IterativeRobot {
- // private DifferentialDrive m_myRobot;
+public class Robot extends TimedRobot {
+
   private Joystick leftStick;
   private Joystick rightStick;
   private Joystick manipulatorStick;
+
   private JoystickButton buttonA;
   private JoystickButton buttonLineEn;
   private JoystickButton buttonLineES;
+
   private Solenoid left1 = new Solenoid(0);
   private Solenoid right1 = new Solenoid(1);
-  private DigitalInput lightS1L1;
-  private DigitalInput lightS1L2;
-  private DigitalInput lightS2L1;
-  private DigitalInput lightS2L2;
-  private DigitalInput lightS3L1;
-  private DigitalInput lightS3L2;
+
   private boolean lineFollowing = false;
   private int lineFollowingState = 0;
-  private double lfPowerDifferential = 0;
-  Pneumatics piston = new Pneumatics(left1, right1);
-  boolean buttonCycle = false;
-  //PIDController lineFollowingController = new PIDController(0, 0, 0, lineFollowingState, lfPowerDifferential);
+  private boolean buttonCycle = false;
 
   TankDrive drive = new TankDrive();
+
+  private LightSensor leftSensor;
+  private LightSensor centerSensor;
+  private LightSensor rightSensor;
 
   @Override
   public void robotInit() {
@@ -54,26 +49,15 @@ public class Robot extends IterativeRobot {
     buttonA = new JoystickButton(leftStick, 1);
     buttonLineEn = new JoystickButton(rightStick, 1);
     buttonLineES = new JoystickButton(rightStick, 2);
-    lightS1L1 = new DigitalInput(10);
-    lightS1L2 = new DigitalInput(11);
-    lightS2L1 = new DigitalInput(12);
-    lightS2L2 = new DigitalInput(13);
-    lightS3L1 = new DigitalInput(18);
-    lightS3L2 = new DigitalInput(19);
+
+    leftSensor = new LightSensor(RobotMap.LIGHT_SENSOR1_LIGHT1, RobotMap.LIGHT_SENSOR1_LIGHT2, "left");
+    centerSensor = new LightSensor(RobotMap.LIGHT_SENSOR2_LIGHT1, RobotMap.LIGHT_SENSOR2_LIGHT2, "center");
+    rightSensor = new LightSensor(RobotMap.LIGHT_SENSOR3_LIGHT1, RobotMap.LIGHT_SENSOR3_LIGHT2, "right");
 
   }
 
   @Override
   public void teleopPeriodic() {
-    
-
-    //SmartDashboard.putNumber("Joystick X value", leftStick.getX());
-    SmartDashboard.putBoolean("LightS1L1", lightS1L1.get());
-    SmartDashboard.putBoolean("LightS1L2", lightS1L2.get());
-    SmartDashboard.putBoolean("LightS2L1", lightS2L1.get());
-    SmartDashboard.putBoolean("LightS2L2", lightS2L2.get());
-    SmartDashboard.putBoolean("LightS3L1", lightS3L1.get());
-    SmartDashboard.putBoolean("LightS3L2", lightS3L2.get());
 
     SmartDashboard.putNumber("LeftJoystickY", leftStick.getY());
     SmartDashboard.putNumber("RightJoystickY", rightStick.getY());
@@ -84,7 +68,7 @@ public class Robot extends IterativeRobot {
       lineFollowing = false;
     }
     if (lineFollowing) {
-      lineFollowing(lightS1L1.get(), lightS2L1.get(), lightS3L1.get());
+      lineFollowing(rightSensor.get(), centerSensor.get(), leftSensor.get());
     } else {
       drive.tankDrive(-leftStick.getY(), -rightStick.getY());
     }
