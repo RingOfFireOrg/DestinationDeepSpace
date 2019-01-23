@@ -1,12 +1,15 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This allows us to easily add prototypes to the robot
  */
-public class Prototype_PWM extends Victor {
+public class Prototype_PWM extends TalonSRX {
     /**
      * The default speed to make controlling easier
      */
@@ -55,7 +58,7 @@ public class Prototype_PWM extends Victor {
      */
     public void set(double speed) {
         SmartDashboard.putNumber(name, speed); // for use in debugging
-        super.set(speed);
+        super.set(ControlMode.Velocity, speed);
     }
 
 }

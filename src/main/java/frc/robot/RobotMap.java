@@ -7,7 +7,7 @@ public final class RobotMap {
 
     // All PWMs for Robot
     // Example: public static final int PWM_DRIVETRAIN_FRONT_LEFT = 2;
-    public static final int PWM_TEST_ATTACHMENT = 2;
+    public static final int PWM_TEST_ATTACHMENT = 9;
 
     // Digital I/O
     // Example: public static final int IO_UPPER_LIMIT_SW = 6;
