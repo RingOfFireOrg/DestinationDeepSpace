@@ -23,13 +23,13 @@ public class Prototype_PWM extends TalonSRX {
     /**
      * The constructor for our class
      * 
-     * @param pwmPort      - which port on the roboRio it is connectedTo
+     * @param canPort      - which port on the roboRio it is connectedTo
      * @param defaultSpeed - what speed should be used for forward and reverse
      */
-    Prototype_PWM(int pwmPort, double defaultSpeed) {
-        super(pwmPort); // Set up the motor controller
+    Prototype_PWM(int canPort, double defaultSpeed) {
+        super(canPort); // Set up the motor controller
         this.defaultSpeed = defaultSpeed;
-        this.name = String.format("Prototype_PWM (%d)", pwmPort);
+        this.name = String.format("Prototype_PWM (%d)", canPort);
     }
 
     /**
@@ -58,7 +58,7 @@ public class Prototype_PWM extends TalonSRX {
      */
     public void set(double speed) {
         SmartDashboard.putNumber(name, speed); // for use in debugging
-        super.set(ControlMode.Velocity, speed);
+        super.set(ControlMode.PercentOutput, speed);
     }
 
 }
