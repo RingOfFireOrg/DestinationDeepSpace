@@ -4,10 +4,11 @@ public final class RobotMap {
 
     // All CANs for Robot
     // Example: public static final int CAN_CLIMBER = 13;
+    public static final int CAN_TEST_ATTACHMENT = 9;
 
     // All PWMs for Robot
     // Example: public static final int PWM_DRIVETRAIN_FRONT_LEFT = 2;
-    public static final int PWM_TEST_ATTACHMENT = 9;
+    public static final int PWM_TEST_ATTACHMENT = 2;
 
     // Digital I/O
     // Example: public static final int IO_UPPER_LIMIT_SW = 6;

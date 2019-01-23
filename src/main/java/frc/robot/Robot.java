@@ -6,14 +6,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
-import frc.robot.Prototype_PWM;
+import frc.robot.Prototype_CAN;
 
 /**
  * Don't change the name of this or it won't work. (The manifest looks for
  * "Robot")
  */
 public class Robot extends TimedRobot {
-  Prototype_PWM crossbowPwm;
+  Prototype_CAN crossbow;
   Joystick mainStick = new Joystick(RobotMap.JOYSTICK_MAIN);
 
   /**
@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    crossbowPwm = new Prototype_PWM(RobotMap.PWM_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
+    crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
   }
 
   /**
@@ -71,11 +71,11 @@ public class Robot extends TimedRobot {
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
     if (yPos > 0.25) {
-      crossbowPwm.forward();
+      crossbow.forward();
     } else if (yPos < -0.25) {
-      crossbowPwm.reverse();
+      crossbow.reverse();
     } else {
-      crossbowPwm.stop();
+      crossbow.stop();
     }
 
   }

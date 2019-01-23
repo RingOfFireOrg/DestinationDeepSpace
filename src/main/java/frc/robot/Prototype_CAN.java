@@ -1,12 +1,14 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Victor;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This allows us to easily add prototypes to the robot
  */
-public class Prototype_PWM extends Victor {
+public class Prototype_CAN extends TalonSRX {
     /**
      * The default speed to make controlling easier
      */
@@ -23,10 +25,10 @@ public class Prototype_PWM extends Victor {
      * @param canPort      - which port on the roboRio it is connectedTo
      * @param defaultSpeed - what speed should be used for forward and reverse
      */
-    Prototype_PWM(int canPort, double defaultSpeed) {
+    Prototype_CAN(int canPort, double defaultSpeed) {
         super(canPort); // Set up the motor controller
         this.defaultSpeed = defaultSpeed;
-        this.name = String.format("Prototype_PWM (%d)", canPort);
+        this.name = String.format("Prototype_CAN (%d)", canPort);
     }
 
     /**
@@ -55,7 +57,7 @@ public class Prototype_PWM extends Victor {
      */
     public void set(double speed) {
         SmartDashboard.putNumber(name, speed); // for use in debugging
-        super.set(speed);
+        super.set(ControlMode.PercentOutput, speed);
     }
 
 }
