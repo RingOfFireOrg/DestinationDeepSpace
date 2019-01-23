@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -13,42 +6,40 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * This is a demo program showing the use of the RobotDrive class, specifically
- * it contains the code necessary to operate a robot with tank drive.
- */
 public class Robot extends TimedRobot {
 
   private Joystick leftStick;
   private Joystick rightStick;
   private Joystick manipulatorStick;
 
-  private JoystickButton buttonA;
-  private JoystickButton buttonLineEn;
-  private JoystickButton buttonLineES;
+  private JoystickButton climberPistonButton;
+  private JoystickButton buttonLineFollowingEnable;
+  private JoystickButton buttonLineFollowingEmergencyStop;
 
-  private Solenoid left1 = new Solenoid(0);
-  private Solenoid right1 = new Solenoid(1);
+  private Solenoid climbPistonLeft = new Solenoid(RobotMap.CLIMB_PISTON_LEFT_SOLENOID);
+  private Solenoid climbPistonRight = new Solenoid(RobotMap.CLIMB_PISTON_RIGHT_SOLENOID);
 
   private boolean lineFollowing = false;
-  private int lineFollowingState = 0;
   private boolean buttonCycle = false;
 
-  TankDrive drive = new TankDrive();
+  private int lineFollowingState = 0;
 
   private LightSensor leftSensor;
   private LightSensor centerSensor;
   private LightSensor rightSensor;
 
+  TankDrive drive = new TankDrive();
+
   @Override
   public void robotInit() {
-    //m_myRobot = new DifferentialDrive(new VictorSP(2), new VictorSP(1));
+
     leftStick = new Joystick(RobotMap.LEFT_DRIVE_JOYSTICK);
     rightStick = new Joystick(RobotMap.RIGHT_DRIVE_JOYSTICK);
-    manipulatorStick = new Joystick(0);
-    buttonA = new JoystickButton(leftStick, 1);
-    buttonLineEn = new JoystickButton(rightStick, 1);
-    buttonLineES = new JoystickButton(rightStick, 2);
+    manipulatorStick = new Joystick(RobotMap.MANIPULATOR_DRIVE_JOYSTICK);
+
+    climberPistonButton = new JoystickButton(leftStick, RobotMap.CLIMBER_PISTON_CONTROL);
+    buttonLineFollowingEnable = new JoystickButton(rightStick, RobotMap.LINE_FOLLOWING_ENABLE);
+    buttonLineFollowingEmergencyStop = new JoystickButton(rightStick, RobotMap.LINE_FOLLOWING_EMERGENCY_STOP);
 
     leftSensor = new LightSensor(RobotMap.LIGHT_SENSOR1_LIGHT1, RobotMap.LIGHT_SENSOR1_LIGHT2, "left");
     centerSensor = new LightSensor(RobotMap.LIGHT_SENSOR2_LIGHT1, RobotMap.LIGHT_SENSOR2_LIGHT2, "center");
@@ -62,9 +53,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LeftJoystickY", leftStick.getY());
     SmartDashboard.putNumber("RightJoystickY", rightStick.getY());
 
-    if (buttonLineEn.get()) {
+    if (buttonLineFollowingEnable.get()) {
       lineFollowing = true;
-    } else if (buttonLineES.get()) {
+    } else if (buttonLineFollowingEmergencyStop.get()) {
       lineFollowing = false;
     }
     if (lineFollowing) {
@@ -90,19 +81,19 @@ public class Robot extends TimedRobot {
   }
 
   public void pneumaticsCode() {
-    if(buttonCycle && buttonA.get()) {
+    if(buttonCycle && climberPistonButton.get()) {
       //when button pressed, will switch piston state
-      if (left1.get() == false) {
-        left1.set(true);
-        right1.set(false);
+      if (climbPistonLeft.get() == false) {
+        climbPistonLeft.set(true);
+        climbPistonRight.set(false);
       } else {
-        left1.set(false);
-        right1.set(true);
+        climbPistonLeft.set(false);
+        climbPistonRight.set(true);
       }
       buttonCycle = false;
     } 
 
-    if (buttonA.get() == false) {
+    if (climberPistonButton.get() == false) {
       buttonCycle = true;
     }
   }
