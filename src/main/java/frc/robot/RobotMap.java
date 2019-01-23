@@ -10,8 +10,20 @@ public final class RobotMap {
     // Example: public static final int PWM_DRIVETRAIN_FRONT_LEFT = 2;
     public static final int PWM_TEST_ATTACHMENT = 2;
 
+    // Drive Train Motors
+    public static final int MOTOR_FRONT_LEFT = 2;
+    public static final int MOTOR_FRONT_RIGHT = 0;
+    public static final int MOTOR_BACK_LEFT = 3;
+    public static final int MOTOR_BACK_RIGHT = 1;
+
     // Digital I/O
     // Example: public static final int IO_UPPER_LIMIT_SW = 6;
+
+    // Drive Train Encoders
+    public static final int DRIVE_TRAIN_LEFT_ENCODER_A = 2;
+    public static final int DRIVE_TRAIN_LEFT_ENCODER_B = 3;
+    public static final int DRIVE_TRAIN_RIGHT_ENCODER_A = 4;
+    public static final int DRIVE_TRAIN_RIGHT_ENCODER_B = 5;
 
     // Motor Speeds
     // Example: public static final double SPEED_DEFAULT_LIFT = 0.75;
