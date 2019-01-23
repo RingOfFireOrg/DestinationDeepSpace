@@ -14,7 +14,11 @@ import frc.robot.Prototype_CAN;
  */
 public class Robot extends TimedRobot {
   Prototype_CAN crossbow;
-  Joystick mainStick = new Joystick(RobotMap.JOYSTICK_MAIN);
+  private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
+  private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
+  private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+
+  TankDrive drive = new TankDrive();
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -66,7 +70,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    double yPos = mainStick.getY();
+    double leftSpeed = -leftStick.getY();
+    double rightSpeed = -rightStick.getY();
+    double yPos = manipulatorStick.getY();
+
+    drive.tankDrive(leftSpeed, rightSpeed);
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
