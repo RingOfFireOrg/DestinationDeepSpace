@@ -5,6 +5,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 import frc.robot.Prototype_CAN;
 
@@ -18,6 +19,7 @@ public class Robot extends TimedRobot {
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
   private Lifter lifter;
+  DoubleSolenoid grabber = new DoubleSolenoid (RobotMap.GRABBER_SOLENOID_BOTTOM,RobotMap.GRABBER_SOLENOID_TOP);
 
   TankDrive drive = new TankDrive();
 
@@ -80,6 +82,16 @@ public class Robot extends TimedRobot {
 
     boolean upPressed = manipulatorStick.getRawButton(RobotMap.LIFT_UP_BUTTON);
     boolean downPressed = manipulatorStick.getRawButton(RobotMap.LIFT_DOWN_BUTTON);
+
+    if(manipulatorStick.getRawButton(RobotMap.BUTTON_GRABBER_CLOSE)){
+      grabber.set(DoubleSolenoid.Value.kReverse); 
+    }
+    else if(manipulatorStick.getRawButton(RobotMap.BUTTON_GRABBER_OPEN)){
+      grabber.set(DoubleSolenoid.Value.kForward);
+    }
+    else  {
+      grabber.set(DoubleSolenoid.Value.kOff);
+    }
 
     if (upPressed) {
       lifter.up();

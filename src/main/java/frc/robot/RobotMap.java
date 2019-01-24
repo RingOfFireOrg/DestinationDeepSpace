@@ -18,6 +18,10 @@ public final class RobotMap {
     public static final int MOTOR_BACK_LEFT = 3;
     public static final int MOTOR_BACK_RIGHT = 1;
 
+    // Solenoids
+    public static final int GRABBER_SOLENOID_TOP = 0;
+    public static final int GRABBER_SOLENOID_BOTTOM = 1;
+
     // Digital I/O
     // Example: public static final int IO_UPPER_LIMIT_SW = 6;
 
@@ -50,6 +54,8 @@ public final class RobotMap {
 
     // Joystick Buttons
     // Example: public static final int BUTTON_LIFT_UP = 6;
+    public static final int BUTTON_GRABBER_OPEN = 4;
+    public static final int BUTTON_GRABBER_CLOSE = 5;
     public static final int LIFT_UP_BUTTON = 6;
 	public static final int LIFT_DOWN_BUTTON = 7;
 
