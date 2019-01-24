@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+  private Lifter lifter;
 
   TankDrive drive = new TankDrive();
 
@@ -27,6 +28,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
+    lifter = new Lifter();
   }
 
   /**
@@ -75,6 +77,17 @@ public class Robot extends TimedRobot {
     double yPos = manipulatorStick.getY();
 
     drive.tankDrive(leftSpeed, rightSpeed);
+
+    boolean upPressed = manipulatorStick.getRawButton(RobotMap.LIFT_UP_BUTTON);
+    boolean downPressed = manipulatorStick.getRawButton(RobotMap.LIFT_DOWN_BUTTON);
+
+    if (upPressed) {
+      lifter.up();
+    } else if (downPressed) {
+      lifter.down();
+    } else {
+      lifter.stop();
+    }
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
