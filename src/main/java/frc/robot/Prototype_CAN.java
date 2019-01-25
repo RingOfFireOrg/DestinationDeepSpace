@@ -37,12 +37,17 @@ public class Prototype_CAN extends TalonSRX {
     public void forward() {
         this.set(this.defaultSpeed);
     }
-
+    public void forward(double speed) {
+        this.set(speed);
+    }
     /**
      * Move prototype motor in reverse
      */
     public void reverse() {
         this.set(-this.defaultSpeed);
+    }
+    public void reverse(double speed) {
+        this.set(-speed);
     }
 
     /**
