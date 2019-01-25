@@ -4,21 +4,30 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.Joystick;
 
-import frc.robot.Prototype_CAN;
 
 /**
  * Don't change the name of this or it won't work. (The manifest looks for
  * "Robot")
  */
 public class Robot extends TimedRobot {
-  Prototype_CAN crossbow;
+  Prototype_PWM rPGrabber;
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+  private JoystickButton hatchGrabberButtonOut = new JoystickButton(manipulatorStick,
+      RobotMap.HATCH_GRABBER_BUTTON_OUT);
+  private JoystickButton hatchGrabberButtonIn = new JoystickButton(manipulatorStick, RobotMap.HATCH_GRABBER_BUTTON_IN);
 
   TankDrive drive = new TankDrive();
+
+  Timer hatchGrabberTimer = new Timer();
+
+  Boolean hatchGrabberOpening = false;
+  Boolean hatchGrabberClosing = false;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -26,7 +35,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
+    // crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT,
+    // RobotMap.SPEED_DEFAULT_TEST);
+    rPGrabber = new Prototype_PWM(RobotMap.MOTOR_GRABBER, RobotMap.SPEED_DEFAULT_TEST);
   }
 
   /**
@@ -72,20 +83,44 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double leftSpeed = -leftStick.getY();
     double rightSpeed = -rightStick.getY();
-    double yPos = manipulatorStick.getY();
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
-    // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
-    // centered to stop
-    if (yPos > 0.25) {
-      crossbow.forward();
-    } else if (yPos < -0.25) {
-      crossbow.reverse();
-    } else {
-      crossbow.stop();
+    if (hatchGrabberOpening && (hatchGrabberTimer.get() > 2.0)) {
+      rPGrabber.stop();
+      hatchGrabberOpening = false;
     }
 
+    if (hatchGrabberClosing && (hatchGrabberTimer.get() > 2.0)) {
+      rPGrabber.stop();
+      hatchGrabberClosing = false;
+    }
+
+    if (hatchGrabberButtonOut.get()) {
+
+      hatchGrabberTimer.reset();
+      hatchGrabberTimer.start();
+      hatchGrabberOpening = true;
+
+      rPGrabber.forward();
+
+    }
+
+    else if (hatchGrabberButtonIn.get()) {
+
+      hatchGrabberTimer.reset();
+      hatchGrabberTimer.start();
+      hatchGrabberClosing = true;
+
+      rPGrabber.reverse();
+    }
+
+    // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
+    // centered to stop
+    /*
+     * if (yPos > 0.25) { crossbow.forward(); } else if (yPos < -0.25) {
+     * crossbow.reverse(); } else { crossbow.stop(); }
+     */
   }
 
   /**

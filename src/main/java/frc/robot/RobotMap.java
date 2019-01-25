@@ -16,6 +16,8 @@ public final class RobotMap {
     public static final int MOTOR_BACK_LEFT = 3;
     public static final int MOTOR_BACK_RIGHT = 1;
 
+    public static final int MOTOR_GRABBER = 4; //not neccessarily correct
+
     // Digital I/O
     // Example: public static final int IO_UPPER_LIMIT_SW = 6;
 
@@ -27,7 +29,7 @@ public final class RobotMap {
 
     // Motor Speeds
     // Example: public static final double SPEED_DEFAULT_LIFT = 0.75;
-    public static final double SPEED_DEFAULT_TEST = 0.75;
+    public static final double SPEED_DEFAULT_TEST = 0.2;
 
     // Joystick
     // Example: public static final int JOYSTICK_DRIVE_LEFT = 0;
@@ -38,4 +40,6 @@ public final class RobotMap {
     // Joystick Buttons
     // Example: public static final int BUTTON_LIFT_UP = 6;
 
+    public static final int HATCH_GRABBER_BUTTON_OUT = 1;
+    public static final int HATCH_GRABBER_BUTTON_IN = 2;
 }
