@@ -92,9 +92,9 @@ public class Robot extends TimedRobot {
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
     if (yPos > 0.25) {
-      crossbow.forward(0.3);
+      crossbow.forward(0.95);
     } else if (yPos < -0.25) {
-      crossbow.reverse(0.8);
+      crossbow.reverse(0.65);
     } else {
       crossbow.stop();
     }
