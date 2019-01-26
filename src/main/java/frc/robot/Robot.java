@@ -5,7 +5,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Prototype_CAN;
 
 /**
@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+  Servo kickerServo = new Servo(RobotMap.SERVO_KICKER);
 
   TankDrive drive = new TankDrive();
 
@@ -75,6 +76,14 @@ public class Robot extends TimedRobot {
     double yPos = manipulatorStick.getY();
 
     drive.tankDrive(leftSpeed, rightSpeed);
+
+    if(manipulatorStick.getRawButton(RobotMap.BUTTON_KICKER)){
+      kickerServo.setAngle(90);
+    }
+    else{
+      kickerServo.setAngle(0);
+    }
+    
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
