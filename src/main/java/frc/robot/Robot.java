@@ -25,9 +25,11 @@ public class Robot extends TimedRobot {
 	JoystickButton flButton = new JoystickButton(commandStick, 5);
 	JoystickButton brButton = new JoystickButton(commandStick, 4);
 	JoystickButton blButton = new JoystickButton(commandStick, 3);
-	
+	JoystickButton trigger = new JoystickButton(commandStickk, 1);
 	
 	SwerveDrive swerveDrive = new SwerveDrive();
+
+	boolean alignState = false;
 //	AHRS ahrs;
 
 	/**
@@ -89,8 +91,12 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Joystick output", direction);
 		SmartDashboard.putNumber("Joystick output speed", speed);
 	
-		
-		swerveDrive.syncroDrive(speed, direction, twist);
+		if (trigger.get()) {
+			autoAlign();
+		}	else {
+			swerveDrive.synchroDrive(speed, direction, twist);
+			alignState = false;
+		}
 //		SmartDashboard.putNumber("Gyro output: ", ahrs.getAngle());
 //				swerveDrive.syncroDrive(speed, direction, twist);	
 		
@@ -104,5 +110,13 @@ public class Robot extends TimedRobot {
 		swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
 		
 	}
+
+	//Code below here is not particular to swerve, temporary presence, for line alignment, auto-intervention
+
+	public void autoAlign() {
+		
+		swerveDrive.synchroDrive(0.5, 90, 0);
+	}
+
 }
 
