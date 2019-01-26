@@ -78,10 +78,10 @@ public class Robot extends TimedRobot {
     drive.tankDrive(leftSpeed, rightSpeed);
 
     if(manipulatorStick.getRawButton(RobotMap.BUTTON_KICKER)){
-      kickerServo.setAngle(90);
+      kickerServo.setAngle(0);
     }
     else{
-      kickerServo.setAngle(0);
+      kickerServo.setAngle(90);
     }
     
 
