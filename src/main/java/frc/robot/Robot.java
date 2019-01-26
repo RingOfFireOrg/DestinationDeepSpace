@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 	JoystickButton flButton = new JoystickButton(commandStick, 5);
 	JoystickButton brButton = new JoystickButton(commandStick, 4);
 	JoystickButton blButton = new JoystickButton(commandStick, 3);
-	JoystickButton trigger = new JoystickButton(commandStickk, 1);
+	JoystickButton trigger = new JoystickButton(commandStick, 1);
 	
 	SwerveDrive swerveDrive = new SwerveDrive();
 
@@ -38,8 +38,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		chooser.addDefault("Default Auto", defaultAuto);
-		chooser.addObject("My Auto", customAuto);
+		//chooser.addDefault("Default Auto", defaultAuto);
+		//chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
 		try {
 //			ahrs = new AHRS(SerialPort.Port.kUSB1);
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
 		if (trigger.get()) {
 			autoAlign();
 		}	else {
-			swerveDrive.synchroDrive(speed, direction, twist);
+			swerveDrive.syncroDrive(speed, direction, twist);
 			alignState = false;
 		}
 //		SmartDashboard.putNumber("Gyro output: ", ahrs.getAngle());
@@ -115,7 +115,7 @@ public class Robot extends TimedRobot {
 
 	public void autoAlign() {
 		
-		swerveDrive.synchroDrive(0.5, 90, 0);
+		swerveDrive.syncroDrive(0.5, 90, 0);
 	}
 
 }
