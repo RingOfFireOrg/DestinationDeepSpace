@@ -1,105 +1,119 @@
-/*----------------------------------------------------------------------------*/
-/* Destination Deep Space Robot - 2019 Team PyroTech (FRC 3459)               */
-/*----------------------------------------------------------------------------*/
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.robot.Prototype_CAN;
 
 /**
- * Don't change the name of this or it won't work. (The manifest looks for
- * "Robot")
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the IterativeRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the manifest file in the resource
+ * directory.
  */
 public class Robot extends TimedRobot {
-  Prototype_CAN crossbow;
-  private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
-  private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
-  private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+	final String defaultAuto = "Default";
+	final String customAuto = "My Auto";
+	String autoSelected;
+	Joystick commandStick = new Joystick(0);
+	SendableChooser<String> chooser = new SendableChooser<>();
+	JoystickButton frButton = new JoystickButton(commandStick, 6);
+	JoystickButton flButton = new JoystickButton(commandStick, 5);
+	JoystickButton brButton = new JoystickButton(commandStick, 4);
+	JoystickButton blButton = new JoystickButton(commandStick, 3);
+	
+	
+	SwerveDrive swerveDrive = new SwerveDrive();
+//	AHRS ahrs;
 
-  TankDrive drive = new TankDrive();
+	/**
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
+	 */
+	@Override
+	public void robotInit() {
+		chooser.addDefault("Default Auto", defaultAuto);
+		chooser.addObject("My Auto", customAuto);
+		SmartDashboard.putData("Auto choices", chooser);
+		try {
+//			ahrs = new AHRS(SerialPort.Port.kUSB1);
+		} catch (RuntimeException ex) {
+			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+		}
 
-  /**
-   * This function is run when the robot is first started up and should be used
-   * for any initialization code.
-   */
-  @Override
-  public void robotInit() {
-    crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
-  }
+//		ahrs.reset();
+	}
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for
-   * items like diagnostics that you want ran during disabled, autonomous,
-   * teleoperated and test.
-   *
-   * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow
-   * and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-  }
+	/**
+	 * This autonomous (along with the chooser code above) shows how to select
+	 * between different autonomous modes using the dashboard. The sendable
+	 * chooser code works with the Java SmartDashboard. If you prefer the
+	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+	 * getString line to get the auto name from the text box below the Gyro
+	 *
+	 * You can add additional auto modes by adding additional comparisons to the
+	 * switch structure below with additional strings. If using the
+	 * SendableChooser make sure to add them to the chooser code above as well.
+	 */
+	@Override
+	public void autonomousInit() {
+		autoSelected = chooser.getSelected();
+		// autoSelected = SmartDashboard.getString("Auto Selector",
+		// defaultAuto);
+		System.out.println("Auto selected: " + autoSelected);
+	}
 
-  /**
-   * This function is called once we go into autonomous mode
-   */
-  @Override
-  public void autonomousInit() {
-  }
+	/**
+	 * This function is called periodically during autonomous
+	 */
+	@Override
+	public void autonomousPeriodic() {
+		switch (autoSelected) {
+		case customAuto:
+			// Put custom auto code here
+			break;
+		case defaultAuto:
+		default:
+			// Put default auto code here
+			break;
+		}
+	}
 
-  /**
-   * This function is called periodically during autonomous. (approx 20ms)
-   */
-  @Override
-  public void autonomousPeriodic() {
-  }
+	/**
+	 * This function is called periodically during operator control
+	 */
+	@Override
+	public void teleopPeriodic() {
+		double twist;
+		double speed = Math.pow(commandStick.getMagnitude(), 2);
+		double direction = commandStick.getDirectionDegrees() * -1;
+		twist = commandStick.getTwist();
+		if(twist < 0) {
+			twist = -Math.pow(twist, 2);
+		} else {
+			twist = Math.pow(twist, 2);
+		}
+		SmartDashboard.putNumber("Joystick output", direction);
+		SmartDashboard.putNumber("Joystick output speed", speed);
+	
+		
+		swerveDrive.syncroDrive(speed, direction, twist);
+//		SmartDashboard.putNumber("Gyro output: ", ahrs.getAngle());
+//				swerveDrive.syncroDrive(speed, direction, twist);	
+		
+	}
 
-  /**
-   * This function is called when you switch into teleop mode on the driver
-   * station.
-   */
-  @Override
-  public void teleopInit() {
-
-  }
-
-  /**
-   * This function is called periodically during operator control. (approx 20ms)
-   */
-  @Override
-  public void teleopPeriodic() {
-    double leftSpeed = -leftStick.getY();
-    double rightSpeed = -rightStick.getY();
-    double yPos = manipulatorStick.getY();
-
-    drive.tankDrive(leftSpeed, rightSpeed);
-
-    // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
-    // centered to stop
-    if (yPos > 0.25) {
-      crossbow.forward();
-    } else if (yPos < -0.25) {
-      crossbow.reverse();
-    } else {
-      crossbow.stop();
-    }
-
-  }
-
-  /**
-   * This function is called when you switch into teleop mode on the driver
-   * station.
-   */
-  @Override
-  public void testInit() {
-  }
-
-  /**
-   * This function is called periodically during test mode. (approx 20ms)
-   */
-  @Override
-  public void testPeriodic() {
-  }
+	/**
+	 * This function is called periodically during test mode
+	 */
+	@Override
+	public void testPeriodic() {
+		swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
+		
+	}
 }
+
