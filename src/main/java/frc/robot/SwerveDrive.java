@@ -117,4 +117,24 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
+
+void translateAndRotate(double driveSpeed, double driveAngle, double absRotateAngle, double absRotateSpeed, double unregulatedRotateSpeed, double gyroValue) {
+//should be (leftMag, leftAngle, rightAngle, rightMag, rightTwist, gyro reading (in degrees))
+	double rotateAngle;
+	double rotateSpeed;
+
+	if (absRotateSpeed > 0.05) {
+		rotateAngle = absRotateAngle - ((360 * (int(gyroValue / 360) + 1)) + gyroValue) % 360;
+		rotateSpeed = absRotateSpeed;
+	} else if (abs(unregulatedRotateSpeed) > 0.05) {
+		rotateAngle = (unregulatedRotateSpeed + 1) * 180 
+		rotateSpeed = abs(unregulateRotateSpeed);
+	} else {
+		rotateAngle = 0;
+		rotateSpeed = 0;
+	}
+
+
+
+}
 }
