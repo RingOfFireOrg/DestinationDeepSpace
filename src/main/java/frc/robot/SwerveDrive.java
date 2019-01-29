@@ -170,6 +170,16 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 	double yModule3 = -y/2;
 	double yModule4 = -y/2;
 
+	double length1 = Math.sqrt(Math.pow(translatedXModule1 - xModule1, 2) + Math.pow(translatedYModule1 - yModule1, 2));
+	double length2 = Math.sqrt(Math.pow(translatedXModule2 - xModule2, 2) + Math.pow(translatedYModule2 - yModule2, 2));
+	double length3 = Math.sqrt(Math.pow(translatedXModule3 - xModule3, 2) + Math.pow(translatedYModule3 - yModule3, 2));
+	double length4 = Math.sqrt(Math.pow(translatedXModule4 - xModule4, 2) + Math.pow(translatedYModule4 - yModule4, 2));
+
+	double lengthAverage = (length1 + length2 + length3 + length4) / 4;
+
+	double translateDistance = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
+
+
 
 	//if (absRotateSpeed > 0.05) {
 	//	rotateAngle = absRotateAngle - ((360 * ((int)(gyroValue / 360) + 1)) + gyroValue) % 360;
