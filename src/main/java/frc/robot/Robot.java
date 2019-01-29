@@ -5,7 +5,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Prototype_CAN;
 
 /**
@@ -18,7 +19,7 @@ public class Robot extends TimedRobot {
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
 
-  TankDrive drive = new TankDrive();
+  RobotDrive drive = new RobotDrive(1, 0);
 
   /**
    * This function is run when the robot is first started up and should be used
