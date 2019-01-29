@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Joystick;
  * "Robot")
  */
 public class Robot extends TimedRobot {
-  Prototype_PWM rPGrabber;
+  Prototype_CAN rPGrabber;
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
       RobotMap.HATCH_GRABBER_BUTTON_OUT);
   private JoystickButton hatchGrabberButtonIn = new JoystickButton(manipulatorStick, RobotMap.HATCH_GRABBER_BUTTON_IN);
 
-  TankDrive drive = new TankDrive();
+  CAN_TankDrive drive = new CAN_TankDrive();
 
   Timer hatchGrabberTimer = new Timer();
 
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT,
     // RobotMap.SPEED_DEFAULT_TEST);
-    rPGrabber = new Prototype_PWM(RobotMap.MOTOR_GRABBER, RobotMap.SPEED_DEFAULT_TEST);
+    rPGrabber = new Prototype_CAN(RobotMap.MOTOR_GRABBER, RobotMap.SPEED_DEFAULT_TEST);
   }
 
   /**
@@ -86,12 +86,12 @@ public class Robot extends TimedRobot {
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
-    if (hatchGrabberOpening && (hatchGrabberTimer.get() > 2.0)) {
+    if (hatchGrabberOpening && (hatchGrabberTimer.get() > 1.0)) {
       rPGrabber.stop();
       hatchGrabberOpening = false;
     }
 
-    if (hatchGrabberClosing && (hatchGrabberTimer.get() > 2.0)) {
+    if (hatchGrabberClosing && (hatchGrabberTimer.get() > 1.0)) {
       rPGrabber.stop();
       hatchGrabberClosing = false;
     }
