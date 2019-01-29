@@ -119,21 +119,68 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-void translateAndRotate(double driveSpeed, double driveAngle, double absRotateAngle, double absRotateSpeed, double unregulatedRotateSpeed, double gyroValue) {
-//should be (leftMag, leftAngle, rightAngle, rightMag, rightTwist, gyro reading (in degrees))
-	double rotateAngle;
-	double rotateSpeed;
 
-	if (absRotateSpeed > 0.05) {
-		rotateAngle = absRotateAngle - ((360 * (int(gyroValue / 360) + 1)) + gyroValue) % 360;
-		rotateSpeed = absRotateSpeed;
-	} else if (abs(unregulatedRotateSpeed) > 0.05) {
-		rotateAngle = (unregulatedRotateSpeed + 1) * 180 
-		rotateSpeed = abs(unregulateRotateSpeed);
-	} else {
-		rotateAngle = 0;
-		rotateSpeed = 0;
+//odnt use this method
+void translateAndRotate(double joystickX, double joystickY, double joystickAngle, double gyroReading, 
+	double targetDirection, double turnMagnitude, double robotX, double robotY) {
+
+	double jsX = joystickX;
+	double jsY = -joystickY;
+	double jsA = joystickAngle;
+	double gyroValue = (Math.abs((360 * ((int)(gyroReading / 360) + 1)) + gyroReading)) % 360;
+	double targetAngle = targetDirection - gyroValue; //will be -360 to 360
+	double turnSpeed = turnMagnitude;
+	double x = robotX;
+	double y = robotY;
+
+	if (targetAngle < 0) targetAngle += 360;
+	targetAngle -= 180;
+
+	if (Math.abs(targetAngle) >= 45) {
+		if (targetAngle < -45) {
+			targetAngle = -45;
+		}
+		if (targetAngle > 45) {
+			targetAngle = 45;
+		}
 	}
+
+
+	double w = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+	double c = w * Math.sin(Math.toRadians(45 + targetAngle));
+	double d = w * Math.cos(Math.toRadians(45 + targetAngle));
+
+	double translatedXModule1 = jsX + c;
+	double translatedXModule2 = jsX + d;
+	double translatedXModule3 = jsX - c;
+	double translatedXModule4 = jsX - d;
+
+	double translatedYModule1 = jsY + d;
+	double translatedYModule2 = jsY + c;
+	double translatedYModule3 = jsY - d;
+	double translatedYModule4 = jsY - c;
+
+	double xModule1 = x/2;
+	double xModule2 = -x/2;
+	double xModule3 = -x/2;
+	double xModule4 = x/2;
+
+	double yModule1 = y/2;
+	double yModule2 = y/2;
+	double yModule3 = -y/2;
+	double yModule4 = -y/2;
+
+
+	//if (absRotateSpeed > 0.05) {
+	//	rotateAngle = absRotateAngle - ((360 * ((int)(gyroValue / 360) + 1)) + gyroValue) % 360;
+	//	rotateSpeed = absRotateSpeed;
+	//} else if (Math.abs(unregulatedRotateSpeed) > 0.05) {
+	//	rotateAngle = (unregulatedRotateSpeed + 1) * 180; 
+	//	rotateSpeed = Math.abs(unregulatedRotateSpeed);
+	//} else {
+	//	rotateAngle = 0;
+	//	rotateSpeed = 0;
+	//}
 
 
 
