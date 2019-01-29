@@ -2,19 +2,20 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class TankDrive extends DifferentialDrive {
+public class CAN_TankDrive extends DifferentialDrive {
 	
 	private static final int ROTATIONS_PER_INCH = 5;
 	private Encoder leftEncoder = new Encoder(RobotMap.DRIVE_TRAIN_LEFT_ENCODER_A, RobotMap.DRIVE_TRAIN_LEFT_ENCODER_B, false, Encoder.EncodingType.k1X);
 	private Encoder rightEncoder = new Encoder(RobotMap.DRIVE_TRAIN_RIGHT_ENCODER_A, RobotMap.DRIVE_TRAIN_RIGHT_ENCODER_B, false, Encoder.EncodingType.k1X);
 	
-	TankDrive() {
-		super(new SpeedControllerGroup(new Victor(RobotMap.MOTOR_FRONT_LEFT), new Victor(RobotMap.MOTOR_BACK_LEFT)),
-				new SpeedControllerGroup(new Victor(RobotMap.MOTOR_FRONT_RIGHT), new Victor(RobotMap.MOTOR_BACK_RIGHT)));
+	CAN_TankDrive() {
+		super(new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN_MOTOR_FRONT_LEFT), new WPI_TalonSRX(RobotMap.CAN_MOTOR_BACK_LEFT)),
+			  new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN_MOTOR_FRONT_RIGHT), new WPI_TalonSRX(RobotMap.CAN_MOTOR_BACK_RIGHT)));
+			  
 		initEncoder(leftEncoder);
 		initEncoder(rightEncoder);
 	}

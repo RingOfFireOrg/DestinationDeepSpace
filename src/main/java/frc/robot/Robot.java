@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
 
-  TankDrive drive = new TankDrive();
+  CAN_TankDrive drive = new CAN_TankDrive();
 
   /**
    * This function is run when the robot is first started up and should be used
