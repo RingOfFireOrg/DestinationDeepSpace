@@ -36,6 +36,11 @@ public class SwerveDrive {
 	public static final int DRIVE_ENCODER_BACK_RIGHT_A = 12;
 	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 12;
 
+	//dimensions of the robot in CM
+	public static final int ROBOT_X_IN_CM = ;
+	public static final int ROBOT_Y_IN_CM = ;
+
+
 	SwerveModule frontLeft;
 	SwerveModule frontRight;
 	SwerveModule backLeft;
@@ -122,16 +127,21 @@ public class SwerveDrive {
 
 //odnt use this method
 void translateAndRotate(double joystickX, double joystickY, double joystickAngle, double gyroReading, 
-	double targetDirection, double turnMagnitude, double robotX, double robotY) {
+	double targetDirection, double turnMagnitude) {
+		//input: left joystick x, left joystick y, left joystick angle, current gyro reading(indegrees), the angle of the right joystick,
+		//the magnitude of the right joystick
 
+	//turns the gyro into a 0-360 range -- easier to work with
+	double gyroValue = (Math.abs((360 * ((int)(gyroReading / 360) + 1)) + gyroReading)) % 360;
+
+	//initializing the main variables
 	double jsX = joystickX;
 	double jsY = -joystickY;
-	double jsA = joystickAngle;
-	double gyroValue = (Math.abs((360 * ((int)(gyroReading / 360) + 1)) + gyroReading)) % 360;
+	double driveDirection = ((joystickAngle - gyroValue) + 360) % 360; // will be 0 to 360
 	double targetAngle = targetDirection - gyroValue; //will be -360 to 360
 	double turnSpeed = turnMagnitude;
-	double x = robotX;
-	double y = robotY;
+	double x = ROBOT_X_IN_CM;
+	double y = ROBOT_Y_IN_CM;
 
 	if (targetAngle < 0) targetAngle += 360;
 	targetAngle -= 180;
@@ -145,8 +155,10 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 		}
 	}
 
-
+	//distance from the center of the robot to a module
 	double w = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+	//calculations used later, logical name
 	double c = w * Math.sin(Math.toRadians(45 + targetAngle));
 	double d = w * Math.cos(Math.toRadians(45 + targetAngle));
 
@@ -177,9 +189,35 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 
 	double lengthAverage = (length1 + length2 + length3 + length4) / 4;
 
-	double translateDistance = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
+	double basePower = lengthAverage / Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
 
+	double wheelPower1 = length1 / basePower;
+	double wheelPower2 = length2 / basePower;
+	double wheelPower3 = length3 / basePower;
+	double wheelPower4 = length4 / basePower;
 
+	double wheelAngle1 = driveDirection + Math.arctan((translatedYModule1 - yModule1) / (translatedXModule1 - xModule1));
+	double wheelAngle2 = driveDirection + Math.arctan((translatedYModule2 - yModule2) / (translatedXModule2 - xModule2));
+	double wheelAngle3 = driveDirection + Math.arctan((translatedYModule3 - yModule3) / (translatedXModule3 - xModule3));
+	double wheelAngle4 = driveDirection + Math.arctan((translatedYModule4 - yModule4) / (translatedXModule4 - xModule4));
+
+	double maxPower = wheelPower1;
+	if (wheelPower2 > maxPower) maxPower = wheelPower2;
+	if (wheelPower3 > maxPower) maxPower = wheelPower3;
+	if (wheelPower4 > maxPower) maxPower = wheelPower4;
+
+	if (maxPower > 1) {
+		double powerScale = 1 / maxPower;
+		wheelPower1 *= powerScale;
+		wheelPower2 *= powerScale;
+		wheelPower3 *= powerScale;
+		wheelPower4 *= powerScale;
+	}
+
+	frontRight.control(wheelPower1, wheelAngle1);
+	frontLeft.control(wheelPower2, wheelAngle2);
+	backLeft.control(wheelPower3, wheelAngle3);
+	backRight.control(wheelPower4, wheelAngle4);
 
 	//if (absRotateSpeed > 0.05) {
 	//	rotateAngle = absRotateAngle - ((360 * ((int)(gyroValue / 360) + 1)) + gyroValue) % 360;
@@ -191,8 +229,12 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 	//	rotateAngle = 0;
 	//	rotateSpeed = 0;
 	//}
+	}
 
-
-
-}
+	void parkPosition() {
+		frontRight.control(0, -45);
+		frontLeft.control(0, 45);
+		backLeft.control(0, -45);
+		backRight.control(0, 45);
+	}
 }
