@@ -18,9 +18,9 @@ public class Robot extends TimedRobot {
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
-  private JoystickButton hatchGrabberButtonOut = new JoystickButton(manipulatorStick,
+  private JoystickButton hatchGrabberButtonOpening = new JoystickButton(manipulatorStick,
       RobotMap.HATCH_GRABBER_BUTTON_OUT);
-  private JoystickButton hatchGrabberButtonIn = new JoystickButton(manipulatorStick, RobotMap.HATCH_GRABBER_BUTTON_IN);
+  private JoystickButton hatchGrabberButtonClose = new JoystickButton(manipulatorStick, RobotMap.HATCH_GRABBER_BUTTON_IN);
 
   TankDrive drive = new TankDrive();
 
@@ -87,17 +87,20 @@ public class Robot extends TimedRobot {
     drive.tankDrive(leftSpeed, rightSpeed);
 
     if (hatchGrabberOpening && (hatchGrabberTimer.get() > 2.0)) {
+      System.out.println("Opening Stop");
       rPGrabber.stop();
       hatchGrabberOpening = false;
     }
 
     if (hatchGrabberClosing && (hatchGrabberTimer.get() > 2.0)) {
+      System.out.println("Closing Stop");
       rPGrabber.stop();
       hatchGrabberClosing = false;
     }
 
-    if (hatchGrabberButtonOut.get()) {
+    if (hatchGrabberButtonOpening.get()) {
 
+      System.out.println("Opening Start");
       hatchGrabberTimer.reset();
       hatchGrabberTimer.start();
       hatchGrabberOpening = true;
@@ -106,8 +109,8 @@ public class Robot extends TimedRobot {
 
     }
 
-    else if (hatchGrabberButtonIn.get()) {
-
+    else if (hatchGrabberButtonClose.get()) {
+      System.out.println("Closing Start");
       hatchGrabberTimer.reset();
       hatchGrabberTimer.start();
       hatchGrabberClosing = true;

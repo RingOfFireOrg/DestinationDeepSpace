@@ -29,7 +29,7 @@ public final class RobotMap {
 
     // Motor Speeds
     // Example: public static final double SPEED_DEFAULT_LIFT = 0.75;
-    public static final double SPEED_DEFAULT_TEST = 0.2;
+    public static final double SPEED_DEFAULT_TEST = 0.1;
 
     // Joystick
     // Example: public static final int JOYSTICK_DRIVE_LEFT = 0;
