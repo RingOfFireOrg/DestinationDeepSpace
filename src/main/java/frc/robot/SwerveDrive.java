@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3459.robot;
+package frc.robot;
 
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
@@ -26,14 +26,15 @@ public class SwerveDrive {
 	public static final int ENCODER_BACK_LEFT = 2;
 	public static final int ENCODER_BACK_RIGHT = 3;
 
-	public static final int DRIVE_ENCODER_FRONT_RIGHT_A = x;
-	public static final int DRIVE_ENCODER_FRONT_RIGHT_B = x;
-	public static final int DRIVE_ENCODER_FRONT_LEFT_A = x;
-	public static final int DRIVE_ENCODER_FRONT_LEFT_B = x;
-	public static final int DRIVE_ENCODER_BACK_LEFT_A = x;
-	public static final int DRIVE_ENCODER_BACK_LEFT_B = x;
-	public static final int DRIVE_ENCODER_BACK_RIGHT_A = x;
-	public static final int DRIVE_ENCODER_BACK_RIGHT_B = x;
+	//need to get real numbers for drive encoders
+	public static final int DRIVE_ENCODER_FRONT_RIGHT_A = 12;
+	public static final int DRIVE_ENCODER_FRONT_RIGHT_B = 12;
+	public static final int DRIVE_ENCODER_FRONT_LEFT_A = 12;
+	public static final int DRIVE_ENCODER_FRONT_LEFT_B = 12;
+	public static final int DRIVE_ENCODER_BACK_LEFT_A = 12;
+	public static final int DRIVE_ENCODER_BACK_LEFT_B = 12;
+	public static final int DRIVE_ENCODER_BACK_RIGHT_A = 12;
+	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 12;
 
 	SwerveModule frontLeft;
 	SwerveModule frontRight;
@@ -43,16 +44,16 @@ public class SwerveDrive {
 	SwerveDrive() {
 		frontRight = new SwerveModule(new Jaguar(DRIVE_FRONT_RIGHT_MOTOR), new Talon(STEER_FRONT_RIGHT_MOTOR),
 				new AbsoluteAnalogEncoder(ENCODER_FRONT_RIGHT), ENCODER_ZERO_VALUE_FRONT_RIGHT, 
-				new Encoder(DRIVE_ENCODER_FRONT_RIGHT_A, DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2x));
+				new Encoder(DRIVE_ENCODER_FRONT_RIGHT_A, DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X));
 		frontLeft = new SwerveModule(new Jaguar(DRIVE_FRONT_LEFT_MOTOR), new Talon(STEER_FRONT_LEFT_MOTOR),
 				new AbsoluteAnalogEncoder(ENCODER_FRONT_LEFT), ENCODER_ZERO_VALUE_FRONT_LEFT,
-				new Encoder(DRIVE_ENCODER_FRONT_LEFT_A, DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2x));
+				new Encoder(DRIVE_ENCODER_FRONT_LEFT_A, DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X));
 		backLeft = new SwerveModule(new Jaguar(DRIVE_BACK_LEFT_MOTOR), new Talon(STEER_BACK_LEFT_MOTOR),
 				new AbsoluteAnalogEncoder(ENCODER_BACK_LEFT), ENCODER_ZERO_VALUE_BACK_LEFT,
-				new Encoder(DRIVE_ENCODER_BACK_LEFT_A, DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2x));
+				new Encoder(DRIVE_ENCODER_BACK_LEFT_A, DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X));
 		backRight = new SwerveModule(new Jaguar(DRIVE_BACK_RIGHT_MOTOR), new Talon(STEER_BACK_RIGHT_MOTOR),
 				new AbsoluteAnalogEncoder(ENCODER_BACK_RIGHT), ENCODER_ZERO_VALUE_BACK_RIGHT,
-				new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2x));
+				new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X));
 	}
 
 	void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
