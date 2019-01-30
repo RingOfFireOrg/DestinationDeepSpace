@@ -1,11 +1,14 @@
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SerialPort;
+
 
 
 /**
@@ -33,21 +36,21 @@ public class Robot extends TimedRobot {
 	
 	SwerveDrive swerveDrive = new SwerveDrive();
 
-	boolean alignState = false;
-//	AHRS ahrs;
+  boolean alignState = false;
+  AHRS ahrs;
 
 	@Override
 	public void robotInit() {
-		//chooser.addDefault("Default Auto", defaultAuto);
-		//chooser.addObject("My Auto", customAuto);
-		SmartDashboard.putData("Auto choices", chooser);
+
+    SmartDashboard.putData("Auto choices", chooser);
+    
 		try {
-//			ahrs = new AHRS(SerialPort.Port.kUSB1);
+      ahrs = new AHRS(SerialPort.Port.kUSB1);
 		} catch (RuntimeException ex) {
 			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
 		}
 
-//		ahrs.reset();
+		ahrs.reset();
 	}
 
 	@Override
@@ -81,8 +84,7 @@ public class Robot extends TimedRobot {
 		double rightMagnitude = rightStick.getMagnitude();
 		double twist = rightStick.getTwist();
 		if (rightMagnitude > 0.05) {
-			translateAndRotate(leftX, leftY, leftDirection, double gyroReading, 
-	rightDirection, rightMagnitude);
+      swerveDrive.translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle(), rightDirection, rightMagnitude);
 		} else {
 			if(twist < 0) {
 				twist = -Math.pow(twist, 2);

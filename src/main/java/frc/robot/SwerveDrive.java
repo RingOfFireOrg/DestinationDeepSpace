@@ -126,8 +126,7 @@ public class SwerveDrive {
 
 
 //odnt use this method
-void translateAndRotate(double joystickX, double joystickY, double joystickAngle, double gyroReading, 
-	double targetDirection, double turnMagnitude) {
+void translateAndRotate(double joystickX, double joystickY, double joystickAngle, double gyroReading, double targetDirection, double turnMagnitude) {
 		//input: left joystick x, left joystick y, left joystick angle, current gyro reading(indegrees), the angle of the right joystick,
 		//the magnitude of the right joystick
 
