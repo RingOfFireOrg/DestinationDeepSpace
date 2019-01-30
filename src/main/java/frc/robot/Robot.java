@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
   private Lifter lifter;
+  private FrontTread frontTread;
 
   TankDrive drive = new TankDrive();
 
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
     lifter = new Lifter();
+    frontTread = new FrontTread(new TalonSRX(7), new TalonSRX(11));
   }
 
   /**
@@ -81,6 +83,10 @@ public class Robot extends TimedRobot {
     boolean upPressed = manipulatorStick.getRawButton(RobotMap.LIFT_UP_BUTTON);
     boolean downPressed = manipulatorStick.getRawButton(RobotMap.LIFT_DOWN_BUTTON);
 
+    if (rightStick.getRawButton(1))
+    {
+      frontTread.driveForward();
+    }
     if (upPressed) {
       lifter.up();
     } else if (downPressed) {
@@ -94,7 +100,7 @@ public class Robot extends TimedRobot {
     if (yPos > 0.25) {
       crossbow.forward(0.95);
     } else if (yPos < -0.25) {
-      crossbow.reverse(0.65);
+      crossbow.reverse(0.35);
     } else {
       crossbow.stop();
     }
