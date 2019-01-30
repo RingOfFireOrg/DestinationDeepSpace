@@ -37,8 +37,8 @@ public class SwerveDrive {
 	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 12;
 
 	//dimensions of the robot in CM
-	public static final int ROBOT_X_IN_CM = ;
-	public static final int ROBOT_Y_IN_CM = ;
+	public static final int ROBOT_X_IN_CM = 51;
+	public static final int ROBOT_Y_IN_CM = 51;
 
 
 	SwerveModule frontLeft;
@@ -196,10 +196,10 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 	double wheelPower3 = length3 / basePower;
 	double wheelPower4 = length4 / basePower;
 
-	double wheelAngle1 = driveDirection + Math.arctan((translatedYModule1 - yModule1) / (translatedXModule1 - xModule1));
-	double wheelAngle2 = driveDirection + Math.arctan((translatedYModule2 - yModule2) / (translatedXModule2 - xModule2));
-	double wheelAngle3 = driveDirection + Math.arctan((translatedYModule3 - yModule3) / (translatedXModule3 - xModule3));
-	double wheelAngle4 = driveDirection + Math.arctan((translatedYModule4 - yModule4) / (translatedXModule4 - xModule4));
+	double wheelAngle1 = driveDirection + Math.atan((translatedYModule1 - yModule1) / (translatedXModule1 - xModule1));
+	double wheelAngle2 = driveDirection + Math.atan((translatedYModule2 - yModule2) / (translatedXModule2 - xModule2));
+	double wheelAngle3 = driveDirection + Math.atan((translatedYModule3 - yModule3) / (translatedXModule3 - xModule3));
+	double wheelAngle4 = driveDirection + Math.atan((translatedYModule4 - yModule4) / (translatedXModule4 - xModule4));
 
 	double maxPower = wheelPower1;
 	if (wheelPower2 > maxPower) maxPower = wheelPower2;

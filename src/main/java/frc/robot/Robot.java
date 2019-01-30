@@ -19,23 +19,23 @@ public class Robot extends TimedRobot {
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	String autoSelected;
-	Joystick commandStick = new Joystick(0);
+	Joystick leftStick = new Joystick(0);
+	Joystick rightStick = new Joystick(1);
 	SendableChooser<String> chooser = new SendableChooser<>();
-	JoystickButton frButton = new JoystickButton(commandStick, 6);
-	JoystickButton flButton = new JoystickButton(commandStick, 5);
-	JoystickButton brButton = new JoystickButton(commandStick, 4);
-	JoystickButton blButton = new JoystickButton(commandStick, 3);
-	JoystickButton trigger = new JoystickButton(commandStick, 1);
+	JoystickButton frButton = new JoystickButton(leftStick, 6);
+	JoystickButton flButton = new JoystickButton(leftStick, 5);
+	JoystickButton brButton = new JoystickButton(leftStick, 4);
+	JoystickButton blButton = new JoystickButton(leftStick, 3);
+	JoystickButton trigger = new JoystickButton(leftStick, 1);
+	JoystickButton rightTrigger = new JoystickButton(rightStick, 1);
+
+	boolean driveMode = false;
 	
 	SwerveDrive swerveDrive = new SwerveDrive();
 
 	boolean alignState = false;
 //	AHRS ahrs;
 
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
 	@Override
 	public void robotInit() {
 		//chooser.addDefault("Default Auto", defaultAuto);
@@ -58,9 +58,6 @@ public class Robot extends TimedRobot {
 		System.out.println("Auto selected: " + autoSelected);
 	}
 
-	/**
-	 * This function is called periodically during autonomous
-	 */
 	@Override
 	public void autonomousPeriodic() {
 		switch (autoSelected) {
@@ -74,37 +71,37 @@ public class Robot extends TimedRobot {
 		}
 	}
 
-	/**
-	 * This function is called periodically during operator control
-	 */
 	@Override
 	public void teleopPeriodic() {
-		double twist;
-		double speed = Math.pow(commandStick.getMagnitude(), 2);
-		double direction = commandStick.getDirectionDegrees() * -1;
-		twist = commandStick.getTwist();
-		if(twist < 0) {
-			twist = -Math.pow(twist, 2);
+		double speed = Math.pow(leftStick.getMagnitude(), 2);
+		double leftDirection = leftStick.getDirectionDegrees() * -1;
+		double leftX = leftStick.getX();
+		double leftY = leftStick.getY();
+		double rightDirection = rightStick.getDirectionDegrees() * -1;
+		double rightMagnitude = rightStick.getMagnitude();
+		double twist = rightStick.getTwist();
+		if (rightMagnitude > 0.05) {
+			translateAndRotate(leftX, leftY, leftDirection, double gyroReading, 
+	rightDirection, rightMagnitude);
 		} else {
-			twist = Math.pow(twist, 2);
+			if(twist < 0) {
+				twist = -Math.pow(twist, 2);
+			} else {
+				twist = Math.pow(twist, 2);
+			}
+			swerveDrive.syncroDrive(speed, leftDirection, twist);
 		}
-		SmartDashboard.putNumber("Joystick output", direction);
+		
+		SmartDashboard.putNumber("Joystick output", leftDirection);
 		SmartDashboard.putNumber("Joystick output speed", speed);
 	
-		if (trigger.get()) {
-			autoAlign();
-		}	else {
-			swerveDrive.syncroDrive(speed, direction, twist);
-			alignState = false;
-		}
+	
+			
 //		SmartDashboard.putNumber("Gyro output: ", ahrs.getAngle());
 //				swerveDrive.syncroDrive(speed, direction, twist);	
 		
 	}
 
-	/**
-	 * This function is called periodically during test mode
-	 */
 	@Override
 	public void testPeriodic() {
 		swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
@@ -112,7 +109,6 @@ public class Robot extends TimedRobot {
 	}
 
 	//Code below here is not particular to swerve, temporary presence, for line alignment, auto-intervention
-
 	public void autoAlign() {
 		
 		swerveDrive.syncroDrive(0.5, 90, 0);
