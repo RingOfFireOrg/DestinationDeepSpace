@@ -18,14 +18,17 @@ public class SwerveModule {
 	double currentAngle;
 	double zeroValue;
 
-	public SwerveModule(Jaguar driveMotor, Talon steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue, Encoder driveRotEncoder) {
+	//will need to make changes to the input --Encoder driveRotEncoder <-- add to constructor
+	public SwerveModule(Jaguar driveMotor, Talon steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue) {
 		this.zeroValue = zeroValue;
 		drive = driveMotor;
 		steer = steerMotor;
 		turnEncoder = steerEncoder;
-		driveEncoder = driveRotEncoder;
-		driveEncoder.reset();
-		driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
+
+
+		//driveEncoder = driveRotEncoder;
+		//driveEncoder.reset();
+		//driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
 	}
 
 	public double convertToWheelRelative(double wheelAngleGoal) {

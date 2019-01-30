@@ -48,17 +48,17 @@ public class SwerveDrive {
 
 	SwerveDrive() {
 		frontRight = new SwerveModule(new Jaguar(DRIVE_FRONT_RIGHT_MOTOR), new Talon(STEER_FRONT_RIGHT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_FRONT_RIGHT), ENCODER_ZERO_VALUE_FRONT_RIGHT, 
-				new Encoder(DRIVE_ENCODER_FRONT_RIGHT_A, DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_FRONT_RIGHT), ENCODER_ZERO_VALUE_FRONT_RIGHT);
+				//*new Encoder(DRIVE_ENCODER_FRONT_RIGHT_A, DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X));
 		frontLeft = new SwerveModule(new Jaguar(DRIVE_FRONT_LEFT_MOTOR), new Talon(STEER_FRONT_LEFT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_FRONT_LEFT), ENCODER_ZERO_VALUE_FRONT_LEFT,
-				new Encoder(DRIVE_ENCODER_FRONT_LEFT_A, DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_FRONT_LEFT), ENCODER_ZERO_VALUE_FRONT_LEFT);
+				//new Encoder(DRIVE_ENCODER_FRONT_LEFT_A, DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X));
 		backLeft = new SwerveModule(new Jaguar(DRIVE_BACK_LEFT_MOTOR), new Talon(STEER_BACK_LEFT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_BACK_LEFT), ENCODER_ZERO_VALUE_BACK_LEFT,
-				new Encoder(DRIVE_ENCODER_BACK_LEFT_A, DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_BACK_LEFT), ENCODER_ZERO_VALUE_BACK_LEFT);
+				//new Encoder(DRIVE_ENCODER_BACK_LEFT_A, DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X));
 		backRight = new SwerveModule(new Jaguar(DRIVE_BACK_RIGHT_MOTOR), new Talon(STEER_BACK_RIGHT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_BACK_RIGHT), ENCODER_ZERO_VALUE_BACK_RIGHT,
-				new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_BACK_RIGHT), ENCODER_ZERO_VALUE_BACK_RIGHT);
+				//new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X));
 	}
 
 	void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
@@ -131,7 +131,8 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 		//the magnitude of the right joystick
 
 	//turns the gyro into a 0-360 range -- easier to work with
-	double gyroValue = (Math.abs((360 * ((int)(gyroReading / 360) + 1)) + gyroReading)) % 360;
+	SmartDashboard.putNumber("original gyro", gyroReading);
+	double gyroValue = (Math.abs((360 * (((int)(gyroReading / 360)) + 1))) + gyroReading) % 360;
 
 	//initializing the main variables
 	double jsX = joystickX;
@@ -142,6 +143,12 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 	double x = ROBOT_X_IN_CM;
 	double y = ROBOT_Y_IN_CM;
 
+	SmartDashboard.putNumber("gyro", gyroValue);
+
+	SmartDashboard.putNumber("LeftJS x", jsX);
+	SmartDashboard.putNumber("LeftJS y", jsY);
+	SmartDashboard.putNumber("DriveDirection", driveDirection);
+	
 	if (targetAngle < 0) targetAngle += 360;
 	targetAngle -= 180;
 
@@ -153,6 +160,8 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 			targetAngle = 45;
 		}
 	}
+	SmartDashboard.putNumber("targetAngle", targetAngle);
+
 
 	//distance from the center of the robot to a module
 	double w = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
@@ -218,6 +227,16 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 	backLeft.control(wheelPower3, wheelAngle3);
 	backRight.control(wheelPower4, wheelAngle4);
 
+	SmartDashboard.putNumber("Angle 1", wheelAngle1);
+	SmartDashboard.putNumber("Angle 2", wheelAngle2);
+	SmartDashboard.putNumber("Angle 3", wheelAngle3);
+	SmartDashboard.putNumber("Angle 4", wheelAngle4);
+
+	SmartDashboard.putNumber("Power1", wheelPower1);
+	SmartDashboard.putNumber("Power2", wheelPower2);
+	SmartDashboard.putNumber("Power3", wheelPower3);
+	SmartDashboard.putNumber("Power4", wheelPower4);
+	SmartDashboard.putNumber("Power4", wheelPower4);
 	//if (absRotateSpeed > 0.05) {
 	//	rotateAngle = absRotateAngle - ((360 * ((int)(gyroValue / 360) + 1)) + gyroValue) % 360;
 	//	rotateSpeed = absRotateSpeed;

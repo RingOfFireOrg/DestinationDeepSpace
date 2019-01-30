@@ -38,19 +38,20 @@ public class Robot extends TimedRobot {
 
   boolean alignState = false;
   AHRS ahrs;
+  double ahrsOffset;
 
 	@Override
 	public void robotInit() {
-
-    SmartDashboard.putData("Auto choices", chooser);
     
 		try {
-      ahrs = new AHRS(SerialPort.Port.kUSB1);
+      	ahrs = new AHRS(SerialPort.Port.kUSB1);
 		} catch (RuntimeException ex) {
 			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
 		}
 
 		ahrs.reset();
+		ahrsOffset = ahrs.getAngle();
+		SmartDashboard.putNumber("gyroOffset", ahrsOffset);
 	}
 
 	@Override
@@ -76,6 +77,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		if (rightTrigger.get() == true) {
+			ahrs.reset();
+		}
 		double speed = Math.pow(leftStick.getMagnitude(), 2);
 		double leftDirection = leftStick.getDirectionDegrees() * -1;
 		double leftX = leftStick.getX();
@@ -83,16 +87,17 @@ public class Robot extends TimedRobot {
 		double rightDirection = rightStick.getDirectionDegrees() * -1;
 		double rightMagnitude = rightStick.getMagnitude();
 		double twist = rightStick.getTwist();
-		if (rightMagnitude > 0.05) {
-      swerveDrive.translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle(), rightDirection, rightMagnitude);
-		} else {
-			if(twist < 0) {
-				twist = -Math.pow(twist, 2);
-			} else {
-				twist = Math.pow(twist, 2);
-			}
-			swerveDrive.syncroDrive(speed, leftDirection, twist);
-		}
+		//if (rightMagnitude > 0.05) {
+		  swerveDrive.translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
+		  SmartDashboard.putNumber("ahrs angle", ahrs.getAngle());
+		//}else {
+			//if(twist < 0) {
+			//	twist = -Math.pow(twist, 2);
+			//} else {
+			//	twist = Math.pow(twist, 2);
+			//}
+			//swerveDrive.syncroDrive(speed, leftDirection, twist);
+	//}*\\
 		
 		SmartDashboard.putNumber("Joystick output", leftDirection);
 		SmartDashboard.putNumber("Joystick output speed", speed);
