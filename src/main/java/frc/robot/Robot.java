@@ -3,24 +3,26 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Joystick;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import frc.robot.Prototype_CAN;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Victor;
 
 /**
  * Don't change the name of this or it won't work. (The manifest looks for
  * "Robot")
  */
 public class Robot extends TimedRobot {
-  Prototype_CAN crossbow;
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
-  private Lifter lifter;
+  //private Lifter lifter;
   private FrontTread frontTread;
 
-  TankDrive drive = new TankDrive();
+  private Victor leftVictor = new Victor(RobotMap.MOTOR_LEFT);
+	private Victor rightVictor = new Victor(RobotMap.MOTOR_RIGHT);
+  TankDrive drive = new TankDrive(leftVictor, rightVictor);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -28,9 +30,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
-    lifter = new Lifter();
-    frontTread = new FrontTread(new TalonSRX(7), new TalonSRX(11));
+    //crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
+    //lifter = new Lifter();
+    frontTread = new FrontTread(new TalonSRX(7), new TalonSRX(10));
+    leftVictor.setInverted(false);
+    rightVictor.setInverted(false);
   }
 
   /**
@@ -83,27 +87,24 @@ public class Robot extends TimedRobot {
     boolean upPressed = manipulatorStick.getRawButton(RobotMap.LIFT_UP_BUTTON);
     boolean downPressed = manipulatorStick.getRawButton(RobotMap.LIFT_DOWN_BUTTON);
 
-    if (rightStick.getRawButton(1))
-    {
-      frontTread.driveForward();
-    }
-    if (upPressed) {
-      lifter.up();
-    } else if (downPressed) {
-      lifter.down();
-    } else {
-      lifter.stop();
-    }
+    frontTread.driveForward(leftStick.getX());
+    // if (upPressed) {
+    //   lifter.up();
+    // } else if (downPressed) {
+    //   lifter.down();
+    // } else {
+    //   lifter.stop();
+    // }
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
-    if (yPos > 0.25) {
-      crossbow.forward(0.95);
-    } else if (yPos < -0.25) {
-      crossbow.reverse(0.35);
-    } else {
-      crossbow.stop();
-    }
+    // if (yPos > 0.25) {
+    //   crossbow.forward(0.95);
+    // } else if (yPos < -0.25) {
+    //   crossbow.reverse(0.35);
+    // } else {
+    //   crossbow.stop();
+    // }
 
   }
 

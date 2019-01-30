@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,10 +10,8 @@ public class TankDrive extends DifferentialDrive {
 	private static final int ROTATIONS_PER_INCH = 5;
 	private Encoder leftEncoder = new Encoder(RobotMap.DRIVE_TRAIN_LEFT_ENCODER_A, RobotMap.DRIVE_TRAIN_LEFT_ENCODER_B, false, Encoder.EncodingType.k1X);
 	private Encoder rightEncoder = new Encoder(RobotMap.DRIVE_TRAIN_RIGHT_ENCODER_A, RobotMap.DRIVE_TRAIN_RIGHT_ENCODER_B, false, Encoder.EncodingType.k1X);
-	
-	TankDrive() {
-		super(new SpeedControllerGroup(new Victor(RobotMap.MOTOR_FRONT_LEFT), new Victor(RobotMap.MOTOR_BACK_LEFT)),
-				new SpeedControllerGroup(new Victor(RobotMap.MOTOR_FRONT_RIGHT), new Victor(RobotMap.MOTOR_BACK_RIGHT)));
+	TankDrive(Victor left, Victor right) {
+		super(left, right);
 		initEncoder(leftEncoder);
 		initEncoder(rightEncoder);
 	}
