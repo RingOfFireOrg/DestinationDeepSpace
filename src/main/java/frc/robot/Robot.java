@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
   private FrontTread frontTread;
 
   private Victor leftVictor = new Victor(RobotMap.MOTOR_LEFT);
-	private Victor rightVictor = new Victor(RobotMap.MOTOR_RIGHT);
+  private Victor rightVictor = new Victor(RobotMap.MOTOR_RIGHT);
   TankDrive drive = new TankDrive(leftVictor, rightVictor);
 
   /**
