@@ -16,10 +16,10 @@ public class SwerveDrive {
 	public static final int STEER_BACK_LEFT_MOTOR = 5;
 	public static final int STEER_BACK_RIGHT_MOTOR = 7;
 
-	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 7;
 	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 46;
-	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 25;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 179;
+	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 25;
+	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 26;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 182;
 
 	public static final int ENCODER_FRONT_RIGHT = 0;
 	public static final int ENCODER_FRONT_LEFT = 1;
@@ -254,5 +254,12 @@ void translateAndRotate(double joystickX, double joystickY, double joystickAngle
 		frontLeft.control(0, 45);
 		backLeft.control(0, -45);
 		backRight.control(0, 45);
+	}
+
+	void tuningMode() {
+		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
+		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
+		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
+		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 	}
 }

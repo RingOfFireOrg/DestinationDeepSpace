@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
 	JoystickButton blButton = new JoystickButton(leftStick, 3);
 	JoystickButton trigger = new JoystickButton(leftStick, 1);
 	JoystickButton rightTrigger = new JoystickButton(rightStick, 1);
+	JoystickButton tuningActivation = new JoystickButton(leftStick, 7);
 
 	boolean driveMode = false;
 	
@@ -52,6 +53,10 @@ public class Robot extends TimedRobot {
 		ahrs.reset();
 		ahrsOffset = ahrs.getAngle();
 		SmartDashboard.putNumber("gyroOffset", ahrsOffset);
+
+		//module lineup:
+
+
 	}
 
 	@Override
@@ -77,41 +82,46 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		if (rightTrigger.get() == true) {
-			ahrs.reset();
-		}
-		double speed = Math.pow(leftStick.getMagnitude(), 2);
-		double leftDirection = leftStick.getDirectionDegrees() * -1;
-		double leftX = leftStick.getX();
-		double leftY = leftStick.getY();
-		double rightDirection = rightStick.getDirectionDegrees() * -1;
-		double rightMagnitude = rightStick.getMagnitude();
-		double twist = rightStick.getTwist();
-		//if (rightMagnitude > 0.05) {
-		  swerveDrive.translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
-		  SmartDashboard.putNumber("ahrs angle", ahrs.getAngle());
-		//}else {
-			//if(twist < 0) {
-			//	twist = -Math.pow(twist, 2);
-			//} else {
-			//	twist = Math.pow(twist, 2);
-			//}
-			//swerveDrive.syncroDrive(speed, leftDirection, twist);
-	//}*\\
-		
-		SmartDashboard.putNumber("Joystick output", leftDirection);
-		SmartDashboard.putNumber("Joystick output speed", speed);
-	
-	
+		if (tuningActivation.get() == true) {
+			swerveDrive.tuningMode();
+		} else {
+			if (rightTrigger.get() == true) {
+				ahrsOffset = ahrs.getAngle();
+			}
+			double speed = Math.pow(leftStick.getMagnitude(), 2);
+			double leftDirection = leftStick.getDirectionDegrees() * -1;
+			double leftX = leftStick.getX();
+			double leftY = leftStick.getY();
+			double rightDirection = rightStick.getDirectionDegrees() * -1;
+			double rightMagnitude = rightStick.getMagnitude();
+			double twist = rightStick.getTwist();
+			//if (rightMagnitude > 0.05) {
+			  swerveDrive.translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
+			  SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
+			//}else {
+				//if(twist < 0) {
+				//	twist = -Math.pow(twist, 2);
+				//} else {
+				//	twist = Math.pow(twist, 2);
+				//}
+				//swerveDrive.syncroDrive(speed, leftDirection, twist);
+		//}*\\
 			
-//		SmartDashboard.putNumber("Gyro output: ", ahrs.getAngle());
-//				swerveDrive.syncroDrive(speed, direction, twist);	
+			SmartDashboard.putNumber("Joystick output", leftDirection);
+			SmartDashboard.putNumber("Joystick output speed", speed);
+		
+		
+				
+	//		SmartDashboard.putNumber("Gyro output: ", ahrs.getAngle());
+	//				swerveDrive.syncroDrive(speed, direction, twist);	
+			
+		}
 		
 	}
 
 	@Override
 	public void testPeriodic() {
-		swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
+		//swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
 		
 	}
 
