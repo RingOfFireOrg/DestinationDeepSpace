@@ -1,9 +1,13 @@
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveDrive {
 	public static final int DRIVE_FRONT_RIGHT_MOTOR = 0;
@@ -46,6 +50,9 @@ public class SwerveDrive {
 	SwerveModule backLeft;
 	SwerveModule backRight;
 
+	AHRS ahrs;
+	double ahrsOffset;
+
 	SwerveDrive() {
 		frontRight = new SwerveModule(new Jaguar(DRIVE_FRONT_RIGHT_MOTOR), new Talon(STEER_FRONT_RIGHT_MOTOR),
 				new AbsoluteAnalogEncoder(ENCODER_FRONT_RIGHT), ENCODER_ZERO_VALUE_FRONT_RIGHT);
@@ -59,6 +66,78 @@ public class SwerveDrive {
 		backRight = new SwerveModule(new Jaguar(DRIVE_BACK_RIGHT_MOTOR), new Talon(STEER_BACK_RIGHT_MOTOR),
 				new AbsoluteAnalogEncoder(ENCODER_BACK_RIGHT), ENCODER_ZERO_VALUE_BACK_RIGHT);
 				//new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X));
+		
+		try {
+			ahrs = new AHRS(SerialPort.Port.kUSB1);
+		  } catch (RuntimeException ex) {
+			  //DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+		  }
+		  
+		ahrs.reset();
+		ahrsOffset = ahrs.getAngle();
+
+	}
+
+	void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7) {
+
+		Joystick leftStick = left;
+		Joystick rightStick = right;
+		JoystickButton rightTrigger = rightButton1;
+		JoystickButton tuningActivation = rightButton7;
+
+		int driveMode = 0;
+
+		double speed = Math.pow(leftStick.getMagnitude(), 2);
+		double leftDirection = leftStick.getDirectionDegrees() * -1;
+		double leftX = leftStick.getX();
+		double leftY = leftStick.getY();
+
+		double rightDirection = rightStick.getDirectionDegrees() * -1;
+		double rightMagnitude = rightStick.getMagnitude();
+		double twist = rightStick.getTwist();
+		
+
+		if (twist < 0) {
+			twist = -Math.pow(twist, 2);
+		} else {
+			twist = Math.pow(twist, 2);
+		}
+
+		if (tuningActivation.get() == true) {
+			driveMode = 1;
+		} else if (rightStick.getMagnitude() > 0.3) {
+			driveMode = 2;
+		} else {
+			driveMode = 0;
+		}
+
+
+		switch (driveMode) {
+			case 0:
+				syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
+				break;
+
+			case 1:
+				tuningMode();
+				break;
+
+			case 2:
+				translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
+				break;
+		
+			default:
+				break;
+		}
+		
+		if (rightTrigger.get() == true) {
+			ahrsOffset = ahrs.getAngle();
+		}
+			
+			  
+		SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
+		SmartDashboard.putNumber("Joystick output", leftDirection);
+		SmartDashboard.putNumber("Joystick output speed", speed);
+		
 	}
 
 	void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
@@ -93,7 +172,10 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	void syncroDrive(double driveSpeed, double driveAngle, double twist) {
+	void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
+
+		driveAngle -= gyroReading;
+
 		if (Math.abs(twist) > 0.5) {
 			if (twist > 0) {
 				twist = (twist - 0.5)*2;

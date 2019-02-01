@@ -1,6 +1,6 @@
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
+//import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -38,23 +38,11 @@ public class Robot extends TimedRobot {
 	SwerveDrive swerveDrive = new SwerveDrive();
 
   boolean alignState = false;
-  AHRS ahrs;
-  double ahrsOffset;
+  
+ 
 
 	@Override
 	public void robotInit() {
-    
-		try {
-      	ahrs = new AHRS(SerialPort.Port.kUSB1);
-		} catch (RuntimeException ex) {
-			DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-		}
-
-		ahrs.reset();
-		ahrsOffset = ahrs.getAngle();
-		SmartDashboard.putNumber("gyroOffset", ahrsOffset);
-
-		//module lineup:
 
 
 	}
@@ -82,41 +70,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		if (tuningActivation.get() == true) {
-			swerveDrive.tuningMode();
-		} else {
-			if (rightTrigger.get() == true) {
-				ahrsOffset = ahrs.getAngle();
-			}
-			double speed = Math.pow(leftStick.getMagnitude(), 2);
-			double leftDirection = leftStick.getDirectionDegrees() * -1;
-			double leftX = leftStick.getX();
-			double leftY = leftStick.getY();
-			double rightDirection = rightStick.getDirectionDegrees() * -1;
-			double rightMagnitude = rightStick.getMagnitude();
-			double twist = rightStick.getTwist();
-			//if (rightMagnitude > 0.05) {
-			  swerveDrive.translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
-			  SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
-			//}else {
-				//if(twist < 0) {
-				//	twist = -Math.pow(twist, 2);
-				//} else {
-				//	twist = Math.pow(twist, 2);
-				//}
-				//swerveDrive.syncroDrive(speed, leftDirection, twist);
-		//}*\\
-			
-			SmartDashboard.putNumber("Joystick output", leftDirection);
-			SmartDashboard.putNumber("Joystick output speed", speed);
-		
-		
-				
-	//		SmartDashboard.putNumber("Gyro output: ", ahrs.getAngle());
-	//				swerveDrive.syncroDrive(speed, direction, twist);	
-			
-		}
-		
+		swerveDrive.runSwerve(leftStick, rightStick, rightTrigger, tuningActivation);
 	}
 
 	@Override
@@ -128,7 +82,7 @@ public class Robot extends TimedRobot {
 	//Code below here is not particular to swerve, temporary presence, for line alignment, auto-intervention
 	public void autoAlign() {
 		
-		swerveDrive.syncroDrive(0.5, 90, 0);
+		//swerveDrive.syncroDrive(0.5, 90, 0);
 	}
 
 }
