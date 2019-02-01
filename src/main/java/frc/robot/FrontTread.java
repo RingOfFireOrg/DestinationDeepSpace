@@ -1,30 +1,24 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class FrontTread
-{
-    private TalonSRX motorOne, motorTwo;
+public class FrontTread {
+    private SpeedControllerGroup motorGroup;
 
-    public FrontTread(TalonSRX motorOne, TalonSRX motorTwo)
-    {
-        this.motorOne = motorOne;
-        this.motorTwo = motorTwo;
+    public FrontTread(WPI_TalonSRX motorOne, WPI_TalonSRX motorTwo) {
+        this.motorGroup = new SpeedControllerGroup(motorOne, motorTwo);
     }
 
-    public void stop()
-    {
+    public void stop() {
         SmartDashboard.putString("Tread", "no");
-        motorOne.set(ControlMode.PercentOutput, 0.0);
+        this.motorGroup.stopMotor();
     }
 
-    public void driveForward(double x)
-    {
+    public void set(double speed) {
         SmartDashboard.putString("Tread", "yes");
-        motorOne.set(ControlMode.PercentOutput, x);
-        motorTwo.set(ControlMode.PercentOutput, x);
+        this.motorGroup.set(speed);
     }
 }
