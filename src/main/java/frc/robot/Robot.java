@@ -16,8 +16,7 @@ import edu.wpi.first.wpilibj.Victor;
 public class Robot extends TimedRobot {
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
-  private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
-  //private Lifter lifter;
+
   private FrontTread frontTread;
 
   private Victor leftVictor = new Victor(RobotMap.MOTOR_LEFT);
@@ -30,9 +29,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    //crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
-    //lifter = new Lifter();
-    frontTread = new FrontTread(new TalonSRX(7), new TalonSRX(10));
+    frontTread = new FrontTread(new TalonSRX(RobotMap.CAN_FRONT_TREAD_A), new TalonSRX(RobotMap.CAN_FRONT_TREAD_B));
     leftVictor.setInverted(false);
     rightVictor.setInverted(false);
   }
@@ -80,32 +77,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double leftSpeed = -leftStick.getY();
     double rightSpeed = -rightStick.getY();
-    double yPos = manipulatorStick.getY();
+    double treadSpeed = leftStick.getX();
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
-    boolean upPressed = manipulatorStick.getRawButton(RobotMap.LIFT_UP_BUTTON);
-    boolean downPressed = manipulatorStick.getRawButton(RobotMap.LIFT_DOWN_BUTTON);
-
-    frontTread.driveForward(leftStick.getX());
-    // if (upPressed) {
-    //   lifter.up();
-    // } else if (downPressed) {
-    //   lifter.down();
-    // } else {
-    //   lifter.stop();
-    // }
-
-    // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
-    // centered to stop
-    // if (yPos > 0.25) {
-    //   crossbow.forward(0.95);
-    // } else if (yPos < -0.25) {
-    //   crossbow.reverse(0.35);
-    // } else {
-    //   crossbow.stop();
-    // }
-
+    frontTread.driveForward(treadSpeed);
   }
 
   /**
