@@ -6,6 +6,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Victor;
 
@@ -29,8 +30,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    frontTread = new FrontTread(new WPI_TalonSRX(RobotMap.CAN_FRONT_TREAD_A),
-        new WPI_TalonSRX(RobotMap.CAN_FRONT_TREAD_B));
+    frontTread = new FrontTread(new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN_FRONT_TREAD_A),
+        new WPI_TalonSRX(RobotMap.CAN_FRONT_TREAD_B)));
     leftVictor.setInverted(false);
     rightVictor.setInverted(false);
   }
