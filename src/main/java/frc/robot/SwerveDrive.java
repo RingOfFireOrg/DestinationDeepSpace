@@ -31,14 +31,14 @@ public class SwerveDrive {
 	public static final int ENCODER_BACK_RIGHT = 3;
 
 	//need to get real numbers for drive encoders
-	public static final int DRIVE_ENCODER_FRONT_RIGHT_A = 12;
-	public static final int DRIVE_ENCODER_FRONT_RIGHT_B = 12;
+	public static final int DRIVE_ENCODER_FRONT_RIGHT_A = 10;
+	public static final int DRIVE_ENCODER_FRONT_RIGHT_B = 11;
 	public static final int DRIVE_ENCODER_FRONT_LEFT_A = 12;
-	public static final int DRIVE_ENCODER_FRONT_LEFT_B = 12;
-	public static final int DRIVE_ENCODER_BACK_LEFT_A = 12;
-	public static final int DRIVE_ENCODER_BACK_LEFT_B = 12;
-	public static final int DRIVE_ENCODER_BACK_RIGHT_A = 12;
-	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 12;
+	public static final int DRIVE_ENCODER_FRONT_LEFT_B = 13;
+	public static final int DRIVE_ENCODER_BACK_LEFT_A = 14;
+	public static final int DRIVE_ENCODER_BACK_LEFT_B = 15;
+	public static final int DRIVE_ENCODER_BACK_RIGHT_A = 16;
+	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 17;
 
 	//dimensions of the robot in CM
 	public static final int ROBOT_X_IN_CM = 51;
