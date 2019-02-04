@@ -105,16 +105,16 @@ public class SwerveDrive {
 
 		if (tuningActivation.get() == true) {
 			driveMode = 1;
-		} else if (rightStick.getMagnitude() > 0.3) {
-			driveMode = 2;
-		} else {
-			driveMode = 0;
-		}
+		} else { //if (rightStick.getMagnitude() > 0.3)// {
+			driveMode = 3;
+		} //else {
+			//driveMode = 0;
+		//}
 
 
 		switch (driveMode) {
 			case 0:
-				syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
+				//syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
 				break;
 
 			case 1:
@@ -122,7 +122,11 @@ public class SwerveDrive {
 				break;
 
 			case 2:
-				translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
+				//translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
+				break;
+
+			case 3:
+				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset);
 				break;
 		
 			default:
@@ -206,129 +210,96 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
+	void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading) {
 
-//odnt use this method
-void translateAndRotate(double joystickX, double joystickY, double joystickAngle, double gyroReading, double targetDirection, double turnMagnitude) {
-		//input: left joystick x, left joystick y, left joystick angle, current gyro reading(indegrees), the angle of the right joystick,
-		//the magnitude of the right joystick
+		//turns the gyro into a 0-360 range -- easier to work with
+		SmartDashboard.putNumber("original gyro", gyroReading);
+		double gyroValue = (Math.abs((360 * (((int)(gyroReading / 360)) + 1))) + gyroReading) % 360;
 
-	//turns the gyro into a 0-360 range -- easier to work with
-	SmartDashboard.putNumber("original gyro", gyroReading);
-	double gyroValue = (Math.abs((360 * (((int)(gyroReading / 360)) + 1))) + gyroReading) % 360;
+		//initializing the main variables
+		double jsX = driveJoystickX;
+		double jsY = -driveJoystickY;
+		double twist = rightTwist;
 
-	//initializing the main variables
-	double jsX = joystickX;
-	double jsY = -joystickY;
-	double driveDirection = ((joystickAngle - gyroValue) + 360) % 360; // will be 0 to 360
-	double targetAngle = targetDirection - gyroValue; //will be -360 to 360
-	double turnSpeed = turnMagnitude;
-	double x = ROBOT_X_IN_CM;
-	double y = ROBOT_Y_IN_CM;
+		double xWithTwist = jsX + twist;
+		double xWithoutTwist = jsX - twist;
+		double yWithTwist = jsY + twist;
+		double yWithoutTwist = jsY - twist;
 
-	SmartDashboard.putNumber("gyro", gyroValue);
+		double wheelX[] = new double[4];
+		double wheelY[] = new double[4];
 
-	SmartDashboard.putNumber("LeftJS x", jsX);
-	SmartDashboard.putNumber("LeftJS y", jsY);
-	SmartDashboard.putNumber("DriveDirection", driveDirection);
+		double wheelSpeed[] = new double[4];
+		double wheelAngle[] = new double[4];
 	
-	if (targetAngle < 0) targetAngle += 360;
-	targetAngle -= 180;
+		for (int i = 0 ; i < 4 ; i ++) {
+			if(i == 0 || i == 1) {
+				wheelX[i] = xWithTwist;
+			} else {
+				wheelX[i] = xWithoutTwist;
+			}
 
-	if (Math.abs(targetAngle) >= 45) {
-		if (targetAngle < -45) {
-			targetAngle = -45;
+			if(i == 0 || i == 3) {
+				wheelY[i] = yWithoutTwist;
+			} else {
+				wheelY[i] = yWithTwist;
+			}
+
+			wheelSpeed[i] = Math.sqrt(Math.pow(wheelX[i], 2) + Math.pow(wheelY[i], 2));
+			wheelAngle[i] = Math.toDegrees(Math.atan(wheelX[i] / wheelY[i]));
+
+			if(wheelX[i] >= 0) {
+				if (wheelY[i] >= 0) {
+					//already in Q1
+				} else {
+					//shift to Q4
+					wheelAngle[i] += 180;
+				}
+			} else {
+				if (wheelY[i] >= 0) {
+					//shift to Q2
+				} else {
+					//shift to Q3
+					wheelAngle[i] -= 180;
+				}
+			}
+
+			wheelAngle[i] *= -1;
+
+			if (wheelAngle[i] < 0) {
+				wheelAngle[i] += 360;
+			}
 		}
-		if (targetAngle > 45) {
-			targetAngle = 45;
+	
+		double maxSpeed = wheelSpeed[0];
+		if (wheelSpeed[1] > maxSpeed) {maxSpeed = wheelSpeed[1];}
+		if (wheelSpeed[2] > maxSpeed) {maxSpeed = wheelSpeed[2];}
+		if (wheelSpeed[3] > maxSpeed) {maxSpeed = wheelSpeed[3];}
+		if (maxSpeed > 1) {
+			for (int i = 0 ; i < 4 ; i ++) {
+				wheelSpeed[i] /= maxSpeed;
+			}
 		}
-	}
-	SmartDashboard.putNumber("targetAngle", targetAngle);
+		
+		frontRight.control(wheelSpeed[0], wheelAngle[0]);
+		frontLeft.control(wheelSpeed[1], wheelAngle[1]);
+		backLeft.control(wheelSpeed[2], wheelAngle[2]);
+		backRight.control(wheelSpeed[3], wheelAngle[3]);
 
+		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
+		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
+		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
+		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 
-	//distance from the center of the robot to a module
-	double w = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		SmartDashboard.putNumber("FR Speed", wheelSpeed[0]);
+		SmartDashboard.putNumber("FL Speed", wheelSpeed[1]);
+		SmartDashboard.putNumber("BL Speed", wheelSpeed[2]);
+		SmartDashboard.putNumber("BR Speed", wheelSpeed[3]);
 
-	//calculations used later, logical name
-	double c = w * Math.sin(Math.toRadians(45 + targetAngle));
-	double d = w * Math.cos(Math.toRadians(45 + targetAngle));
-
-	double translatedXModule1 = jsX + c;
-	double translatedXModule2 = jsX + d;
-	double translatedXModule3 = jsX - c;
-	double translatedXModule4 = jsX - d;
-
-	double translatedYModule1 = jsY + d;
-	double translatedYModule2 = jsY + c;
-	double translatedYModule3 = jsY - d;
-	double translatedYModule4 = jsY - c;
-
-	double xModule1 = x/2;
-	double xModule2 = -x/2;
-	double xModule3 = -x/2;
-	double xModule4 = x/2;
-
-	double yModule1 = y/2;
-	double yModule2 = y/2;
-	double yModule3 = -y/2;
-	double yModule4 = -y/2;
-
-	double length1 = Math.sqrt(Math.pow(translatedXModule1 - xModule1, 2) + Math.pow(translatedYModule1 - yModule1, 2));
-	double length2 = Math.sqrt(Math.pow(translatedXModule2 - xModule2, 2) + Math.pow(translatedYModule2 - yModule2, 2));
-	double length3 = Math.sqrt(Math.pow(translatedXModule3 - xModule3, 2) + Math.pow(translatedYModule3 - yModule3, 2));
-	double length4 = Math.sqrt(Math.pow(translatedXModule4 - xModule4, 2) + Math.pow(translatedYModule4 - yModule4, 2));
-
-	double lengthAverage = (length1 + length2 + length3 + length4) / 4;
-
-	double basePower = lengthAverage / Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
-
-	double wheelPower1 = length1 / basePower;
-	double wheelPower2 = length2 / basePower;
-	double wheelPower3 = length3 / basePower;
-	double wheelPower4 = length4 / basePower;
-
-	double wheelAngle1 = driveDirection + Math.atan((translatedYModule1 - yModule1) / (translatedXModule1 - xModule1));
-	double wheelAngle2 = driveDirection + Math.atan((translatedYModule2 - yModule2) / (translatedXModule2 - xModule2));
-	double wheelAngle3 = driveDirection + Math.atan((translatedYModule3 - yModule3) / (translatedXModule3 - xModule3));
-	double wheelAngle4 = driveDirection + Math.atan((translatedYModule4 - yModule4) / (translatedXModule4 - xModule4));
-
-	double maxPower = wheelPower1;
-	if (wheelPower2 > maxPower) maxPower = wheelPower2;
-	if (wheelPower3 > maxPower) maxPower = wheelPower3;
-	if (wheelPower4 > maxPower) maxPower = wheelPower4;
-
-	if (maxPower > 1) {
-		double powerScale = 1 / maxPower;
-		wheelPower1 *= powerScale;
-		wheelPower2 *= powerScale;
-		wheelPower3 *= powerScale;
-		wheelPower4 *= powerScale;
-	}
-
-	frontRight.control(wheelPower1, wheelAngle1);
-	frontLeft.control(wheelPower2, wheelAngle2);
-	backLeft.control(wheelPower3, wheelAngle3);
-	backRight.control(wheelPower4, wheelAngle4);
-
-	SmartDashboard.putNumber("Angle 1", wheelAngle1);
-	SmartDashboard.putNumber("Angle 2", wheelAngle2);
-	SmartDashboard.putNumber("Angle 3", wheelAngle3);
-	SmartDashboard.putNumber("Angle 4", wheelAngle4);
-
-	SmartDashboard.putNumber("Power1", wheelPower1);
-	SmartDashboard.putNumber("Power2", wheelPower2);
-	SmartDashboard.putNumber("Power3", wheelPower3);
-	SmartDashboard.putNumber("Power4", wheelPower4);
-	SmartDashboard.putNumber("Power4", wheelPower4);
-	//if (absRotateSpeed > 0.05) {
-	//	rotateAngle = absRotateAngle - ((360 * ((int)(gyroValue / 360) + 1)) + gyroValue) % 360;
-	//	rotateSpeed = absRotateSpeed;
-	//} else if (Math.abs(unregulatedRotateSpeed) > 0.05) {
-	//	rotateAngle = (unregulatedRotateSpeed + 1) * 180; 
-	//	rotateSpeed = Math.abs(unregulatedRotateSpeed);
-	//} else {
-	//	rotateAngle = 0;
-	//	rotateSpeed = 0;
-	//}
+		SmartDashboard.putNumber("FR Angle", wheelAngle[0]);
+		SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
+		SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
+		SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
 	}
 
 	void parkPosition() {
