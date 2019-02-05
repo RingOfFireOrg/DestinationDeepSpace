@@ -1,8 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 	  
 
 public class SwerveModule {
@@ -17,18 +18,19 @@ public class SwerveModule {
 	double angleGoal;
 	double currentAngle;
 	double zeroValue;
+	String moduleName;
 
 	//will need to make changes to the input --Encoder driveRotEncoder <-- add to constructor
-	public SwerveModule(Jaguar driveMotor, Talon steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue) {
+	public SwerveModule(Jaguar driveMotor, Talon steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue, Encoder driveRotEncoder, String name) {
 		this.zeroValue = zeroValue;
 		drive = driveMotor;
 		steer = steerMotor;
 		turnEncoder = steerEncoder;
+		moduleName = name;
 
-
-		//driveEncoder = driveRotEncoder;
-		//driveEncoder.reset();
-		//driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
+		driveEncoder = driveRotEncoder;
+		driveEncoder.reset();
+		driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
 	}
 
 	public double convertToWheelRelative(double wheelAngleGoal) {
@@ -53,6 +55,7 @@ public class SwerveModule {
 	}
 	
 	public void control(double driveSpeed, double wheelAngle) {
+		SmartDashboard.putNumber("DriveSpeed-" + moduleName, getRate());
 		angleGoal = convertToWheelRelative(wheelAngle);
 		currentAngle = turnEncoder.getAngle();
 		double wheelTurnAngle0to360 = ((angleGoal - currentAngle) + 720) % 360;

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveDrive {
 	public static final int DRIVE_FRONT_RIGHT_MOTOR = 0;
@@ -20,10 +21,10 @@ public class SwerveDrive {
 	public static final int STEER_BACK_LEFT_MOTOR = 5;
 	public static final int STEER_BACK_RIGHT_MOTOR = 7;
 
-	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 46;
-	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 25;
-	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 26;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 182;
+	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 53;
+	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 16;
+	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 46;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 300;
 
 	public static final int ENCODER_FRONT_RIGHT = 0;
 	public static final int ENCODER_FRONT_LEFT = 1;
@@ -54,18 +55,20 @@ public class SwerveDrive {
 	double ahrsOffset;
 
 	SwerveDrive() {
+
+		Encoder driveFrontRight = new Encoder(DRIVE_ENCODER_FRONT_RIGHT_A, DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X);
+		Encoder driveFrontLeft = new Encoder(DRIVE_ENCODER_FRONT_LEFT_A, DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X);
+		Encoder driveBackLeft = new Encoder(DRIVE_ENCODER_BACK_LEFT_A, DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X);
+		Encoder driveBackRight = new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X);
+
 		frontRight = new SwerveModule(new Jaguar(DRIVE_FRONT_RIGHT_MOTOR), new Talon(STEER_FRONT_RIGHT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_FRONT_RIGHT), ENCODER_ZERO_VALUE_FRONT_RIGHT);
-				//*new Encoder(DRIVE_ENCODER_FRONT_RIGHT_A, DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_FRONT_RIGHT), ENCODER_ZERO_VALUE_FRONT_RIGHT, driveFrontRight, "FrontRight");
 		frontLeft = new SwerveModule(new Jaguar(DRIVE_FRONT_LEFT_MOTOR), new Talon(STEER_FRONT_LEFT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_FRONT_LEFT), ENCODER_ZERO_VALUE_FRONT_LEFT);
-				//new Encoder(DRIVE_ENCODER_FRONT_LEFT_A, DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_FRONT_LEFT), ENCODER_ZERO_VALUE_FRONT_LEFT, driveFrontLeft, "FrontLeft");
 		backLeft = new SwerveModule(new Jaguar(DRIVE_BACK_LEFT_MOTOR), new Talon(STEER_BACK_LEFT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_BACK_LEFT), ENCODER_ZERO_VALUE_BACK_LEFT);
-				//new Encoder(DRIVE_ENCODER_BACK_LEFT_A, DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_BACK_LEFT), ENCODER_ZERO_VALUE_BACK_LEFT, driveBackLeft, "BackLeft");
 		backRight = new SwerveModule(new Jaguar(DRIVE_BACK_RIGHT_MOTOR), new Talon(STEER_BACK_RIGHT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_BACK_RIGHT), ENCODER_ZERO_VALUE_BACK_RIGHT);
-				//new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X));
+				new AbsoluteAnalogEncoder(ENCODER_BACK_RIGHT), ENCODER_ZERO_VALUE_BACK_RIGHT, driveBackRight, "BackRight");
 		
 		try {
 			ahrs = new AHRS(SerialPort.Port.kUSB1);
@@ -126,6 +129,7 @@ public class SwerveDrive {
 				break;
 
 			case 3:
+				//syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
 				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset);
 				break;
 		
@@ -178,7 +182,7 @@ public class SwerveDrive {
 
 	void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
 
-		driveAngle -= gyroReading;
+		driveAngle += gyroReading;
 
 		if (Math.abs(twist) > 0.5) {
 			if (twist > 0) {
@@ -310,6 +314,10 @@ public class SwerveDrive {
 	}
 
 	void tuningMode() {
+		//frontLeft.control(0, 0);
+		//frontRight.control(0, 0);
+		//backLeft.control(0, 0);
+		//backRight.control(0, 0);
 		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
 		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
