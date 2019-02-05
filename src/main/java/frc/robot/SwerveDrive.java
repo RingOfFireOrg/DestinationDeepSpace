@@ -217,9 +217,8 @@ public class SwerveDrive {
 	void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
-		SmartDashboard.putNumber("original gyro", gyroReading);
-		double gyroValue = (Math.abs((360 * (((int)(gyroReading / 360)) + 1))) + gyroReading) % 360;
-		SmartDashboard.putNumber("tuned gyro", gyroValue);
+		//SmartDashboard.putNumber("original gyro", gyroReading);
+		double gyroValue = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
 		//initializing the main variables
 		double jsX = driveJoystickX;
 		double jsY = -driveJoystickY;
@@ -228,8 +227,8 @@ public class SwerveDrive {
 
 		//convert to field relative
 		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
-		double initialAngle = Math.atan(jsY / jsX);
-		if (jsX < 0) {
+		double initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
+		 if (jsX < 0) {
 			if (jsY > 0) {
 				initialAngle += 180;
 			} else {
@@ -238,13 +237,27 @@ public class SwerveDrive {
 		}
 		double processedAngle = initialAngle + gyroValue;
 		double robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
-		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));	
+		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
+		
+		SmartDashboard.putNumber("RelX", robotRelativeX);
+		SmartDashboard.putNumber("RelY", robotRelativeY);
+		SmartDashboard.putNumber("JSMAG", jsMag);
+		SmartDashboard.putNumber("procAngle", processedAngle);
+		SmartDashboard.putNumber("initAngle", initialAngle);
 
-
+		
 		double xWithTwist = robotRelativeX + twist;
 		double xWithoutTwist = robotRelativeX - twist;
 		double yWithTwist = robotRelativeY + twist;
 		double yWithoutTwist = robotRelativeY - twist;
+		
+
+		/*
+		double xWithTwist = robotRelativeX;
+		double yWithoutTwist = robotRelativeY;
+		double xWithoutTwist = robotRelativeX;
+		double yWithTwist = robotRelativeY;
+		*/
 
 		double wheelX[] = new double[4];
 		double wheelY[] = new double[4];
@@ -320,6 +333,8 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
 		SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
 		SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
+
+		SmartDashboard.putNumber("Gyro 0-360", gyroValue);
 	}
 
 	void parkPosition() {
