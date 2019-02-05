@@ -225,10 +225,26 @@ public class SwerveDrive {
 		double jsY = -driveJoystickY;
 		double twist = rightTwist;
 
-		double xWithTwist = jsX + twist;
-		double xWithoutTwist = jsX - twist;
-		double yWithTwist = jsY + twist;
-		double yWithoutTwist = jsY - twist;
+
+		//convert to field relative
+		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
+		double initialAngle = Math.atan(jsY / jsX);
+		if (jsX < 0) {
+			if (jsY > 0) {
+				initialAngle += 180;
+			} else {
+				initialAngle -= 180;
+			}
+		}
+		double processedAngle = initialAngle + gyroValue;
+		double robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
+		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));	
+
+
+		double xWithTwist = robotRelativeX + twist;
+		double xWithoutTwist = robotRelativeX - twist;
+		double yWithTwist = robotRelativeY + twist;
+		double yWithoutTwist = robotRelativeY - twist;
 
 		double wheelX[] = new double[4];
 		double wheelY[] = new double[4];
