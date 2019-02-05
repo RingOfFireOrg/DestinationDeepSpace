@@ -219,7 +219,7 @@ public class SwerveDrive {
 		//turns the gyro into a 0-360 range -- easier to work with
 		SmartDashboard.putNumber("original gyro", gyroReading);
 		double gyroValue = (Math.abs((360 * (((int)(gyroReading / 360)) + 1))) + gyroReading) % 360;
-
+		SmartDashboard.putNumber("tuned gyro", gyroValue);
 		//initializing the main variables
 		double jsX = driveJoystickX;
 		double jsY = -driveJoystickY;
