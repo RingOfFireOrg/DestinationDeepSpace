@@ -4,6 +4,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Prototype_CAN;
@@ -13,10 +14,21 @@ import frc.robot.Prototype_CAN;
  * "Robot")
  */
 public class Robot extends TimedRobot {
-  Prototype_CAN crossbow;
+  Prototype_CAN climberFront;
+  Prototype_CAN climberBack;
+  Prototype_CAN climberWheelLeft;
+  Prototype_CAN climberWheelRight;
+
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
-  private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+  private Joystick manipulatorStickL = new Joystick(RobotMap.JOYSTICK_MANIPULATORL);
+  private Joystick manipulatorStickR = new Joystick(RobotMap.JOYSTICK_MANIPULATORR);
+  public JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, 0);
+  public JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, 0);
+  public JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, 1);
+  public JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, 1);
+
+  
 
   TankDrive drive = new TankDrive();
 
@@ -26,7 +38,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
+    climberFront = new Prototype_CAN(RobotMap.CAN_TEST_CLIMBER_FRONT, RobotMap.SPEED_DEFAULT_TEST);
+    climberBack = new Prototype_CAN(RobotMap.CAN_TEST_CLIMBER_BACK, RobotMap.SPEED_DEFAULT_TEST);
+    climberWheelLeft = new Prototype_CAN(RobotMap.CAN_CLIMBER_WHEEL_LEFT, RobotMap.SPEED_DEFAULT_TEST);
+    climberWheelRight = new Prototype_CAN(RobotMap.CAN_CLIMBER_WHEEL_RIGHT, RobotMap.SPEED_DEFAULT_TEST);
+
   }
 
   /**
@@ -72,18 +88,57 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double leftSpeed = -leftStick.getY();
     double rightSpeed = -rightStick.getY();
-    double yPos = manipulatorStick.getY();
+    double yPosL = manipulatorStickL.getY();
+    double yPosR = manipulatorStickR.getY();
+    boolean stickTriggerLeft = stickTriggerL.get();
+    boolean stickTriggerRight = stickTriggerR.get();
+    boolean stickThumbLeft = stickThumbL.get();
+    boolean stickThumbRight = stickThumbR.get();
+
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
+
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
-    if (yPos > 0.25) {
-      crossbow.forward();
-    } else if (yPos < -0.25) {
-      crossbow.reverse();
+    if (yPosL > 0.25) {
+      climberWheelLeft.forward();
+    } else if (yPosL < -0.25) {
+      climberWheelLeft.reverse();
     } else {
-      crossbow.stop();
+      climberWheelLeft.stop();
+    }
+
+    if (yPosR > 0.25) {
+      climberWheelRight.forward();
+    } else if (yPosR < -0.25) {
+      climberWheelRight.reverse();
+    } else {
+      climberWheelRight.stop();
+    }
+
+    if (stickTriggerLeft = true) {
+      climberFront.forward();
+    } else {
+      climberFront.stop();
+    }
+
+    if (stickThumbLeft = true) {
+      climberFront.reverse();
+    }  else {
+      climberFront.stop();
+    }
+
+    if (stickTriggerRight = true) {
+      climberBack.forward();
+    }  else {
+      climberBack.stop();
+    }
+
+    if (stickThumbRight = true) {
+      climberBack.reverse();
+    }  else {
+      climberBack.stop();
     }
 
   }
