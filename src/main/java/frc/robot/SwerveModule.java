@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.PIDController;
 	  
 
 public class SwerveModule {
@@ -11,14 +12,13 @@ public class SwerveModule {
 	Talon steer;
 	AbsoluteAnalogEncoder turnEncoder;
 	Encoder driveEncoder;
-	// PIDController pid = new PIDController(1, 0, 0, turnEncoder.getAngle,
-	// turnSpeed);
 	double speed;
 	double turnSpeed;
 	double angleGoal;
 	double currentAngle;
 	double zeroValue;
 	String moduleName;
+	PIDController speedRegulation;
 
 	//will need to make changes to the input --Encoder driveRotEncoder <-- add to constructor
 	public SwerveModule(Jaguar driveMotor, Talon steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue, Encoder driveRotEncoder, String name) {
@@ -27,10 +27,13 @@ public class SwerveModule {
 		steer = steerMotor;
 		turnEncoder = steerEncoder;
 		moduleName = name;
-
 		driveEncoder = driveRotEncoder;
+
 		driveEncoder.reset();
 		driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
+
+		speedRegulation = new PIDController(1,0,0, driveEncoder, drive);
+		speedRegulation.setContinuous();
 	}
 
 	public double convertToWheelRelative(double wheelAngleGoal) {
@@ -60,8 +63,8 @@ public class SwerveModule {
 		currentAngle = turnEncoder.getAngle();
 		double wheelTurnAngle0to360 = ((angleGoal - currentAngle) + 720) % 360;
 		double optimizedWheelTurnAngle; //will be set to a value between -90 and 90
-
-
+		speedRegulation.setF(driveSpeed);
+		speedRegulation.enable();
 		//calculating power output to drive motors:
 		//motor can go 25,080 d/s in ideal conditions with module
 		//will assume unideal of 15,000 tops <-- untuned number
@@ -71,7 +74,7 @@ public class SwerveModule {
 		//double optimizedSpeed = (driveSpeed + (0.5 * (driveSpeed - currentSpeed)));
 
 		//remove when encoders are added:
-		double optimizedSpeed = driveSpeed;
+		double optimizedSpeed = speedRegulation.get();
 
 
 		if (wheelTurnAngle0to360 < 5 || wheelTurnAngle0to360 > 355) {
