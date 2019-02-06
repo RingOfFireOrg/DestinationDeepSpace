@@ -130,7 +130,7 @@ public class SwerveDrive {
 
 			case 3:
 				//syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
-				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset);
+				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
 				break;
 		
 			default:
@@ -214,7 +214,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading) {
+	void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading, double rightJoystickDirection, double rightMagnitude) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
 		//SmartDashboard.putNumber("original gyro", gyroReading);
@@ -223,8 +223,12 @@ public class SwerveDrive {
 		double jsX = driveJoystickX;
 		double jsY = -driveJoystickY;
 		double twist = rightTwist;
+		double rightMag = rightMagnitude;
+		double rightDirection = rightJoystickDirection;
 
-
+		if (rightMag > 0.1) {
+			
+		}
 		//convert to field relative
 		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
 		double initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
