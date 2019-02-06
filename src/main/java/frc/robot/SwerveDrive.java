@@ -24,7 +24,7 @@ public class SwerveDrive {
 	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 53;
 	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 16;
 	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 46;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 300;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 139;
 
 	public static final int ENCODER_FRONT_RIGHT = 0;
 	public static final int ENCODER_FRONT_LEFT = 1;
@@ -95,7 +95,7 @@ public class SwerveDrive {
 		double leftX = leftStick.getX();
 		double leftY = leftStick.getY();
 
-		double rightDirection = rightStick.getDirectionDegrees() * -1;
+		double rightDirection = rightStick.getDirectionDegrees();
 		double rightMagnitude = rightStick.getMagnitude();
 		double twist = rightStick.getTwist();
 		
@@ -226,11 +226,26 @@ public class SwerveDrive {
 		double rightMag = rightMagnitude;
 		double rightDirection = rightJoystickDirection;
 
-		if (rightMag > 0.1) {
-			
+		SmartDashboard.putNumber("RtJSDir", rightDirection);
+
+		if (rightMag > 0.3) {
+			if (rightDirection < 0) rightDirection += 360;
+			//if (Math.abs(rightDirection % 90 - 45) > 40) rightDirection += (Math.abs(rightDirection % 90) / (rightDirection % 90)(Math.abs((rightDirection % 90) - 45) - 40)
+			if (rightDirection < 5 || rightDirection > 355) rightDirection = 0;
+			if (rightDirection < 95 || rightDirection > 85) rightDirection = 90;
+			if (rightDirection < 185 || rightDirection > 175) rightDirection = 180;
+			if (rightDirection < 275 || rightDirection > 265) rightDirection = 270;
+			twist = ((rightDirection - gyroValue) / 100) * Math.pow((rightMag / 1.5), 2);
+			if (twist > 1) twist = 1;
+			if (twist < -1) twist = -1;
+			if (Math.abs(rightDirection - gyroValue) > 180) twist *= -1;
 		}
+
 		//convert to field relative
 		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
+
+		if (jsMag < 0.1) jsMag = 0;
+
 		double initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
 		 if (jsX < 0) {
 			if (jsY > 0) {
