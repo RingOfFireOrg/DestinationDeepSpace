@@ -32,8 +32,11 @@ public class SwerveModule {
 		driveEncoder.reset();
 		driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
 
-		speedRegulation = new PIDController(1,0,0, driveEncoder, drive);
-		speedRegulation.setContinuous();
+		speedRegulation = new PIDController(.00001,0,0, driveEncoder, drive);
+		speedRegulation.setSetpoint(0);
+		//speedRegulation.setContinuous();
+		speedRegulation.setInputRange(-31860, -31860);
+		speedRegulation.setOutputRange(-1.0, 1.0);
 	}
 
 	public double convertToWheelRelative(double wheelAngleGoal) {
@@ -58,7 +61,7 @@ public class SwerveModule {
 	}
 
 	public void setDriveSpeed(double driveSpeed){
-		speedRegulation.setF(driveSpeed);
+		speedRegulation.setSetpoint(driveSpeed*28000);
 		speedRegulation.enable();
 	}
 	
@@ -68,34 +71,22 @@ public class SwerveModule {
 		currentAngle = turnEncoder.getAngle();
 		double wheelTurnAngle0to360 = ((angleGoal - currentAngle) + 720) % 360;
 		double optimizedWheelTurnAngle; //will be set to a value between -90 and 90
-		setDriveSpeed(driveSpeed);
-		
-		//calculating power output to drive motors:
-		//motor can go 25,080 d/s in ideal conditions with module
-		//will assume unideal of 15,000 tops <-- untuned number
-
-		//reenable when encoders are added
-		//double currentSpeed = getRate() / 15000;
-		//double optimizedSpeed = (driveSpeed + (0.5 * (driveSpeed - currentSpeed)));
-
-		//remove when encoders are added:
-		double optimizedSpeed = speedRegulation.get();
-
+	
 
 		if (wheelTurnAngle0to360 < 5 || wheelTurnAngle0to360 > 355) {
 			// stop steering
 			steer.set(0);
-			drive.set(optimizedSpeed);
+			setDriveSpeed(driveSpeed);
 		} else if (wheelTurnAngle0to360 > 175 && wheelTurnAngle0to360 < 185){
 			//stop steering
 			steer.set(0);
-			drive.set(-optimizedSpeed);
+			setDriveSpeed(-driveSpeed);
 		} else {
 			if (wheelTurnAngle0to360 > 90 && wheelTurnAngle0to360 < 270) // for quadrants 2 & 3
 			{
 				optimizedWheelTurnAngle = (wheelTurnAngle0to360 - 180); // converting angles from quadrant 2 to quad 4 and converting from quad 3 to quad 1
 				steer.set(optimizedWheelTurnAngle/90);
-				drive.set(-optimizedSpeed);// go backwards
+				setDriveSpeed(-driveSpeed);// go backwards
 			} else // quads 1 & 4
 			{
 				if (wheelTurnAngle0to360 >= 270) // quad 4
@@ -105,7 +96,7 @@ public class SwerveModule {
 					optimizedWheelTurnAngle = wheelTurnAngle0to360; // quad 1, no change
 				}
 				steer.set(optimizedWheelTurnAngle/90);
-				drive.set(optimizedSpeed);// forward
+				setDriveSpeed(driveSpeed);// forward
 			}
 		}
 	}
