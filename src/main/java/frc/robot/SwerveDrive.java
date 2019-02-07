@@ -21,10 +21,10 @@ public class SwerveDrive {
 	public static final int STEER_BACK_LEFT_MOTOR = 5;
 	public static final int STEER_BACK_RIGHT_MOTOR = 7;
 
-	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 53;
-	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 16;
-	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 46;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 139;
+	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 257;
+	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 17;
+	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 288;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 134;
 
 	public static final int ENCODER_FRONT_RIGHT = 0;
 	public static final int ENCODER_FRONT_LEFT = 1;
@@ -231,10 +231,11 @@ public class SwerveDrive {
 		if (rightMag > 0.3) {
 			if (rightDirection < 0) rightDirection += 360;
 			//if (Math.abs(rightDirection % 90 - 45) > 40) rightDirection += (Math.abs(rightDirection % 90) / (rightDirection % 90)(Math.abs((rightDirection % 90) - 45) - 40)
-			if (rightDirection < 5 || rightDirection > 355) rightDirection = 0;
+			/* if (rightDirection < 5 || rightDirection > 355) rightDirection = 0;
 			if (rightDirection < 95 || rightDirection > 85) rightDirection = 90;
 			if (rightDirection < 185 || rightDirection > 175) rightDirection = 180;
 			if (rightDirection < 275 || rightDirection > 265) rightDirection = 270;
+			*/
 			twist = ((rightDirection - gyroValue) / 100) * Math.pow((rightMag / 1.5), 2);
 			if (twist > 1) twist = 1;
 			if (twist < -1) twist = -1;
