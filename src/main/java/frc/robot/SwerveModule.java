@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PIDController;
-	  
-
+	   
+//need to ifx
 public class SwerveModule {
 	Jaguar drive;
 	Talon steer;
@@ -56,6 +56,11 @@ public class SwerveModule {
 		drive.set(0);
 		steer.set(0);
 	}
+
+	public void setDriveSpeed(double driveSpeed){
+		speedRegulation.setF(driveSpeed);
+		speedRegulation.enable();
+	}
 	
 	public void control(double driveSpeed, double wheelAngle) {
 		SmartDashboard.putNumber("DriveSpeed-" + moduleName, getRate());
@@ -63,8 +68,8 @@ public class SwerveModule {
 		currentAngle = turnEncoder.getAngle();
 		double wheelTurnAngle0to360 = ((angleGoal - currentAngle) + 720) % 360;
 		double optimizedWheelTurnAngle; //will be set to a value between -90 and 90
-		speedRegulation.setF(driveSpeed);
-		speedRegulation.enable();
+		setDriveSpeed(driveSpeed);
+		
 		//calculating power output to drive motors:
 		//motor can go 25,080 d/s in ideal conditions with module
 		//will assume unideal of 15,000 tops <-- untuned number
