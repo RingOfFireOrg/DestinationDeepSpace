@@ -21,10 +21,10 @@ public class SwerveDrive {
 	public static final int STEER_BACK_LEFT_MOTOR = 5;
 	public static final int STEER_BACK_RIGHT_MOTOR = 7;
 
-	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 53;
-	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 16;
-	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 46;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 300;
+	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 257;
+	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 17;
+	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 288;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 134;
 
 	public static final int ENCODER_FRONT_RIGHT = 0;
 	public static final int ENCODER_FRONT_LEFT = 1;
@@ -95,7 +95,7 @@ public class SwerveDrive {
 		double leftX = leftStick.getX();
 		double leftY = leftStick.getY();
 
-		double rightDirection = rightStick.getDirectionDegrees() * -1;
+		double rightDirection = rightStick.getDirectionDegrees();
 		double rightMagnitude = rightStick.getMagnitude();
 		double twist = rightStick.getTwist();
 		
@@ -130,7 +130,7 @@ public class SwerveDrive {
 
 			case 3:
 				//syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
-				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset);
+				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
 				break;
 		
 			default:
@@ -214,22 +214,41 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading) {
+	void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading, double rightJoystickDirection, double rightMagnitude) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
-		SmartDashboard.putNumber("original gyro", gyroReading);
-		double gyroValue = (Math.abs((360 * (((int)(gyroReading / 360)) + 1))) + gyroReading) % 360;
-		SmartDashboard.putNumber("tuned gyro", gyroValue);
+		//SmartDashboard.putNumber("original gyro", gyroReading);
+		double gyroValue = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
 		//initializing the main variables
 		double jsX = driveJoystickX;
 		double jsY = -driveJoystickY;
 		double twist = rightTwist;
+		double rightMag = rightMagnitude;
+		double rightDirection = rightJoystickDirection;
 
+		SmartDashboard.putNumber("RtJSDir", rightDirection);
+
+		if (rightMag > 0.3) {
+			if (rightDirection < 0) rightDirection += 360;
+			//if (Math.abs(rightDirection % 90 - 45) > 40) rightDirection += (Math.abs(rightDirection % 90) / (rightDirection % 90)(Math.abs((rightDirection % 90) - 45) - 40)
+			/* if (rightDirection < 5 || rightDirection > 355) rightDirection = 0;
+			if (rightDirection < 95 || rightDirection > 85) rightDirection = 90;
+			if (rightDirection < 185 || rightDirection > 175) rightDirection = 180;
+			if (rightDirection < 275 || rightDirection > 265) rightDirection = 270;
+			*/
+			twist = ((rightDirection - gyroValue) / 100) * Math.pow((rightMag / 1.5), 2);
+			if (twist > 1) twist = 1;
+			if (twist < -1) twist = -1;
+			if (Math.abs(rightDirection - gyroValue) > 180) twist *= -1;
+		}
 
 		//convert to field relative
 		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
-		double initialAngle = Math.atan(jsY / jsX);
-		if (jsX < 0) {
+
+		if (jsMag < 0.1) jsMag = 0;
+
+		double initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
+		 if (jsX < 0) {
 			if (jsY > 0) {
 				initialAngle += 180;
 			} else {
@@ -238,13 +257,27 @@ public class SwerveDrive {
 		}
 		double processedAngle = initialAngle + gyroValue;
 		double robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
-		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));	
+		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
+		
+		SmartDashboard.putNumber("RelX", robotRelativeX);
+		SmartDashboard.putNumber("RelY", robotRelativeY);
+		SmartDashboard.putNumber("JSMAG", jsMag);
+		SmartDashboard.putNumber("procAngle", processedAngle);
+		SmartDashboard.putNumber("initAngle", initialAngle);
 
-
+		
 		double xWithTwist = robotRelativeX + twist;
 		double xWithoutTwist = robotRelativeX - twist;
 		double yWithTwist = robotRelativeY + twist;
 		double yWithoutTwist = robotRelativeY - twist;
+		
+
+		/*
+		double xWithTwist = robotRelativeX;
+		double yWithoutTwist = robotRelativeY;
+		double xWithoutTwist = robotRelativeX;
+		double yWithTwist = robotRelativeY;
+		*/
 
 		double wheelX[] = new double[4];
 		double wheelY[] = new double[4];
@@ -320,6 +353,8 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
 		SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
 		SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
+
+		SmartDashboard.putNumber("Gyro 0-360", gyroValue);
 	}
 
 	void parkPosition() {
