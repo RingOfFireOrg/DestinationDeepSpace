@@ -23,12 +23,10 @@ public class Robot extends TimedRobot {
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStickL = new Joystick(RobotMap.JOYSTICK_MANIPULATORL);
   private Joystick manipulatorStickR = new Joystick(RobotMap.JOYSTICK_MANIPULATORR);
-  public JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, 0);
-  public JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, 0);
-  public JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, 1);
-  public JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, 1);
-
-  
+  public JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, 1);
+  public JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, 1);
+  public JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, 2);
+  public JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, 2);
 
   TankDrive drive = new TankDrive();
 
@@ -86,8 +84,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    double leftSpeed = -leftStick.getY();
-    double rightSpeed = -rightStick.getY();
+    double leftSpeed = leftStick.getY();
+    double rightSpeed = rightStick.getY();
+
+
     double yPosL = manipulatorStickL.getY();
     double yPosR = manipulatorStickR.getY();
     boolean stickTriggerLeft = stickTriggerL.get();
@@ -95,52 +95,42 @@ public class Robot extends TimedRobot {
     boolean stickThumbLeft = stickThumbL.get();
     boolean stickThumbRight = stickThumbR.get();
 
-
     drive.tankDrive(leftSpeed, rightSpeed);
 
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
-    if (yPosL > 0.25) {
+    if (yPosL < 0.25) {
       climberWheelLeft.forward();
-    } else if (yPosL < -0.25) {
+    } else if (yPosL > -0.25) {
       climberWheelLeft.reverse();
     } else {
       climberWheelLeft.stop();
     }
 
-    if (yPosR > 0.25) {
+    if (yPosR < 0.25) {
       climberWheelRight.forward();
-    } else if (yPosR < -0.25) {
+    } else if (yPosR > -0.25) {
       climberWheelRight.reverse();
     } else {
       climberWheelRight.stop();
     }
 
-    if (stickTriggerLeft = true) {
+    if (stickTriggerLeft) {
+      climberFront.reverse();
+    } else if (stickThumbLeft) {
       climberFront.forward();
     } else {
       climberFront.stop();
     }
 
-    if (stickThumbLeft = true) {
-      climberFront.reverse();
-    }  else {
-      climberFront.stop();
-    }
-
-    if (stickTriggerRight = true) {
-      climberBack.forward();
-    }  else {
-      climberBack.stop();
-    }
-
-    if (stickThumbRight = true) {
+    if (stickTriggerRight) {
       climberBack.reverse();
-    }  else {
+    } else if (stickThumbRight) {
+      climberBack.forward();
+    } else {
       climberBack.stop();
     }
-
   }
 
   /**
