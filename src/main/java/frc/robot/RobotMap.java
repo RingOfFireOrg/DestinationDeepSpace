@@ -47,6 +47,8 @@ public static final int CAN_MOTOR_BACK_RIGHT = 1;
     public static final int JOYSTICK_MANIPULATORL = 2;
     public static final int JOYSTICK_MANIPULATORR = 3;
 
+    public static final int GAMEPAD_CONTROLLER = 0;
+
     // Joystick Buttons
     // Example: public static final int BUTTON_LIFT_UP = 6;
     public static final int LIFT_UP_BUTTON = 6;

@@ -4,10 +4,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.GamepadBase;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Prototype_CAN;
+//import sun.net.www.content.text.Generic;
 
 /**
  * Don't change the name of this or it won't work. (The manifest looks for
@@ -19,14 +27,26 @@ public class Robot extends TimedRobot {
   Prototype_CAN climberWheelLeft;
   Prototype_CAN climberWheelRight;
 
-  private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
-  private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
-  private Joystick manipulatorStickL = new Joystick(RobotMap.JOYSTICK_MANIPULATORL);
-  private Joystick manipulatorStickR = new Joystick(RobotMap.JOYSTICK_MANIPULATORR);
-  public JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, 1);
-  public JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, 1);
-  public JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, 2);
-  public JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, 2);
+   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
+   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
+  // private Joystick manipulatorStickL = new Joystick(RobotMap.JOYSTICK_MANIPULATORL);
+  // private Joystick manipulatorStickR = new Joystick(RobotMap.JOYSTICK_MANIPULATORR);
+  // public JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, 1);
+  // public JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, 1);
+  // public JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, 2);
+  // public JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, 2);
+
+  private GenericHID leftManipulatorStick = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
+  private GenericHID rightManipulatorStick = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
+
+  public GenericHID triggerL = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
+  public GenericHID triggerR = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
+
+  public JoystickButton bumperL = new JoystickButton(leftManipulatorStick, 5);
+  public JoystickButton bumperR = new JoystickButton(rightManipulatorStick, 6);
+
+  // public JoystickButton buttonY = new JoystickButton(leftManipulatorStick, 4);
+  // public JoystickButton buttonA = new JoystickButton(rightManipulatorStick, 1);
 
   TankDrive drive = new TankDrive();
 
@@ -84,39 +104,38 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    
     double leftSpeed = leftStick.getY();
-    double rightSpeed = rightStick.getY();
+    double rightSpeed = rightStick.getX();
 
-
-    double yPosL = manipulatorStickL.getY();
-    double yPosR = manipulatorStickR.getY();
-    boolean stickTriggerLeft = stickTriggerL.get();
-    boolean stickTriggerRight = stickTriggerR.get();
-    boolean stickThumbLeft = stickThumbL.get();
-    boolean stickThumbRight = stickThumbR.get();
+    double leftClimberSpeed = leftStick.getY(Hand.kLeft);
+    double rightCimberSpeed = rightStick.getY(Hand.kRight);
+    double stickTriggerLeft = triggerL.getX(Hand.kLeft);
+    double stickTriggerRight = triggerR.getX(Hand.kRight);
+    boolean stickThumbLeft = bumperL.get();
+    boolean stickThumbRight = bumperR.get();
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
-
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
-    if (yPosL < 0.25) {
+    if (leftClimberSpeed < 0.25) {
       climberWheelLeft.forward();
-    } else if (yPosL > -0.25) {
+    } else if (leftClimberSpeed > -0.25) {
       climberWheelLeft.reverse();
     } else {
       climberWheelLeft.stop();
     }
 
-    if (yPosR < 0.25) {
+    if (rightCimberSpeed < 0.25) {
       climberWheelRight.forward();
-    } else if (yPosR > -0.25) {
+    } else if (rightCimberSpeed > -0.25) {
       climberWheelRight.reverse();
     } else {
       climberWheelRight.stop();
     }
 
-    if (stickTriggerLeft) {
+    if (stickTriggerLeft > 0) {
       climberFront.reverse();
     } else if (stickThumbLeft) {
       climberFront.forward();
@@ -124,7 +143,7 @@ public class Robot extends TimedRobot {
       climberFront.stop();
     }
 
-    if (stickTriggerRight) {
+    if (stickTriggerRight > 0) {
       climberBack.reverse();
     } else if (stickThumbRight) {
       climberBack.forward();
