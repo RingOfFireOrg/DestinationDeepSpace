@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -11,40 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveDrive {
-	public static final int DRIVE_FRONT_RIGHT_MOTOR = 0;
-	public static final int DRIVE_FRONT_LEFT_MOTOR = 2;
-	public static final int DRIVE_BACK_LEFT_MOTOR = 4;
-	public static final int DRIVE_BACK_RIGHT_MOTOR = 6;
-
-	public static final int STEER_FRONT_RIGHT_MOTOR = 1;
-	public static final int STEER_FRONT_LEFT_MOTOR = 3;
-	public static final int STEER_BACK_LEFT_MOTOR = 5;
-	public static final int STEER_BACK_RIGHT_MOTOR = 7;
-
-	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 257;
-	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 17;
-	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 288;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 134;
-
-	public static final int ENCODER_FRONT_RIGHT = 0;
-	public static final int ENCODER_FRONT_LEFT = 1;
-	public static final int ENCODER_BACK_LEFT = 2;
-	public static final int ENCODER_BACK_RIGHT = 3;
-
-	//need to get real numbers for drive encoders
-	public static final int DRIVE_ENCODER_FRONT_RIGHT_A = 10;
-	public static final int DRIVE_ENCODER_FRONT_RIGHT_B = 11;
-	public static final int DRIVE_ENCODER_FRONT_LEFT_A = 12;
-	public static final int DRIVE_ENCODER_FRONT_LEFT_B = 13;
-	public static final int DRIVE_ENCODER_BACK_LEFT_A = 14;
-	public static final int DRIVE_ENCODER_BACK_LEFT_B = 15;
-	public static final int DRIVE_ENCODER_BACK_RIGHT_A = 16;
-	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 17;
-
-	//dimensions of the robot in CM
-	public static final int ROBOT_X_IN_CM = 51;
-	public static final int ROBOT_Y_IN_CM = 51;
-
 
 	SwerveModule frontLeft;
 	SwerveModule frontRight;
@@ -54,34 +19,28 @@ public class SwerveDrive {
 	AHRS ahrs;
 	double ahrsOffset;
 
-	SwerveDrive() {
 
-		Encoder driveFrontRight = new Encoder(DRIVE_ENCODER_FRONT_RIGHT_A, DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X);
-		Encoder driveFrontLeft = new Encoder(DRIVE_ENCODER_FRONT_LEFT_A, DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X);
-		Encoder driveBackLeft = new Encoder(DRIVE_ENCODER_BACK_LEFT_A, DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X);
-		Encoder driveBackRight = new Encoder(DRIVE_ENCODER_BACK_RIGHT_A, DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X);
 
-		frontRight = new SwerveModule(new Jaguar(DRIVE_FRONT_RIGHT_MOTOR), new Talon(STEER_FRONT_RIGHT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_FRONT_RIGHT), ENCODER_ZERO_VALUE_FRONT_RIGHT, driveFrontRight, "FrontRight");
-		frontLeft = new SwerveModule(new Jaguar(DRIVE_FRONT_LEFT_MOTOR), new Talon(STEER_FRONT_LEFT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_FRONT_LEFT), ENCODER_ZERO_VALUE_FRONT_LEFT, driveFrontLeft, "FrontLeft");
-		backLeft = new SwerveModule(new Jaguar(DRIVE_BACK_LEFT_MOTOR), new Talon(STEER_BACK_LEFT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_BACK_LEFT), ENCODER_ZERO_VALUE_BACK_LEFT, driveBackLeft, "BackLeft");
-		backRight = new SwerveModule(new Jaguar(DRIVE_BACK_RIGHT_MOTOR), new Talon(STEER_BACK_RIGHT_MOTOR),
-				new AbsoluteAnalogEncoder(ENCODER_BACK_RIGHT), ENCODER_ZERO_VALUE_BACK_RIGHT, driveBackRight, "BackRight");
+		Encoder driveFrontRight = new Encoder(RobotMap.DRIVE_ENCODER_FRONT_RIGHT_A, RobotMap.DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X);
+		Encoder driveFrontLeft = new Encoder(RobotMap.DRIVE_ENCODER_FRONT_LEFT_A, RobotMap.DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X);
+		Encoder driveBackLeft = new Encoder(RobotMap.DRIVE_ENCODER_BACK_LEFT_A, RobotMap.DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X);
+		Encoder driveBackRight = new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X);
+
+		frontRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new Talon(RobotMap.STEER_FRONT_RIGHT_MOTOR),
+				new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, driveFrontRight, "FrontRight");
+		frontLeft = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_LEFT_MOTOR), new Talon(RobotMap.STEER_FRONT_LEFT_MOTOR),
+				new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_LEFT), RobotMap.ENCODER_ZERO_VALUE_FRONT_LEFT, driveFrontLeft, "FrontLeft");
+		backLeft = new SwerveModule(new Jaguar(RobotMap.DRIVE_BACK_LEFT_MOTOR), new Talon(RobotMap.STEER_BACK_LEFT_MOTOR),
+				new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_LEFT), RobotMap.ENCODER_ZERO_VALUE_BACK_LEFT, driveBackLeft, "BackLeft");
+		backRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_BACK_RIGHT_MOTOR), new Talon(RobotMap.STEER_BACK_RIGHT_MOTOR),
+				new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_RIGHT), RobotMap.ENCODER_ZERO_VALUE_BACK_RIGHT, driveBackRight, "BackRight");
 		
-		try {
-			ahrs = new AHRS(SerialPort.Port.kUSB1);
-		  } catch (RuntimeException ex) {
-			  //DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-		  }
-		  
-		ahrs.reset();
-		ahrsOffset = ahrs.getAngle();
+	
+	//	ahrs.reset();
+	//	ahrsOffset = ahrs.getAngle();
 
-	}
 
-	void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7) {
+	static void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7) {
 
 		Joystick leftStick = left;
 		Joystick rightStick = right;
@@ -148,7 +107,7 @@ public class SwerveDrive {
 		
 	}
 
-	void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
+	static void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
 		if (buttonfr) {
 			frontRight.control(0.6, 0);
 		} else {
@@ -180,7 +139,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
+	static void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
 
 		driveAngle += gyroReading;
 
@@ -214,7 +173,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading, double rightJoystickDirection, double rightMagnitude) {
+	static void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading, double rightJoystickDirection, double rightMagnitude) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
 		//SmartDashboard.putNumber("original gyro", gyroReading);
@@ -357,14 +316,14 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Gyro 0-360", gyroValue);
 	}
 
-	void parkPosition() {
+	static void parkPosition() {
 		frontRight.control(0, -45);
 		frontLeft.control(0, 45);
 		backLeft.control(0, -45);
 		backRight.control(0, 45);
 	}
 
-	void tuningMode() {
+	static void tuningMode() {
 		//frontLeft.control(0, 0);
 		//frontRight.control(0, 0);
 		//backLeft.control(0, 0);
