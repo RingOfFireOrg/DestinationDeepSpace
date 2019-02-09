@@ -31,6 +31,17 @@ public class RobotMap {
 	public static final int DRIVE_ENCODER_BACK_RIGHT_A = 16;
 	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 17;
 
+	// all CANs for robot
+	public static final int CAN_CLIMBER_FRONT = 7;
+    public static final int CAN_CLIMBER_BACK = 9;
+    public static final int CAN_CLIMBER_WHEEL_LEFT = 3;
+	public static final int CAN_CLIMBER_WHEEL_RIGHT = 5;
+	
+	// Motor Speeds
+    public static final double SPEED_DEFAULT_TEST = 0.75;
+	
+	public static final double DEFAULT_FIND_SPEED = 0.5;
+
 	//dimensions of the robot in CM
 	public static final int ROBOT_X_IN_CM = 51;
     public static final int ROBOT_Y_IN_CM = 51;
