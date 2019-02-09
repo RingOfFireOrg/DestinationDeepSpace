@@ -34,25 +34,28 @@ public static final int CAN_MOTOR_BACK_RIGHT = 1;
     // Example: public static final double SPEED_DEFAULT_LIFT = 0.75;
     public static final double SPEED_DEFAULT_TEST = 0.75;
 
-    public static final double DEFAULT_LIFT_SPEED = 0.5;
-	public static final double MIN_LIFT_SPEED = 0.5;
-	public static final double MAX_LIFT_SPEED = 1.0;
+    public static final double FRONT_CLIMB_SPEED = 0.85;
 	
 	public static final double DEFAULT_FIND_SPEED = 0.5;
 
     // Joystick
     // Example: public static final int JOYSTICK_DRIVE_LEFT = 0;
-    public static final int JOYSTICK_DRIVE_LEFT = 0;
-    public static final int JOYSTICK_DRIVE_RIGHT = 1;
-    public static final int JOYSTICK_MANIPULATORL = 2;
-    public static final int JOYSTICK_MANIPULATORR = 3;
-
     public static final int GAMEPAD_CONTROLLER = 0;
+
+    public static final int RIGHT_STICK_X = 0;
+    public static final int RIGHT_STICK_Y = 1;
+    public static final int LEFT_TRIGGER = 2;
+    public static final int RIGHT_TRIGGER = 3;
+    public static final int LEFT_STICK_X = 4;
+    public static final int LEFT_STICK_Y = 5;
 
     // Joystick Buttons
     // Example: public static final int BUTTON_LIFT_UP = 6;
-    public static final int LIFT_UP_BUTTON = 6;
-	public static final int LIFT_DOWN_BUTTON = 7;
+    public static final int LEFT_BUMPER_BUTTON = 5;
+    public static final int RIGHT_BUMPER_BUTTON = 6;
+    
+    public static final int BUTTON_A = 1;
+    public static final int BUTTON_Y = 4;
 
 
 }

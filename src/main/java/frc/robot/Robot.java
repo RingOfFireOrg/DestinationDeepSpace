@@ -27,26 +27,16 @@ public class Robot extends TimedRobot {
   Prototype_CAN climberWheelLeft;
   Prototype_CAN climberWheelRight;
 
-   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
-   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
-  // private Joystick manipulatorStickL = new Joystick(RobotMap.JOYSTICK_MANIPULATORL);
-  // private Joystick manipulatorStickR = new Joystick(RobotMap.JOYSTICK_MANIPULATORR);
-  // public JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, 1);
-  // public JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, 1);
-  // public JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, 2);
-  // public JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, 2);
+  private GenericHID controller = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
 
-  private GenericHID leftManipulatorStick = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
-  private GenericHID rightManipulatorStick = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
+  // public JoystickButton triggerL = new JoystickButton(controller, 2);
+  // public JoystickButton triggerR = new JoystickButton(controller, 3);
 
-  public GenericHID triggerL = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
-  public GenericHID triggerR = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
+  public JoystickButton bumperL = new JoystickButton(controller, RobotMap.LEFT_BUMPER_BUTTON);
+  public JoystickButton bumperR = new JoystickButton(controller, RobotMap.RIGHT_BUMPER_BUTTON);
 
-  public JoystickButton bumperL = new JoystickButton(leftManipulatorStick, 5);
-  public JoystickButton bumperR = new JoystickButton(rightManipulatorStick, 6);
-
-  // public JoystickButton buttonY = new JoystickButton(leftManipulatorStick, 4);
-  // public JoystickButton buttonA = new JoystickButton(rightManipulatorStick, 1);
+   public JoystickButton buttonY = new JoystickButton(controller, RobotMap.BUTTON_Y);
+   public JoystickButton buttonA = new JoystickButton(controller, RobotMap.BUTTON_A);
 
   TankDrive drive = new TankDrive();
 
@@ -56,7 +46,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    climberFront = new Prototype_CAN(RobotMap.CAN_TEST_CLIMBER_FRONT, RobotMap.SPEED_DEFAULT_TEST);
+    climberFront = new Prototype_CAN(RobotMap.CAN_TEST_CLIMBER_FRONT, RobotMap.FRONT_CLIMB_SPEED);
     climberBack = new Prototype_CAN(RobotMap.CAN_TEST_CLIMBER_BACK, RobotMap.SPEED_DEFAULT_TEST);
     climberWheelLeft = new Prototype_CAN(RobotMap.CAN_CLIMBER_WHEEL_LEFT, RobotMap.SPEED_DEFAULT_TEST);
     climberWheelRight = new Prototype_CAN(RobotMap.CAN_CLIMBER_WHEEL_RIGHT, RobotMap.SPEED_DEFAULT_TEST);
@@ -96,7 +86,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-
+    System.out.println("Axis COUNT: " + controller.getAxisCount());
+    for (int i=0; i<controller.getAxisCount();i++) {
+      System.out.println("Axis Type: " + controller.getAxisType(i));
+    }
   }
 
   /**
@@ -105,13 +98,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     
-    double leftSpeed = leftStick.getY();
-    double rightSpeed = rightStick.getX();
+    double leftSpeed = controller.getRawAxis(RobotMap.LEFT_STICK_Y);
+    double rightSpeed = controller.getRawAxis(RobotMap.RIGHT_STICK_Y);
 
-    double leftClimberSpeed = leftStick.getY(Hand.kLeft);
-    double rightCimberSpeed = rightStick.getY(Hand.kRight);
-    double stickTriggerLeft = triggerL.getX(Hand.kLeft);
-    double stickTriggerRight = triggerR.getX(Hand.kRight);
+    boolean leftClimberSpeed = buttonY.get();
+    boolean rightClimberSpeed = buttonA.get();
+    double stickTriggerLeft = controller.getRawAxis(RobotMap.LEFT_TRIGGER);
+    double stickTriggerRight = controller.getRawAxis(RobotMap.RIGHT_TRIGGER);
     boolean stickThumbLeft = bumperL.get();
     boolean stickThumbRight = bumperR.get();
 
@@ -119,19 +112,14 @@ public class Robot extends TimedRobot {
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
-    if (leftClimberSpeed < 0.25) {
+    if (leftClimberSpeed ) {
       climberWheelLeft.forward();
-    } else if (leftClimberSpeed > -0.25) {
-      climberWheelLeft.reverse();
-    } else {
-      climberWheelLeft.stop();
-    }
-
-    if (rightCimberSpeed < 0.25) {
       climberWheelRight.forward();
-    } else if (rightCimberSpeed > -0.25) {
+    } else if (rightClimberSpeed) {
+      climberWheelLeft.reverse();
       climberWheelRight.reverse();
     } else {
+      climberWheelLeft.stop();
       climberWheelRight.stop();
     }
 
