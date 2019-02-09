@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.PIDController;
+//import edu.wpi.first.wpilibj.PIDController;
 	   
 //need to ifx
 public class SwerveModule {
@@ -18,7 +18,10 @@ public class SwerveModule {
 	double currentAngle;
 	double zeroValue;
 	String moduleName;
-	PIDController speedRegulation;
+	double optimizedSpeed;
+	PID speedRegulation;
+	double accumulatedGR = 0;
+	
 
 	//will need to make changes to the input --Encoder driveRotEncoder <-- add to constructor
 	public SwerveModule(Jaguar driveMotor, Talon steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue, Encoder driveRotEncoder, String name) {
@@ -32,11 +35,13 @@ public class SwerveModule {
 		driveEncoder.reset();
 		driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
 
-		speedRegulation = new PIDController(.00001,0,0, driveEncoder, drive);
-		speedRegulation.setSetpoint(0);
+		speedRegulation = new PID(0, 0, 0);
+		speedRegulation.setOutputRange(-1, 1);
+		//speedRegulation = new PIDController(0.0001, 0, 0, driveEncoder, drive);
+		//speedRegulation.setSetpoint(0);
 		//speedRegulation.setContinuous();
-		speedRegulation.setInputRange(-31860, -31860);
-		speedRegulation.setOutputRange(-1.0, 1.0);
+		//speedRegulation.setInputRange(-31860, 31860);
+		//speedRegulation.setOutputRange(-1.0, 1.0);
 	}
 
 	public double convertToWheelRelative(double wheelAngleGoal) {
@@ -60,9 +65,18 @@ public class SwerveModule {
 		steer.set(0);
 	}
 
-	public void setDriveSpeed(double driveSpeed){
-		speedRegulation.setSetpoint(driveSpeed*28000);
-		speedRegulation.enable();
+	public void setDriveSpeed(double drivePower) {
+		accumulatedGR += drivePower;
+		speedRegulation.setError((drivePower * 28000) - getRate());
+		speedRegulation.update();
+		optimizedSpeed = drivePower + speedRegulation.getOutput();
+		if (optimizedSpeed > 1) optimizedSpeed = 1;
+		if (optimizedSpeed < -1) optimizedSpeed = -1;
+		drive.set(optimizedSpeed);
+		SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
+		SmartDashboard.putNumber("DP - " + moduleName, drivePower);
+		SmartDashboard.putNumber("SR - " + moduleName, speedRegulation.getOutput());
+		SmartDashboard.putNumber("GR - " + moduleName, accumulatedGR);
 	}
 	
 	public void control(double driveSpeed, double wheelAngle) {

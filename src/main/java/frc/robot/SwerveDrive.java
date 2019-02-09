@@ -7,24 +7,39 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveDrive {
 	static AHRS ahrs;
 	static double ahrsOffset;
+	
 
-	static SwerveModule frontRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new Talon(RobotMap.STEER_FRONT_RIGHT_MOTOR), new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, new Encoder(RobotMap.DRIVE_ENCODER_FRONT_RIGHT_A, RobotMap.DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X), "FrontRight");
-	static SwerveModule frontLeft = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_LEFT_MOTOR), new Talon(RobotMap.STEER_FRONT_LEFT_MOTOR), new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_LEFT), RobotMap.ENCODER_ZERO_VALUE_FRONT_LEFT, new Encoder(RobotMap.DRIVE_ENCODER_FRONT_LEFT_A, RobotMap.DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X), "FrontLeft");
-	static SwerveModule backLeft = new SwerveModule(new Jaguar(RobotMap.DRIVE_BACK_LEFT_MOTOR), new Talon(RobotMap.STEER_BACK_LEFT_MOTOR), new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_LEFT), RobotMap.ENCODER_ZERO_VALUE_BACK_LEFT, new Encoder(RobotMap.DRIVE_ENCODER_BACK_LEFT_A, RobotMap.DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X), "BackLeft");
-	static SwerveModule backRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_BACK_RIGHT_MOTOR), new Talon(RobotMap.STEER_BACK_RIGHT_MOTOR), new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_RIGHT), RobotMap.ENCODER_ZERO_VALUE_BACK_RIGHT,  new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
+	static SwerveModule frontRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new Talon(RobotMap.STEER_FRONT_RIGHT_MOTOR),
+		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, 
+		 new Encoder(RobotMap.DRIVE_ENCODER_FRONT_RIGHT_A, RobotMap.DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X), "FrontRight");
+	static SwerveModule frontLeft = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_LEFT_MOTOR), new Talon(RobotMap.STEER_FRONT_LEFT_MOTOR),
+		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_LEFT), RobotMap.ENCODER_ZERO_VALUE_FRONT_LEFT,
+		 new Encoder(RobotMap.DRIVE_ENCODER_FRONT_LEFT_A, RobotMap.DRIVE_ENCODER_FRONT_LEFT_B, false, Encoder.EncodingType.k2X), "FrontLeft");
+	static SwerveModule backLeft = new SwerveModule(new Jaguar(RobotMap.DRIVE_BACK_LEFT_MOTOR), new Talon(RobotMap.STEER_BACK_LEFT_MOTOR),
+		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_LEFT), RobotMap.ENCODER_ZERO_VALUE_BACK_LEFT, 
+		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_LEFT_A, RobotMap.DRIVE_ENCODER_BACK_LEFT_B, false, Encoder.EncodingType.k2X), "BackLeft");
+	static SwerveModule backRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_BACK_RIGHT_MOTOR), new Talon(RobotMap.STEER_BACK_RIGHT_MOTOR),
+		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_RIGHT), RobotMap.ENCODER_ZERO_VALUE_BACK_RIGHT,  
+		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
 		
 	//ahrs.reset();
 	//ahrsOffset = ahrs.getAngle();
 
+	static boolean driveStraight = false;
+	static double translationAngle;
+
 	static void swerveInit(){
+		ahrs = new AHRS(SerialPort.Port.kUSB);
 		ahrs.reset();
 		ahrsOffset = ahrs.getAngle();
 	}	
+
 	static void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7) {
 
 		Joystick leftStick = left;
@@ -83,6 +98,7 @@ public class SwerveDrive {
 		
 		if (rightTrigger.get() == true) {
 			ahrsOffset = ahrs.getAngle();
+			driveStraight = false;
 		}
 			
 			  
@@ -181,17 +197,33 @@ public class SwerveDrive {
 			if (rightDirection < 275 || rightDirection > 265) rightDirection = 270;
 			*/
 			twist = ((rightDirection - gyroValue) / 100) * Math.pow((rightMag / 1.5), 2);
-			if (twist > 1) twist = 1;
-			if (twist < -1) twist = -1;
+			
 			if (Math.abs(rightDirection - gyroValue) > 180) twist *= -1;
+		} 
+		
+		if ((twist < 0.1 && twist > -0.1) && (rightMag < 0.3 && rightMag > -0.3)) {
+			if (driveStraight == false) {
+				driveStraight = true;
+				translationAngle = gyroValue;
+			}
+			twist = 0.01 * (translationAngle - gyroValue);
+		} else {
+			driveStraight = false;
 		}
+		if (twist > 1) twist = 1;
+		if (twist < -1) twist = -1;
 
 		//convert to field relative
 		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
 
 		if (jsMag < 0.1) jsMag = 0;
 
-		double initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
+		double initialAngle;
+		if (jsX == 0) {
+			initialAngle = 0;
+		} else {
+			initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
+		}
 		 if (jsX < 0) {
 			if (jsY > 0) {
 				initialAngle += 180;
@@ -202,12 +234,6 @@ public class SwerveDrive {
 		double processedAngle = initialAngle + gyroValue;
 		double robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
 		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
-		
-		SmartDashboard.putNumber("RelX", robotRelativeX);
-		SmartDashboard.putNumber("RelY", robotRelativeY);
-		SmartDashboard.putNumber("JSMAG", jsMag);
-		SmartDashboard.putNumber("procAngle", processedAngle);
-		SmartDashboard.putNumber("initAngle", initialAngle);
 
 		
 		double xWithTwist = robotRelativeX + twist;

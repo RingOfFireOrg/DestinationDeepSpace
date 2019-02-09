@@ -14,7 +14,7 @@ public class RobotMap {
 	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 257;
 	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 17;
 	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 288;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 134;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 190;
 
 	public static final int ENCODER_FRONT_RIGHT = 0;
 	public static final int ENCODER_FRONT_LEFT = 1;
