@@ -43,34 +43,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-
-
-	}
-
-	@Override
-	public void autonomousInit() {
-		autoSelected = chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
-		System.out.println("Auto selected: " + autoSelected);
-	}
-
-	@Override
-	public void autonomousPeriodic() {
-		switch (autoSelected) {
-		case customAuto:
-			// Put custom auto code here
-			break;
-		case defaultAuto:
-		default:
-			// Put default auto code here
-			break;
-		}
+		SwerveDrive.swerveInit();
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		swerveDrive.runSwerve(leftStick, rightStick, rightTrigger, tuningActivation);
+		SwerveDrive.runSwerve(leftStick, rightStick, rightTrigger, tuningActivation);
 	}
 
 	@Override
