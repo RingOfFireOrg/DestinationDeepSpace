@@ -1,6 +1,31 @@
 package frc.robot;
 
 public class RobotMap { 
+	//Joysticks
+	public static final int LEFT_JOYSTICK = 0;
+	public static final int RIGHT_JOYSTICK = 1;
+	public static final int LEFT_MANIPULATOR_STICK = 2;
+	public static final int RIGHT_MANIPULATOR_STICK = 3;
+
+	//Left Stick Buttons:
+	public static final int LEFT_TRIGGER = 1;
+	public static final int LEFT_SWERVE_TUNING_BUTTON = 7;
+	public static final int FRONT_RIGHT_BUTTON = 6;
+	public static final int FRONT_LEFT_BUTTON = 5;
+	public static final int BACK_RIGHT_BUTTON = 4;
+	public static final int BACK_LEFT_BUTTON = 3;
+	//Right Stick Buttons:
+	public static final int RIGHT_TRIGGER = 1;
+
+	//Left Manipulator Stick Buttons:
+	public static final int LEFT_MANIPULATOR_TRIGGER = 1;
+	public static final int LEFT_MANIPULATOR_THUMB_BUTTON = 2;
+
+	//Right Manipulator Stick Buttons:
+	public static final int RIGHT_MANIPULATOR_TRIGGER = 1;
+	public static final int RIGHT_MANIPULATOR_THUMB_BUTTON = 2;
+
+	//Robot Ports
     public static final int DRIVE_FRONT_RIGHT_MOTOR = 0;
 	public static final int DRIVE_FRONT_LEFT_MOTOR = 2;
 	public static final int DRIVE_BACK_LEFT_MOTOR = 4;

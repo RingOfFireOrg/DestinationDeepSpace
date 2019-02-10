@@ -24,22 +24,22 @@ public class Robot extends TimedRobot {
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	String autoSelected;
-	Joystick leftStick = new Joystick(0);
-	Joystick rightStick = new Joystick(1);
-	private Joystick manipulatorStickL = new Joystick(2);
-	private Joystick manipulatorStickR = new Joystick(3);
+	public Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
+	public Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
+	private Joystick manipulatorStickL = new Joystick(RobotMap.LEFT_MANIPULATOR_STICK);
+	private Joystick manipulatorStickR = new Joystick(RobotMap.RIGHT_MANIPULATOR_STICK);
 	SendableChooser<String> chooser = new SendableChooser<>();
-	JoystickButton frButton = new JoystickButton(leftStick, 6);
-	JoystickButton flButton = new JoystickButton(leftStick, 5);
-	JoystickButton brButton = new JoystickButton(leftStick, 4);
-	JoystickButton blButton = new JoystickButton(leftStick, 3);
-	JoystickButton trigger = new JoystickButton(leftStick, 1);
-	JoystickButton rightTrigger = new JoystickButton(rightStick, 1);
-	JoystickButton tuningActivation = new JoystickButton(leftStick, 7);
-	JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, 1);
-	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, 1);
-	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, 2);
-	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, 2);
+	JoystickButton frButton = new JoystickButton(leftStick, RobotMap.FRONT_RIGHT_BUTTON);
+	JoystickButton flButton = new JoystickButton(leftStick, RobotMap.FRONT_LEFT_BUTTON);
+	JoystickButton brButton = new JoystickButton(leftStick, RobotMap.BACK_RIGHT_BUTTON);
+	JoystickButton blButton = new JoystickButton(leftStick, RobotMap.BACK_LEFT_BUTTON);
+	JoystickButton leftTrigger = new JoystickButton(leftStick, RobotMap.LEFT_TRIGGER);
+	JoystickButton rightTrigger = new JoystickButton(rightStick, RobotMap.RIGHT_TRIGGER);
+	JoystickButton tuningActivation = new JoystickButton(leftStick, RobotMap.LEFT_SWERVE_TUNING_BUTTON);
+	JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_TRIGGER);
+	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_TRIGGER);
+	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
+	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
 
 	boolean driveMode = false;
 	
