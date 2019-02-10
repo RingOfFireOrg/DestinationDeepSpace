@@ -69,6 +69,10 @@ public class RobotMap {
 
 	//dimensions of the robot in CM
 	public static final int ROBOT_X_IN_CM = 51;
-    public static final int ROBOT_Y_IN_CM = 51;
+	public static final int ROBOT_Y_IN_CM = 51;
+	
+	public static final double TRANSLATION_DEADZONE = 0.1;
+	public static final double ROTATION_DEADZONE = 0.1;
+	public static final double ABSOLUTE_ROTATION_DEADZONE = 0.3;
     
 }

@@ -33,6 +33,7 @@ public class SwerveDrive {
 
 	static boolean driveStraight = false;
 	static double translationAngle;
+	static double lastJSX;
 
 	static void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
@@ -177,8 +178,8 @@ public class SwerveDrive {
 	static void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading, double rightJoystickDirection, double rightMagnitude) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
-		//SmartDashboard.putNumber("original gyro", gyroReading);
 		double gyroValue = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
+
 		//initializing the main variables
 		double jsX = driveJoystickX;
 		double jsY = -driveJoystickY;
@@ -186,91 +187,106 @@ public class SwerveDrive {
 		double rightMag = rightMagnitude;
 		double rightDirection = rightJoystickDirection;
 
-		SmartDashboard.putNumber("RtJSDir", rightDirection);
+		double rotationMagnitude;
 
-		if (rightMag > 0.3) {
+		//Rotation Modes -- absolute, unregulated, and none
+		if (rightMag > RobotMap.ABSOLUTE_ROTATION_DEADZONE) {
 			if (rightDirection < 0) rightDirection += 360;
-			//if (Math.abs(rightDirection % 90 - 45) > 40) rightDirection += (Math.abs(rightDirection % 90) / (rightDirection % 90)(Math.abs((rightDirection % 90) - 45) - 40)
-			/* if (rightDirection < 5 || rightDirection > 355) rightDirection = 0;
-			if (rightDirection < 95 || rightDirection > 85) rightDirection = 90;
-			if (rightDirection < 185 || rightDirection > 175) rightDirection = 180;
-			if (rightDirection < 275 || rightDirection > 265) rightDirection = 270;
-			*/
-			twist = ((rightDirection - gyroValue) / 100) * Math.pow((rightMag / 1.5), 2);
-			
-			if (Math.abs(rightDirection - gyroValue) > 180) twist *= -1;
-		} 
-		
-		if ((twist < 0.1 && twist > -0.1) && (rightMag < 0.3 && rightMag > -0.3)) {
+
+			if (rightDirection > 337.5 || rightDirection <= 22.5) {
+				rightDirection = 0;
+			} else if (rightDirection > 22.5 && rightDirection <= 67.5) {
+				rightDirection = 45;
+			} else if (rightDirection > 67.5 && rightDirection <= 110.5) {
+				rightDirection = 90;
+			} else if (rightDirection > 110.5 && rightDirection <= 157.5) {
+				rightDirection = 135;
+			} else if (rightDirection > 157.5 && rightDirection <= 202.5) {
+				rightDirection = 180;
+			} else if (rightDirection > 202.5 && rightDirection <= 247.5) {
+				rightDirection = 225;
+			} else if (rightDirection > 247.5 && rightDirection <= 292.5) {
+				rightDirection = 270;
+			} else {
+				rightDirection = 315;
+			}
+			rotationMagnitude = ((rightDirection - gyroValue) / 100) * Math.pow((rightMag / 1.5), 2);
+			if (Math.abs(rightDirection - gyroValue) > 180) rotationMagnitude *= -1;
+			driveStraight = false;
+		} else if (twist > RobotMap.ROTATION_DEADZONE) {
+			rotationMagnitude = twist;
+			driveStraight = false;
+		} else {
 			if (driveStraight == false) {
 				driveStraight = true;
 				translationAngle = gyroValue;
 			}
-			twist = 0.01 * (translationAngle - gyroValue);
-		} else {
-			driveStraight = false;
+			rotationMagnitude = 0.01 * (translationAngle - gyroValue);
 		}
-		if (twist > 1) twist = 1;
-		if (twist < -1) twist = -1;
+		if (rotationMagnitude > 1) rotationMagnitude = 1;
+		if (rotationMagnitude < -1) rotationMagnitude = -1;
 
-		//convert to field relative
+
+		//convert translation direction to field relative
 		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
-
 		if (jsMag < 0.1) jsMag = 0;
 
 		double initialAngle;
+
 		if (jsX == 0) {
-			initialAngle = 0;
+			initialAngle = 90;
 		} else {
 			initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
 		}
-		 if (jsX < 0) {
+
+		if (jsX < 0) {
 			if (jsY > 0) {
 				initialAngle += 180;
 			} else {
 				initialAngle -= 180;
 			}
 		}
+
 		double processedAngle = initialAngle + gyroValue;
 		double robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
 		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
 
-		
-		double xWithTwist = robotRelativeX + twist;
-		double xWithoutTwist = robotRelativeX - twist;
-		double yWithTwist = robotRelativeY + twist;
-		double yWithoutTwist = robotRelativeY - twist;
-		
+		//Vector math to combine the translation and the rotation values
+		//adding the various cartesian points for the end of the vectors
+		double xWithRotation = robotRelativeX + rotationMagnitude;
+		double xWithoutRotation = robotRelativeX - rotationMagnitude;
+		double yWithRotation = robotRelativeY + rotationMagnitude;
+		double yWithoutRotation = robotRelativeY - rotationMagnitude;
 
-		/*
-		double xWithTwist = robotRelativeX;
-		double yWithoutTwist = robotRelativeY;
-		double xWithoutTwist = robotRelativeX;
-		double yWithTwist = robotRelativeY;
-		*/
+		//Constructing the arrays to be used to determine outcomes for each wheel
+		double wheelX[] = new double[4]; //the x value of the wheels vector
+		double wheelY[] = new double[4]; //the y value of the wheels vector
 
-		double wheelX[] = new double[4];
-		double wheelY[] = new double[4];
-
-		double wheelSpeed[] = new double[4];
-		double wheelAngle[] = new double[4];
+		double wheelSpeed[] = new double[4]; //the speed that will be assigned to the wheels output
+		double wheelAngle[] = new double[4]; // the angle that will be assigned to the modules output
 	
+		//individually processes each wheel -- determines speed and angle
 		for (int i = 0 ; i < 4 ; i ++) {
+
+			//for each module, the turn vectors will extend in a different direction
 			if(i == 0 || i == 1) {
-				wheelX[i] = xWithTwist;
+				wheelX[i] = xWithRotation;
 			} else {
-				wheelX[i] = xWithoutTwist;
+				wheelX[i] = xWithoutRotation;
 			}
 
 			if(i == 0 || i == 3) {
-				wheelY[i] = yWithoutTwist;
+				wheelY[i] = yWithoutRotation;
 			} else {
-				wheelY[i] = yWithTwist;
+				wheelY[i] = yWithRotation;
 			}
 
+			//the wheels speed is just the distance from the end of its added vectors and the wheels center
 			wheelSpeed[i] = Math.sqrt(Math.pow(wheelX[i], 2) + Math.pow(wheelY[i], 2));
+			//the angle is the interior angle of the formed triangle
 			wheelAngle[i] = Math.toDegrees(Math.atan(wheelX[i] / wheelY[i]));
 
+			//The math only allows for directions in 2 quadrants, have to reassign values to gain the 2nd and 3rd quadrants
 			if(wheelX[i] >= 0) {
 				if (wheelY[i] >= 0) {
 					//already in Q1
@@ -287,13 +303,16 @@ public class SwerveDrive {
 				}
 			}
 
+			//math is done assuming clockwise, wheel outputs are counterclockwise
 			wheelAngle[i] *= -1;
 
+			//makes all angles positive -- if negative will make it a positive co-terminal angle
 			if (wheelAngle[i] < 0) {
 				wheelAngle[i] += 360;
 			}
 		}
 	
+		//assures that no wheel is given a speed higher than 1 -- if so, will divide all speeds by the highest speed
 		double maxSpeed = wheelSpeed[0];
 		if (wheelSpeed[1] > maxSpeed) {maxSpeed = wheelSpeed[1];}
 		if (wheelSpeed[2] > maxSpeed) {maxSpeed = wheelSpeed[2];}
@@ -304,11 +323,13 @@ public class SwerveDrive {
 			}
 		}
 		
+		//sets all modules to the calculated speed and angle
 		frontRight.control(wheelSpeed[0], wheelAngle[0]);
 		frontLeft.control(wheelSpeed[1], wheelAngle[1]);
 		backLeft.control(wheelSpeed[2], wheelAngle[2]);
 		backRight.control(wheelSpeed[3], wheelAngle[3]);
 
+		//reads out the raw angles, processed angles, speed, and gyro
 		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
 		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
@@ -335,10 +356,6 @@ public class SwerveDrive {
 	}
 
 	static void tuningMode() {
-		//frontLeft.control(0, 0);
-		//frontRight.control(0, 0);
-		//backLeft.control(0, 0);
-		//backRight.control(0, 0);
 		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
 		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
