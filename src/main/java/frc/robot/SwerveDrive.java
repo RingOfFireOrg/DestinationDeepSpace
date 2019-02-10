@@ -41,7 +41,7 @@ public class SwerveDrive {
 		ahrsOffset = ahrs.getAngle();
 	}	
 
-	static void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7) {
+	static void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
 
 		Joystick leftStick = left;
 		Joystick rightStick = right;
@@ -68,28 +68,25 @@ public class SwerveDrive {
 
 		if (tuningActivation.get() == true) {
 			driveMode = 1;
-		} else { //if (rightStick.getMagnitude() > 0.3)// {
+		} else {
 			driveMode = 3;
-		} //else {
-			//driveMode = 0;
-		//}
+		} 
 
 
 		switch (driveMode) {
 			case 0:
-				//syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
+
 				break;
 
 			case 1:
-				tuningMode();
+				tuningMode(frb, flb, blb, brb);
 				break;
 
 			case 2:
-				//translateAndRotate(leftX, leftY, leftDirection, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
+
 				break;
 
 			case 3:
-				//syncroDrive(speed, leftDirection, twist, ahrs.getAngle() - ahrsOffset);
 				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
 				break;
 		
@@ -109,71 +106,7 @@ public class SwerveDrive {
 		
 	}
 
-	static void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
-		if (buttonfr) {
-			frontRight.control(0.6, 0);
-		} else {
-			frontRight.stop();
-		}
-		if (buttonfl) {
-			frontLeft.control(0.6, 0);
-		} else {
-			frontLeft.stop();
-		}
-		if (buttonbr) {
-			backRight.control(0.6, 0);
-		} else {
-			backRight.stop();
-		}
-		if (buttonbl) {
-			backLeft.control(0.6, 0);
-		} else {
-			backLeft.stop();
-		}
-		SmartDashboard.putNumber("front right encoder: ", frontRight.getAngle());
-		SmartDashboard.putNumber("front left encoder: ", frontLeft.getAngle());
-		SmartDashboard.putNumber("back right encoder: ", backRight.getAngle());
-		SmartDashboard.putNumber("back left encoder: ", backLeft.getAngle());
 
-		SmartDashboard.putNumber("Corrected angle FR", frontRight.convertToRobotRelative(frontRight.getAngle()));
-		SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
-		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
-		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
-	}
-
-	static void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
-
-		driveAngle += gyroReading;
-
-		if (Math.abs(twist) > 0.5) {
-			if (twist > 0) {
-				twist = (twist - 0.5)*2;
-			} else if (twist < 0) {
-				twist = (twist + 0.5)*2;
-			}
-			frontRight.control(-twist, 45);
-			frontLeft.control(twist, 315);
-			backRight.control(-twist, 315);
-			backLeft.control(twist, 45);
-		} else {
-			frontRight.control(driveSpeed, driveAngle);
-			frontLeft.control(driveSpeed, driveAngle);
-			backRight.control(driveSpeed, driveAngle);
-			backLeft.control(driveSpeed, driveAngle);
-		}
-
-		// steerFrontRight.set(1);
-
-		SmartDashboard.putNumber("front right encoder: ", frontRight.getAngle());
-		SmartDashboard.putNumber("front left encoder: ", frontLeft.getAngle());
-		SmartDashboard.putNumber("back right encoder: ", backRight.getAngle());
-		SmartDashboard.putNumber("back left encoder: ", backLeft.getAngle());
-
-		SmartDashboard.putNumber("Corrected angle FR", frontRight.convertToRobotRelative(frontRight.getAngle()));
-		SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
-		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
-		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
-	}
 
 	static void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading, double rightJoystickDirection, double rightMagnitude) {
 
@@ -349,16 +282,102 @@ public class SwerveDrive {
 	}
 
 	static void parkPosition() {
+		//can be activated to give the robot increased traction when stopped
 		frontRight.control(0, -45);
 		frontLeft.control(0, 45);
 		backLeft.control(0, -45);
 		backRight.control(0, 45);
 	}
 
-	static void tuningMode() {
+	static void tuningMode(JoystickButton buttonFR, JoystickButton buttonFL, JoystickButton buttonBL, JoystickButton buttonBR) {
+		//used to tune the modules and their zero values
+		if (buttonFR.get()) {
+			frontRight.control(0.1, 0);
+		} else {
+			frontRight.stop();
+		}
+		if (buttonFL.get()) {
+			frontLeft.control(0.1, 0);
+		} else {
+			frontLeft.stop();
+		}
+		if (buttonBR.get()) {
+			backRight.control(0.1, 0);
+		} else {
+			backRight.stop();
+		}
+		if (buttonBL.get()) {
+			backLeft.control(0.1, 0);
+		} else {
+			backLeft.stop();
+		}
 		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
 		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
+	}
+
+	static void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
+		//not field relative yet -- sitll needs work
+		driveAngle += gyroReading;
+
+		if (Math.abs(twist) > 0.5) {
+			if (twist > 0) {
+				twist = (twist - 0.5)*2;
+			} else if (twist < 0) {
+				twist = (twist + 0.5)*2;
+			}
+			frontRight.control(-twist, 45);
+			frontLeft.control(twist, 315);
+			backRight.control(-twist, 315);
+			backLeft.control(twist, 45);
+		} else {
+			frontRight.control(driveSpeed, driveAngle);
+			frontLeft.control(driveSpeed, driveAngle);
+			backRight.control(driveSpeed, driveAngle);
+			backLeft.control(driveSpeed, driveAngle);
+		}
+
+		SmartDashboard.putNumber("front right encoder: ", frontRight.getAngle());
+		SmartDashboard.putNumber("front left encoder: ", frontLeft.getAngle());
+		SmartDashboard.putNumber("back right encoder: ", backRight.getAngle());
+		SmartDashboard.putNumber("back left encoder: ", backLeft.getAngle());
+
+		SmartDashboard.putNumber("Corrected angle FR", frontRight.convertToRobotRelative(frontRight.getAngle()));
+		SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
+		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
+		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
+	}
+
+	static void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
+		if (buttonfr) {
+			frontRight.control(0.6, 0);
+		} else {
+			frontRight.stop();
+		}
+		if (buttonfl) {
+			frontLeft.control(0.6, 0);
+		} else {
+			frontLeft.stop();
+		}
+		if (buttonbr) {
+			backRight.control(0.6, 0);
+		} else {
+			backRight.stop();
+		}
+		if (buttonbl) {
+			backLeft.control(0.6, 0);
+		} else {
+			backLeft.stop();
+		}
+		SmartDashboard.putNumber("front right encoder: ", frontRight.getAngle());
+		SmartDashboard.putNumber("front left encoder: ", frontLeft.getAngle());
+		SmartDashboard.putNumber("back right encoder: ", backRight.getAngle());
+		SmartDashboard.putNumber("back left encoder: ", backLeft.getAngle());
+
+		SmartDashboard.putNumber("Corrected angle FR", frontRight.convertToRobotRelative(frontRight.getAngle()));
+		SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
+		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
+		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 }

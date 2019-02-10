@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		SwerveDrive.runSwerve(leftStick, rightStick, rightTrigger, tuningActivation);
+		SwerveDrive.runSwerve(leftStick, rightStick, rightTrigger, tuningActivation, frButton, flButton, blButton, brButton);
 
 		double yPosL = manipulatorStickL.getY();
     	double yPosR = manipulatorStickR.getY();
