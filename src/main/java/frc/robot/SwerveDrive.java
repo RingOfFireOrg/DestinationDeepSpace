@@ -27,9 +27,6 @@ public class SwerveDrive {
 	static SwerveModule backRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_BACK_RIGHT_MOTOR), new Talon(RobotMap.STEER_BACK_RIGHT_MOTOR),
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_RIGHT), RobotMap.ENCODER_ZERO_VALUE_BACK_RIGHT,  
 		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
-		
-	//ahrs.reset();
-	//ahrsOffset = ahrs.getAngle();
 
 	static boolean driveStraight = false;
 	static double translationAngle;
@@ -69,13 +66,14 @@ public class SwerveDrive {
 		if (tuningActivation.get() == true) {
 			driveMode = 1;
 		} else {
-			driveMode = 3;
+			driveMode = 0;
 		} 
 
 
 		switch (driveMode) {
 			case 0:
-
+				//the 0s are temporary replacements for the robot relative joysticks. remember to find the opposite of the y value
+				translateAndRotate(leftX, -leftY, twist, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude, 0, 0);
 				break;
 
 			case 1:
@@ -84,10 +82,6 @@ public class SwerveDrive {
 
 			case 2:
 
-				break;
-
-			case 3:
-				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude);
 				break;
 		
 			default:
@@ -108,46 +102,47 @@ public class SwerveDrive {
 
 
 
-	static void translateAndRotate(double driveJoystickX, double driveJoystickY, double rightTwist, double gyroReading, double rightJoystickDirection, double rightMagnitude) {
+	static void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double absoluteTurnMagnitude, double driveRobotTranslationX, double driveRobotTranslationY) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
 		double gyroValue = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
 
 		//initializing the main variables
-		double jsX = driveJoystickX;
-		double jsY = -driveJoystickY;
-		double twist = rightTwist;
-		double rightMag = rightMagnitude;
-		double rightDirection = rightJoystickDirection;
-
-		double rotationMagnitude;
+		double fieldRelativeX = driveFieldTranslationX;
+		double fieldRelativeY = driveFieldTranslationY;
+		double robotRelativeX = driveRobotTranslationX;
+		double robotRelativeY = driveRobotTranslationY;
+		double unregulatedRotationValue = unregulatedTurning;
+		double absoluteRotationMagnitude = absoluteTurnMagnitude;
+		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
 
 		//Rotation Modes -- absolute, unregulated, and none
-		if (rightMag > RobotMap.ABSOLUTE_ROTATION_DEADZONE) {
-			if (rightDirection < 0) rightDirection += 360;
+		double rotationMagnitude;
+		if (absoluteRotationMagnitude > RobotMap.ABSOLUTE_ROTATION_DEADZONE) {
+			if (absoluteFieldRelativeDirection < 0) absoluteFieldRelativeDirection += 360;
 
-			if (rightDirection > 337.5 || rightDirection <= 22.5) {
-				rightDirection = 0;
-			} else if (rightDirection > 22.5 && rightDirection <= 67.5) {
-				rightDirection = 45;
-			} else if (rightDirection > 67.5 && rightDirection <= 110.5) {
-				rightDirection = 90;
-			} else if (rightDirection > 110.5 && rightDirection <= 157.5) {
-				rightDirection = 135;
-			} else if (rightDirection > 157.5 && rightDirection <= 202.5) {
-				rightDirection = 180;
-			} else if (rightDirection > 202.5 && rightDirection <= 247.5) {
-				rightDirection = 225;
-			} else if (rightDirection > 247.5 && rightDirection <= 292.5) {
-				rightDirection = 270;
+			if (absoluteFieldRelativeDirection > 337.5 || absoluteFieldRelativeDirection <= 22.5) {
+				absoluteFieldRelativeDirection = 0;
+			} else if (absoluteFieldRelativeDirection > 22.5 && absoluteFieldRelativeDirection <= 67.5) {
+				absoluteFieldRelativeDirection = 45;
+			} else if (absoluteFieldRelativeDirection > 67.5 && absoluteFieldRelativeDirection <= 110.5) {
+				absoluteFieldRelativeDirection = 90;
+			} else if (absoluteFieldRelativeDirection > 110.5 && absoluteFieldRelativeDirection <= 157.5) {
+				absoluteFieldRelativeDirection = 135;
+			} else if (absoluteFieldRelativeDirection > 157.5 && absoluteFieldRelativeDirection <= 202.5) {
+				absoluteFieldRelativeDirection = 180;
+			} else if (absoluteFieldRelativeDirection > 202.5 && absoluteFieldRelativeDirection <= 247.5) {
+				absoluteFieldRelativeDirection = 225;
+			} else if (absoluteFieldRelativeDirection > 247.5 && absoluteFieldRelativeDirection <= 292.5) {
+				absoluteFieldRelativeDirection = 270;
 			} else {
-				rightDirection = 315;
+				absoluteFieldRelativeDirection = 315;
 			}
-			rotationMagnitude = ((rightDirection - gyroValue) / 100) * Math.pow((rightMag / 1.5), 2);
-			if (Math.abs(rightDirection - gyroValue) > 180) rotationMagnitude *= -1;
+			rotationMagnitude = ((absoluteFieldRelativeDirection - gyroValue) / 100) * Math.pow((absoluteRotationMagnitude / 1.5), 2);
+			if (Math.abs(absoluteFieldRelativeDirection - gyroValue) > 180) rotationMagnitude *= -1;
 			driveStraight = false;
-		} else if (twist > RobotMap.ROTATION_DEADZONE) {
-			rotationMagnitude = twist;
+		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE) {
+			rotationMagnitude = unregulatedRotationValue;
 			driveStraight = false;
 		} else {
 			if (driveStraight == false) {
@@ -160,29 +155,34 @@ public class SwerveDrive {
 		if (rotationMagnitude < -1) rotationMagnitude = -1;
 
 
-		//convert translation direction to field relative
-		double jsMag = Math.sqrt(Math.pow(jsX, 2) + Math.pow(jsY, 2));
-		if (jsMag < 0.1) jsMag = 0;
+		//Translation Modes -- field relative or robot relative
+		double jsMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
+		if (jsMag < RobotMap.TRANSLATION_DEADZONE) jsMag = 0;
+		if (jsMag != 0) {
+			double initialAngle;
 
-		double initialAngle;
-
-		if (jsX == 0) {
-			initialAngle = 90;
-		} else {
-			initialAngle = Math.toDegrees(Math.atan(jsY / jsX));
-		}
-
-		if (jsX < 0) {
-			if (jsY > 0) {
-				initialAngle += 180;
+			if (fieldRelativeX == 0) {
+				initialAngle = 90;
 			} else {
-				initialAngle -= 180;
+				initialAngle = Math.toDegrees(Math.atan(fieldRelativeY / fieldRelativeX));
 			}
+	
+			if (fieldRelativeX < 0) {
+				if (fieldRelativeY > 0) {
+					initialAngle += 180;
+				} else {
+					initialAngle -= 180;
+				}
+			}
+	
+			double processedAngle = initialAngle + gyroValue;
+			robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
+			robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
+		} else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) < RobotMap.TRANSLATION_DEADZONE) {
+			//if the field relative code didn't run, robot rel will still be set from its declaration, this rules out deadzones
+			robotRelativeX = 0;
+			robotRelativeY = 0;
 		}
-
-		double processedAngle = initialAngle + gyroValue;
-		double robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
-		double robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
 
 		//Vector math to combine the translation and the rotation values
 		//adding the various cartesian points for the end of the vectors
