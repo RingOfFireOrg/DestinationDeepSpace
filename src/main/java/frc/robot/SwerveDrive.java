@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Encoder;
 public class SwerveDrive {
 	static AHRS ahrs;
 	static double ahrsOffset;
+	static PID pidDrivingStraight;
 	
 
 	static SwerveModule frontRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new Talon(RobotMap.STEER_FRONT_RIGHT_MOTOR),
@@ -30,12 +31,15 @@ public class SwerveDrive {
 
 	static boolean driveStraight = false;
 	static double translationAngle;
-	static double lastJSX;
+	//static double lastJSX;
 
 	static void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
 		ahrs.reset();
 		ahrsOffset = ahrs.getAngle();
+		pidDrivingStraight = new PID(0.005, 0.00005, 0);
+		pidDrivingStraight.setOutputRange(-0.5, 0.5);
+		translationAngle = ahrs.getAngle() - ahrsOffset;
 	}	
 
 	static void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
@@ -91,6 +95,7 @@ public class SwerveDrive {
 		if (rightTrigger.get() == true) {
 			ahrsOffset = ahrs.getAngle();
 			driveStraight = false;
+			pidDrivingStraight.reset();
 		}
 			
 			  
@@ -105,7 +110,8 @@ public class SwerveDrive {
 	static void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double absoluteTurnMagnitude, double driveRobotTranslationX, double driveRobotTranslationY) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
-		double gyroValue = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
+		double gyroValueUnprocessed = gyroReading;
+		double gyroValueProcessed = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
 
 		//initializing the main variables
 		double fieldRelativeX = driveFieldTranslationX;
@@ -138,18 +144,24 @@ public class SwerveDrive {
 			} else {
 				absoluteFieldRelativeDirection = 315;
 			}
-			rotationMagnitude = ((absoluteFieldRelativeDirection - gyroValue) / 100) * Math.pow((absoluteRotationMagnitude / 1.5), 2);
-			if (Math.abs(absoluteFieldRelativeDirection - gyroValue) > 180) rotationMagnitude *= -1;
+			rotationMagnitude = ((absoluteFieldRelativeDirection - gyroValueProcessed) / 100) * Math.pow((absoluteRotationMagnitude / 1.5), 2);
+			if (Math.abs(absoluteFieldRelativeDirection - gyroValueProcessed) > 180) rotationMagnitude *= -1;
 			driveStraight = false;
-		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE) {
+		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE || unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
 			rotationMagnitude = unregulatedRotationValue;
 			driveStraight = false;
 		} else {
+			//no turning methods -- goes straight
 			if (driveStraight == false) {
 				driveStraight = true;
-				translationAngle = gyroValue;
+				translationAngle = gyroValueUnprocessed;
+				pidDrivingStraight.reset();
 			}
-			rotationMagnitude = 0.01 * (translationAngle - gyroValue);
+			pidDrivingStraight.setError(gyroValueUnprocessed - translationAngle);
+			pidDrivingStraight.update();
+			rotationMagnitude = -pidDrivingStraight.getOutput();
+			SmartDashboard.putNumber("translationAngle", translationAngle);
+			SmartDashboard.putNumber("DSEC - ", -pidDrivingStraight.getOutput());
 		}
 		if (rotationMagnitude > 1) rotationMagnitude = 1;
 		if (rotationMagnitude < -1) rotationMagnitude = -1;
@@ -175,7 +187,7 @@ public class SwerveDrive {
 				}
 			}
 	
-			double processedAngle = initialAngle + gyroValue;
+			double processedAngle = initialAngle + gyroValueProcessed;
 			robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));	
 			robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
 		} else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) < RobotMap.TRANSLATION_DEADZONE) {
@@ -278,7 +290,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
 		SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
 
-		SmartDashboard.putNumber("Gyro 0-360", gyroValue);
+		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
 	}
 
 	static void parkPosition() {
