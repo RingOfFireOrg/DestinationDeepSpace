@@ -15,16 +15,37 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class AutoClimb {
     AnalogInput ultrasonic = new AnalogInput(0);
-
+    int step = 0;
+    TankDrive drive;
+    Prototype_CAN climberFront;
+    Prototype_CAN climberBack;
+    Prototype_CAN climberWheelLeft;
+    Prototype_CAN climberWheelRight;
+    
 
     private double getDistanceInInches() {
-        double voltageUltrasonic = ultrasonic.getVoltage();
-        double ultrasonicInches = (voltageUltrasonic / RobotMap.ULTRASONIC_VOLTAGE_TO_INCHES);
+        double voltage = ultrasonic.getVoltage();
+        double inInches = (voltage / RobotMap.ULTRASONIC_VOLTAGE_TO_INCHES);
 
-        SmartDashboard.putNumber("Ultrasonic Voltage: ", voltageUltrasonic);
+        SmartDashboard.putNumber("Ultrasonic Voltage: ", voltage);
 
-        return ultrasonicInches;
+        return inInches;
     }
+
+    public void autoClimb(double inInches) {
+        /*
+        case 0:
+            if (inInches <= 6) {
+                drive.tankDrive(-0.75, -0.75); //change to drive certain wheel rotation or distance
+                step++;
+                break;
+            }
+		case 1:
+			
+			*/
+    }
+
+
 
 //ignore all other inputs? override button
 
