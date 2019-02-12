@@ -1,14 +1,14 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
 
 public class SwerveDrive {
 	static AHRS ahrs;
@@ -42,30 +42,24 @@ public class SwerveDrive {
 		translationAngle = ahrs.getAngle() - ahrsOffset;
 	}	
 
-	static void runSwerve(Joystick left, Joystick right, JoystickButton rightButton1, JoystickButton rightButton7, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
+	static void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
 
-		Joystick leftStick = left;
-		Joystick rightStick = right;
-		JoystickButton rightTrigger = rightButton1;
-		JoystickButton tuningActivation = rightButton7;
+		GenericHID driveController = controller;
+		JoystickButton gyroResetButton = gyroReset;
+		JoystickButton tuningActivation = tuningModeActivation;
 
 		int driveMode = 0;
 
-		double speed = Math.pow(leftStick.getMagnitude(), 2);
-		double leftDirection = leftStick.getDirectionDegrees() * -1;
-		double leftX = leftStick.getX();
-		double leftY = leftStick.getY();
+		double leftX = squareWithSignReturn(driveController.getRawAxis(RobotMap.LEFT_STICK_X_AXIS));
+		double leftY = squareWithSignReturn(-driveController.getRawAxis(RobotMap.LEFT_STICK_Y_AXIS));
 
-		double rightDirection = rightStick.getDirectionDegrees();
-		double rightMagnitude = rightStick.getMagnitude();
-		double twist = rightStick.getTwist();
-		
-
-		if (twist < 0) {
-			twist = -Math.pow(twist, 2);
-		} else {
-			twist = Math.pow(twist, 2);
-		}
+		double rightX = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_STICK_X_AXIS));
+		double rightY = squareWithSignReturn(-driveController.getRawAxis(RobotMap.RIGHT_STICK_Y_AXIS));
+		double pov = driveController.getPOV();
+		SmartDashboard.putNumber("POV", driveController.getPOV());
+		//double rightDirection = rightStick.getDirectionDegrees();
+		//double rightMagnitude = rightStick.getMagnitude();
+		double twist = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS) - driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
 
 		if (tuningActivation.get() == true) {
 			driveMode = 1;
@@ -77,7 +71,7 @@ public class SwerveDrive {
 		switch (driveMode) {
 			case 0:
 				//the 0s are temporary replacements for the robot relative joysticks. remember to find the opposite of the y value
-				translateAndRotate(leftX, -leftY, twist, ahrs.getAngle() - ahrsOffset, rightDirection, rightMagnitude, 0, 0);
+				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset, pov, rightX, rightY);
 				break;
 
 			case 1:
@@ -92,22 +86,19 @@ public class SwerveDrive {
 				break;
 		}
 		
-		if (rightTrigger.get() == true) {
+		if (gyroResetButton.get() == true) {
 			ahrsOffset = ahrs.getAngle();
 			driveStraight = false;
 			pidDrivingStraight.reset();
 		}
-			
 			  
 		SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
-		SmartDashboard.putNumber("Joystick output", leftDirection);
-		SmartDashboard.putNumber("Joystick output speed", speed);
 		
 	}
 
 
 
-	static void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double absoluteTurnMagnitude, double driveRobotTranslationX, double driveRobotTranslationY) {
+	static void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
@@ -119,12 +110,11 @@ public class SwerveDrive {
 		double robotRelativeX = driveRobotTranslationX;
 		double robotRelativeY = driveRobotTranslationY;
 		double unregulatedRotationValue = unregulatedTurning;
-		double absoluteRotationMagnitude = absoluteTurnMagnitude;
 		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
 
 		//Rotation Modes -- absolute, unregulated, and none
 		double rotationMagnitude;
-		if (absoluteRotationMagnitude > RobotMap.ABSOLUTE_ROTATION_DEADZONE) {
+		if (absoluteFieldRelativeDirection != -1) {
 			if (absoluteFieldRelativeDirection < 0) absoluteFieldRelativeDirection += 360;
 
 			if (absoluteFieldRelativeDirection > 337.5 || absoluteFieldRelativeDirection <= 22.5) {
@@ -141,10 +131,10 @@ public class SwerveDrive {
 				absoluteFieldRelativeDirection = 225;
 			} else if (absoluteFieldRelativeDirection > 247.5 && absoluteFieldRelativeDirection <= 292.5) {
 				absoluteFieldRelativeDirection = 270;
-			} else {
+			} else if (absoluteFieldRelativeDirection == 315) {
 				absoluteFieldRelativeDirection = 315;
 			}
-			rotationMagnitude = ((absoluteFieldRelativeDirection - gyroValueProcessed) / 100) * Math.pow((absoluteRotationMagnitude / 1.5), 2);
+			rotationMagnitude = (absoluteFieldRelativeDirection - gyroValueProcessed) / 100;
 			if (Math.abs(absoluteFieldRelativeDirection - gyroValueProcessed) > 180) rotationMagnitude *= -1;
 			driveStraight = false;
 		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE || unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
@@ -174,7 +164,11 @@ public class SwerveDrive {
 			double initialAngle;
 
 			if (fieldRelativeX == 0) {
-				initialAngle = 90;
+				if (fieldRelativeY > 0) {
+					initialAngle = 90;
+				} else {
+					initialAngle = -90;
+				}
 			} else {
 				initialAngle = Math.toDegrees(Math.atan(fieldRelativeY / fieldRelativeX));
 			}
@@ -391,5 +385,8 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
 		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
+	}
+	static double squareWithSignReturn(double inputReading) {
+		return Math.signum(inputReading) * inputReading * inputReading;
 	}
 }
