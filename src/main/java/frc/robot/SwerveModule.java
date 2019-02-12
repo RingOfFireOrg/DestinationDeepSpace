@@ -73,10 +73,12 @@ public class SwerveModule {
 		if (optimizedSpeed > 1) optimizedSpeed = 1;
 		if (optimizedSpeed < -1) optimizedSpeed = -1;
 		drive.set(optimizedSpeed);
+		/*
 		SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
 		SmartDashboard.putNumber("DP - " + moduleName, drivePower);
 		SmartDashboard.putNumber("SR - " + moduleName, speedRegulation.getOutput());
 		SmartDashboard.putNumber("GR - " + moduleName, accumulatedGR);
+		*/
 	}
 	
 	public void control(double driveSpeed, double wheelAngle) {

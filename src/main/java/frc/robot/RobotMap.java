@@ -5,7 +5,20 @@ public class RobotMap {
 	public static final int LEFT_JOYSTICK = 0;
 	public static final int RIGHT_JOYSTICK = 1;
 	public static final int LEFT_MANIPULATOR_STICK = 2;
-	public static final int RIGHT_MANIPULATOR_STICK = 3;
+    public static final int RIGHT_MANIPULATOR_STICK = 3;
+    
+    public static final int DRIVER_GAMEPAD = 0;
+
+    //Driver Gamepad Buttons AND axis:
+    public static final int RIGHT_STICK_X_AXIS = 0;
+    public static final int RIGHT_STICK_Y_AXIS = 1;
+    public static final int LEFT_TRIGGER_AXIS = 2;
+    public static final int RIGHT_TRIGGER_AXIS = 3;
+    public static final int LEFT_STICK_X_AXIS = 4;
+    public static final int LEFT_STICK_Y_AXIS = 5;
+
+    public static final int START_BUTTON_VALUE = 8;
+    public static final int BACK_BUTTON_VALUE = 7;
 
 	//Left Stick Buttons:
 	public static final int LEFT_TRIGGER = 1;

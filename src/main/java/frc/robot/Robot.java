@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -28,6 +29,7 @@ public class Robot extends TimedRobot {
 	public Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
 	private Joystick manipulatorStickL = new Joystick(RobotMap.LEFT_MANIPULATOR_STICK);
 	private Joystick manipulatorStickR = new Joystick(RobotMap.RIGHT_MANIPULATOR_STICK);
+	public GenericHID driverGamepad =  new Joystick(RobotMap.DRIVER_GAMEPAD);
 	SendableChooser<String> chooser = new SendableChooser<>();
 	JoystickButton frButton = new JoystickButton(leftStick, RobotMap.FRONT_RIGHT_BUTTON);
 	JoystickButton flButton = new JoystickButton(leftStick, RobotMap.FRONT_LEFT_BUTTON);
@@ -40,6 +42,9 @@ public class Robot extends TimedRobot {
 	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_TRIGGER);
 	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
 	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
+
+	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
+	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
 
 	boolean driveMode = false;
 	
@@ -59,7 +64,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		SwerveDrive.runSwerve(leftStick, rightStick, rightTrigger, tuningActivation, frButton, flButton, blButton, brButton);
+		SwerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
 
 		double yPosL = manipulatorStickL.getY();
     	double yPosR = manipulatorStickR.getY();
