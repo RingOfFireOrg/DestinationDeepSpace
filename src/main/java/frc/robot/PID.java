@@ -10,6 +10,9 @@ public class PID {
     double maximumOutputValue;
     double pidOutput;
     double error;
+    boolean velocityControlMode = false;
+    double lastTarget = 0;
+    double targetMargin = 1;
      
     PID (double P, double I, double D) {
         kP = P;
@@ -20,6 +23,14 @@ public class PID {
         minimumOutputValue = -1;
         maximumOutputValue = 1;
         pidOutput = 0;
+    }
+
+    void setVelocityControl(boolean velocityControl) {
+        velocityControlMode = velocityControl;
+    }
+
+    void setTargetMargin(double newTargetMargin) {
+        targetMargin = newTargetMargin;
     }
 
     void setOutputRange(double minimum, double maximum) {
@@ -40,6 +51,14 @@ public class PID {
 
     void setError(double newError) {
         error = newError;
+    }
+
+    void setError(double newError, double target) {
+        error = newError;
+        if (Math.abs(target - lastTarget) > targetMargin) {
+            integral = 0;
+            lastError = 0;
+        }
     }
 
     void reset() {

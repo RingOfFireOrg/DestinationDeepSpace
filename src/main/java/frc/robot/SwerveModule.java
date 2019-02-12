@@ -37,11 +37,6 @@ public class SwerveModule {
 
 		speedRegulation = new PID(0, 0, 0);
 		speedRegulation.setOutputRange(-1, 1);
-		//speedRegulation = new PIDController(0.0001, 0, 0, driveEncoder, drive);
-		//speedRegulation.setSetpoint(0);
-		//speedRegulation.setContinuous();
-		//speedRegulation.setInputRange(-31860, 31860);
-		//speedRegulation.setOutputRange(-1.0, 1.0);
 	}
 
 	public double convertToWheelRelative(double wheelAngleGoal) {
