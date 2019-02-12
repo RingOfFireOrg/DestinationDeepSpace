@@ -1,46 +1,42 @@
 package frc.robot;
 
 public class CargoManipulator{
-    private boolean inShootingPosition;
-    private boolean wheelsAreOn;
-    private boolean wheelsSpinningIn;
+    static private boolean inShootingPosition;
+    enum wheelState{IN, OUT, OFF};
+    static private wheelState wheels;
 
-    void intakePosition(){
+    static void intakePosition(){
         inShootingPosition = false;
         //TO DO something that lowers wheel intake to intake posistion
     }
 
-    void shootingPosition(){
+    static void shootingPosition(){
         inShootingPosition = true;
         //TO DO something that raises wheeled intake to shooting position
     }
 
-    void wheelsIn(){
-        wheelsAreOn = true;
-        wheelsSpinningIn = true;
+    static void wheelsIn(){
+        wheels = wheelState.IN;
         //TO DO something to turn the wheels to spinning in
     }
 
-    void wheelsShoot(){
-        wheelsAreOn = true;
-        wheelsSpinningIn = false;
+    static void wheelsShoot(){
+        wheels = wheelState.OUT;
         //TO DO something that makes the wheels turn out
     }
 
-    void wheelsOff(){
-        wheelsAreOn = false;
+    static void wheelsOff(){
+        wheels = wheelState.OFF;
         //TO DO something that forces the wheels off
     }
 
-    boolean inShootingPosition(){
+    static boolean inShootingPosition(){
         return inShootingPosition;
     }
 
-    boolean wheelsAreOn(){
-        return wheelsAreOn;
+    static wheelState getWheelState(){
+        return wheels;
     }
 
-    boolean wheelsSpinningIn(){
-        return wheelsSpinningIn;
-    }
+
 }

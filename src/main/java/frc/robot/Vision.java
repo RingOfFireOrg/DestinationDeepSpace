@@ -1,15 +1,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CargoManipulator.wheelState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Vision{
-   static double ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
-   static double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+   private static double ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
+   private static double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+   private static boolean cameraFacingBeak;
 
-   static boolean validTarget(){
+   private static boolean validTarget(){
        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
        ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
        if((tv == 1) && ((ts >= 13 && ts <=16) || (ts <= -13 && ts >= -16))){
@@ -20,12 +22,59 @@ public class Vision{
        }
    }
 
+   //this method will eventually dissapear. currently using for understanding how angle works
    static void logAngle(){
        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
        ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
        if(tv == 1){
            SmartDashboard.putNumber("skew of target", ts);
        }
+   }
+
+   static void swtichCameraToBeakSide(){
+        //TODO Physically switch camera
+        cameraFacingBeak = true;
+   }
+
+   static void switchCameraToCargoManipulator(){
+       //TODO Physically switch camera
+       cameraFacingBeak = false;
+   }
+
+   static boolean hatchPickupReady(){
+        if(validTarget() && !Beak.isOpen() && cameraFacingBeak){
+            return true;
+        } else {
+            return false;
+        }
+   }
+
+   static boolean hatchScoreReady(){
+        if(validTarget() && Beak.isOpen()&& cameraFacingBeak){
+            return true;
+        } else {
+            return false;
+        }
+   }
+
+   static boolean cargoScoreReady(){
+        if(validTarget() && CargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak && CargoManipulator.inShootingPosition()){
+            return true;
+        } else {
+            return false;
+        }
+   }
+
+   static void hatchPickup(){
+       // automation for getting hatch from feeder station
+   }
+
+   static void hatchScore(){
+       //automation for scoring hatch on cargo ship or lower level rocket
+   }
+
+   static void cargoScore(){
+       //automation for scoring hatch on cargo ship or lower level rocket
    }
 
 
