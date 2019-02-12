@@ -5,6 +5,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Prototype_CAN;
@@ -96,6 +97,7 @@ public class Robot extends TimedRobot {
     boolean stickThumbRight = stickThumbR.get();
 
     drive.tankDrive(leftSpeed, rightSpeed);
+
 
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly

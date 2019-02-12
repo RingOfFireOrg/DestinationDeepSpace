@@ -38,7 +38,11 @@ public static final int CAN_MOTOR_BACK_RIGHT = 1;
 	public static final double MIN_LIFT_SPEED = 0.5;
 	public static final double MAX_LIFT_SPEED = 1.0;
 	
-	public static final double DEFAULT_FIND_SPEED = 0.5;
+    public static final double DEFAULT_FIND_SPEED = 0.5;
+    
+    //Ultrasonic Sensors
+
+    public static final double ULTRASONIC_VOLTAGE_TO_INCHES = 0.0098;
 
     // Joystick
     // Example: public static final int JOYSTICK_DRIVE_LEFT = 0;
