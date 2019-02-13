@@ -403,6 +403,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
+
 	static double squareWithSignReturn(double inputReading) {
 		return Math.signum(inputReading) * inputReading * inputReading;
 	}

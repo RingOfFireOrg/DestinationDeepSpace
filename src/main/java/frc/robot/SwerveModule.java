@@ -140,4 +140,12 @@ public class SwerveModule {
 			}
 		}
 	}
+
+	public double driveEncoderDegrees() {
+		return driveEncoder.get();
+	}
+
+	public double driveEncoderDegrees(double relative) {
+		return driveEncoder.get() - relative;
+	}
 }
