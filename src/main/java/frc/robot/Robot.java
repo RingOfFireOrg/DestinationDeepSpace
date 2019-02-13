@@ -46,6 +46,8 @@ public class Robot extends TimedRobot {
 	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
 	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
 
+	AutoClimb autoClimb;
+
 	boolean driveMode = false;
 	
 	SwerveDrive swerveDrive = new SwerveDrive();
@@ -60,6 +62,9 @@ public class Robot extends TimedRobot {
 		climberBack = new Climber(RobotMap.CAN_CLIMBER_BACK, RobotMap.SPEED_DEFAULT_TEST);
 		climberLeftWheel = new Climber(RobotMap.CAN_CLIMBER_WHEEL_LEFT, RobotMap.SPEED_DEFAULT_TEST);
 		climberRightWheel = new Climber(RobotMap.CAN_CLIMBER_WHEEL_RIGHT, RobotMap.SPEED_DEFAULT_TEST);
+
+		autoClimb = new AutoClimb(climberFront, climberBack, climberLeftWheel, climberRightWheel);
+
 	}
 
 	@Override
