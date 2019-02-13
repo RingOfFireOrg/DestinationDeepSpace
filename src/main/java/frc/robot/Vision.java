@@ -10,6 +10,7 @@ public class Vision{
    private static double ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
    private static double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
    private static boolean cameraFacingBeak;
+   private static int automationStep = 0;
 
    private static boolean validTarget(){
        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
@@ -67,6 +68,30 @@ public class Vision{
 
    static void hatchPickup(){
        // automation for getting hatch from feeder station
+       switch(automationStep){
+           case 0:
+            if(){
+                automationStep++;
+                break;
+            } else {
+                break;
+            }
+           case 1:
+            if(){
+                automationStep++;
+                break;
+            } else {
+                break;
+            }
+           case 2:
+            if(){
+                automationStep++;
+                break;
+            } else {
+                break;
+            }
+       }
+
    }
 
    static void hatchScore(){
