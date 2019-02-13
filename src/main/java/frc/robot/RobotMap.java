@@ -87,6 +87,12 @@ public class RobotMap {
 	public static final double WHEEL_DIAMETER = 4;
 	public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
+	// Limit Switches for autoClimb
+	public static final double INPUT_FRONT_TOP_SW = 0; // find actual port for limit switches
+	public static final double INPUT_BACK_TOP_SW = 0; // find actual port for limit switches
+	public static final double INPUT_FRONT_BOTTOM_SW = 0; // find actual port for limit switches
+	public static final double INPUT_BACK_BOTTOM_SW = 0; // find actual port for limit switches
+
 	//dimensions of the robot in CM
 	public static final int ROBOT_X_IN_CM = 51;
 	public static final int ROBOT_Y_IN_CM = 51;
