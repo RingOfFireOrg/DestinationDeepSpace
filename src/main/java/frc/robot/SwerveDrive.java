@@ -40,6 +40,11 @@ public class SwerveDrive {
 		pidDrivingStraight = new PID(0.005, 0.00005, 0);
 		pidDrivingStraight.setOutputRange(-0.5, 0.5);
 		translationAngle = ahrs.getAngle() - ahrsOffset;
+		frontRight.resetModule();
+		frontLeft.resetModule();
+		backLeft.resetModule();
+		backRight.resetModule();
+		SmartDashboard.putNumber("Version #", 4);
 	}	
 
 	static void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
@@ -306,6 +311,7 @@ public class SwerveDrive {
 
 	static void tuningMode(JoystickButton buttonFR, JoystickButton buttonFL, JoystickButton buttonBL, JoystickButton buttonBR) {
 		//used to tune the modules and their zero values
+		/*
 		if (buttonFR.get()) {
 			frontRight.control(0.1, 0);
 		} else {
@@ -326,6 +332,8 @@ public class SwerveDrive {
 		} else {
 			backLeft.stop();
 		}
+		*/
+
 		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
 		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
