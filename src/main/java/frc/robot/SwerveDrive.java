@@ -44,7 +44,7 @@ public class SwerveDrive {
 		frontLeft.resetModule();
 		backLeft.resetModule();
 		backRight.resetModule();
-		SmartDashboard.putNumber("Version #", 4);
+		SmartDashboard.putNumber("Version #", 5);
 	}	
 
 	static void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
