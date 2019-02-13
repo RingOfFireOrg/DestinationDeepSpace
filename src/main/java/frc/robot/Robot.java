@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
 		climberLeftWheel = new Climber(RobotMap.CAN_CLIMBER_WHEEL_LEFT, RobotMap.SPEED_DEFAULT_TEST);
 		climberRightWheel = new Climber(RobotMap.CAN_CLIMBER_WHEEL_RIGHT, RobotMap.SPEED_DEFAULT_TEST);
 
-		autoClimb = new AutoClimb(climberFront, climberBack, climberLeftWheel, climberRightWheel);
+		autoClimb = new AutoClimb(climberFront, climberBack, climberLeftWheel, climberRightWheel, swerveDrive);
 
 	}
 
