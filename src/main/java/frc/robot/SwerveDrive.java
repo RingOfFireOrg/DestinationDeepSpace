@@ -67,7 +67,6 @@ public class SwerveDrive {
 			driveMode = 0;
 		} 
 
-
 		switch (driveMode) {
 			case 0:
 				//the 0s are temporary replacements for the robot relative joysticks. remember to find the opposite of the y value
@@ -96,7 +95,17 @@ public class SwerveDrive {
 		
 	}
 
+	static double degToInches(double degrees) {
+		double wheelRotations = degrees / 360;
 
+		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
+	}
+
+	static double inchesToDeg(double inches) {
+		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
+		
+		return wheelRotations * 360;
+	}
 
 	static void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 

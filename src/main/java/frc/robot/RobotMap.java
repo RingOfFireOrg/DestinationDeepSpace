@@ -80,6 +80,13 @@ public class RobotMap {
 	
 	public static final double DEFAULT_FIND_SPEED = 0.5;
 
+	// Ultrasonic Sensors
+	public static final double ULTRASONIC_VOLTAGE_TO_INCHES = 0.0098;
+	
+	// Wheels
+	public static final double WHEEL_DIAMETER = 4;
+	public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+
 	//dimensions of the robot in CM
 	public static final int ROBOT_X_IN_CM = 51;
 	public static final int ROBOT_Y_IN_CM = 51;
