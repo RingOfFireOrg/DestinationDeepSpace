@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.PIDController;
 	   
+
 //need to ifx
 public class SwerveModule {
 	Jaguar drive;
@@ -21,6 +22,8 @@ public class SwerveModule {
 	double optimizedSpeed;
 	PID speedRegulation;
 	double accumulatedGR = 0;
+	static final double MAX_DRIVE_POWER = 0.8;
+	static final double MAX_STEER_POWER = 0.8;
 	
 
 	//will need to make changes to the input --Encoder driveRotEncoder <-- add to constructor
@@ -66,7 +69,7 @@ public class SwerveModule {
 	}
 
 	public void setDriveSpeed(double drivePower) {
-		if (moduleName != "BackLeft") {
+		/*if (moduleName != "BackLeft") {
 			accumulatedGR += drivePower;
 			speedRegulation.setError((drivePower * 28000) - getRate());
 			speedRegulation.update();
@@ -74,9 +77,14 @@ public class SwerveModule {
 			if (optimizedSpeed > 1) optimizedSpeed = 1;
 			if (optimizedSpeed < -1) optimizedSpeed = -1;
 			drive.set(optimizedSpeed);
-		} else {
-			drive.set(drivePower);
+		} else { */
+		if (drivePower > MAX_DRIVE_POWER) {
+			drivePower = MAX_DRIVE_POWER;
+		} else if (drivePower < -MAX_DRIVE_POWER) {
+			drivePower = -MAX_DRIVE_POWER;
 		}
+			drive.set(drivePower);
+		//}
 		
 		/*
 		SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
@@ -84,6 +92,17 @@ public class SwerveModule {
 		SmartDashboard.putNumber("SR - " + moduleName, speedRegulation.getOutput());
 		SmartDashboard.putNumber("GR - " + moduleName, accumulatedGR);
 		*/
+	}
+
+	public void setSteerSpeed(double steerPower) {
+
+		if (steerPower > MAX_STEER_POWER) {
+			steerPower = MAX_STEER_POWER;
+		} else if (steerPower < -MAX_STEER_POWER) {
+			steerPower = -MAX_STEER_POWER;
+		}
+		steer.set(steerPower);
+		
 	}
 	
 	public void control(double driveSpeed, double wheelAngle) {
@@ -106,7 +125,7 @@ public class SwerveModule {
 			if (wheelTurnAngle0to360 > 90 && wheelTurnAngle0to360 < 270) // for quadrants 2 & 3
 			{
 				optimizedWheelTurnAngle = (wheelTurnAngle0to360 - 180); // converting angles from quadrant 2 to quad 4 and converting from quad 3 to quad 1
-				steer.set(optimizedWheelTurnAngle/90);
+				setSteerSpeed(optimizedWheelTurnAngle/90);
 				setDriveSpeed(-driveSpeed);// go backwards
 			} else // quads 1 & 4
 			{
@@ -116,7 +135,7 @@ public class SwerveModule {
 				} else {
 					optimizedWheelTurnAngle = wheelTurnAngle0to360; // quad 1, no change
 				}
-				steer.set(optimizedWheelTurnAngle/90);
+				setSteerSpeed(optimizedWheelTurnAngle/90);
 				setDriveSpeed(driveSpeed);// forward
 			}
 		}

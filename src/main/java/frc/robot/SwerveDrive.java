@@ -44,7 +44,7 @@ public class SwerveDrive {
 		frontLeft.resetModule();
 		backLeft.resetModule();
 		backRight.resetModule();
-		SmartDashboard.putNumber("Version #", 4);
+		SmartDashboard.putNumber("Version #", 5);
 	}	
 
 	static void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
@@ -71,7 +71,6 @@ public class SwerveDrive {
 		} else {
 			driveMode = 0;
 		} 
-
 
 		switch (driveMode) {
 			case 0:
@@ -101,7 +100,17 @@ public class SwerveDrive {
 		
 	}
 
+	static double degToInches(double degrees) {
+		double wheelRotations = degrees / 360;
 
+		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
+	}
+
+	static double inchesToDeg(double inches) {
+		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
+		
+		return wheelRotations * 360;
+	}
 
 	static void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 
