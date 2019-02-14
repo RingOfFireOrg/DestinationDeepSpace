@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.PIDController;
-	   
 
 //need to ifx
 public class SwerveModule {
@@ -38,7 +37,7 @@ public class SwerveModule {
 		driveEncoder.reset();
 		driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
 
-		speedRegulation = new PID(0, 0.000001, 0);
+		speedRegulation = new PID(0, -0.000001, 0);
 		speedRegulation.setOutputRange(-1, 1);
 		speedRegulation.reset();
 	}
@@ -69,21 +68,24 @@ public class SwerveModule {
 	}
 
 	public void setDriveSpeed(double drivePower) {
-		/*if (moduleName != "BackLeft") {
+		/*if (moduleName == "BackLeft") {
 			accumulatedGR += drivePower;
 			speedRegulation.setError((drivePower * 28000) - getRate());
 			speedRegulation.update();
 			optimizedSpeed = drivePower + speedRegulation.getOutput();
-			if (optimizedSpeed > 1) optimizedSpeed = 1;
-			if (optimizedSpeed < -1) optimizedSpeed = -1;
+			if (optimizedSpeed > MAX_DRIVE_POWER) optimizedSpeed = MAX_DRIVE_POWER;
+			if (optimizedSpeed < -MAX_DRIVE_POWER) optimizedSpeed = -MAX_DRIVE_POWER;
 			drive.set(optimizedSpeed);
-		} else { */
-		if (drivePower > MAX_DRIVE_POWER) {
-			drivePower = MAX_DRIVE_POWER;
-		} else if (drivePower < -MAX_DRIVE_POWER) {
-			drivePower = -MAX_DRIVE_POWER;
-		}
+			SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
+			//SmartDashboard("encoder a", driveEncoder.());
+		} else { */ 
+			if (drivePower > MAX_DRIVE_POWER) {
+				drivePower = MAX_DRIVE_POWER;
+			} else if (drivePower < -MAX_DRIVE_POWER) {
+				drivePower = -MAX_DRIVE_POWER;
+			}
 			drive.set(drivePower);
+		//} 
 		//}
 		
 		/*
