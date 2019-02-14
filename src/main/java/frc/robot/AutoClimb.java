@@ -7,9 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;  
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.SwerveDrive;
 
@@ -17,12 +17,6 @@ import frc.robot.SwerveDrive;
  * Add your docs here.
  */
 public class AutoClimb {
-    private static final int STOP_AT_FRONT_LEG = 12; //find actual distance
-    private static final int STOP_AT_BACK_LEG = 12; //find actual distance
-    private static final int AGAINST_PLATFORM = 0; //any distance less than 20 inches shows up as 6?
-    private static final int DRIVER_STATION_WALL = 0; //find actual distance
-
-    private AnalogInput ultrasonic = new AnalogInput(0);
     private int step = 0;
     private Climber climberFront;
     private Climber climberBack;
@@ -30,10 +24,19 @@ public class AutoClimb {
     private Climber climberWheelRight;
     private SwerveDrive swerveDrive;
 
-    private DigitalInput frontLimitSwitchTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
-    private DigitalInput backLimitSwitchTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
-    private DigitalInput frontLimitSwitchBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
-    private DigitalInput backLimitSwitchBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
+    private DigitalInput frontHallEffectTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
+    private DigitalInput backHallEffectTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
+    private DigitalInput frontHallEffectBottom = new DigitalInput(RobotMap.INPUT_FRONT_BOTTOM_SW);
+    private DigitalInput backHallEffectBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
+
+    private DigitalInput frontLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_LEFT_WHEEL);
+    private DigitalInput backLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_LEFT_WHEEL);
+    private DigitalInput frontRightWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_RIGHT_WHEEL);
+    private DigitalInput backRightWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_RIGHT_WHEEL);
+
+    private Timer timer = new Timer();
+
+    private boolean autoClimbFinish = false; //false means not done
 
     public AutoClimb(Climber climberFront, Climber climberBack, Climber climberWheelLeft, Climber climberWheelRight, SwerveDrive swerveDrive) {
         this.climberFront = climberFront;
@@ -41,74 +44,100 @@ public class AutoClimb {
         this.climberWheelLeft = climberWheelLeft;
         this.climberWheelRight = climberWheelRight;
         this.swerveDrive = swerveDrive;
+        timer.reset();
     }
 
-    private double getDistanceInInches() {
-        double voltage = ultrasonic.getVoltage();
-        double inInches = (voltage / RobotMap.ULTRASONIC_VOLTAGE_TO_INCHES);
-
-        SmartDashboard.putNumber("Ultrasonic Voltage: ", voltage);
-
-        return inInches;
-    }
-
-    private void driveForward() {
+    private void driveClimberWheelsForward() {
         climberWheelLeft.forward();
         climberWheelRight.forward();
     }
 
-    private void stopDriving() {
+    private void driveClimberWheelsReverse() {
+        climberWheelLeft.reverse();
+        climberWheelRight.reverse();
+    }
+
+    private void stopClimberWheelsDriving() {
         climberWheelLeft.stop();
         climberWheelRight.stop();
     }
 
-    private void driveSwerve() {
-        swerveDrive.syncroDrive(-0.75, 0, 0, 0);
+    private void driveSwerve(double speed) {
+        swerveDrive.syncroDrive(speed, 0, 0, 0);
     }
 
     private void stopSwerve() {
-        // stop driving swerve
+        swerveDrive.syncroDrive(0, 0, 0, 0);
     }
 
-    public void autoClimb() {
+    public void autoClimbInit() {
+        step = 0;
+        timer.reset();
+        autoClimbFinish = false;
+    }
+
+    public boolean autoClimbFinished() {
 
         switch(step) {
         
+        case 0: 
+            timer.start();
+            step++;
+            break;
+
         // drive back a little
-        case 0:
-                if (getDistanceInInches() > AGAINST_PLATFORM) {
-                    // swerve drive forward
+        case 1:
+                if (timer.get() < 0.5) {
+                    driveSwerve(-0.5);
                 } else {
-                    //swerve drive stop
+                    stopSwerve();
                     step++;
                 }
             break;
 
         // raise front and back legs all the way
-        case 1:
-            if(frontLimitSwitchTop.get() && backLimitSwitchTop.get()) {
+        case 2:
+            if(frontHallEffectTop.get()) {
                 climberFront.stop();
-                climberBack.stop();
-                step++;
             } else {
                 climberFront.forward();
+            }
+
+            if(backHallEffectTop.get()) {
+                climberBack.stop();
+            } else {
                 climberBack.forward();
+            }
+
+            if(frontHallEffectTop.get() && backHallEffectTop.get()) {
+                step++;
             }
             break;
 
         // drive forward until front of robot is on platform but not hitting front leg
-        case 2:
-            if (getDistanceInInches() > STOP_AT_FRONT_LEG) { 
-                driveForward();
+        case 3:
+            if (frontLeftWheelLimitSwitch.get() || frontRightWheelLimitSwitch.get()) { 
+                stopClimberWheelsDriving();
+                timer.reset();
+                timer.start();
             } else {
-                stopDriving();
+                driveClimberWheelsForward();
                 step++;
             }
             break;    
 
+        case 4:
+            if (timer.get() < 0.5) {
+                driveClimberWheelsReverse();
+            } else {
+                stopClimberWheelsDriving();
+                step++;
+            }
+            break;
+
         // lift front leg up all the way
-        case 3:    
-            if(frontLimitSwitchBottom.get()) {
+        case 5:    
+            if(frontHallEffectBottom.get()) {
                 climberFront.stop();
                 step++;
             } else {
@@ -117,19 +146,33 @@ public class AutoClimb {
            break;
 
         // drive forward until robot is on platfrom till right before back leg
-        case 4: 
-            if (getDistanceInInches() > STOP_AT_BACK_LEG) { 
-                driveForward();
+        case 6: 
+            if (backLeftWheelLimitSwitch.get() || backRightWheelLimitSwitch.get()) { 
+                stopClimberWheelsDriving();
+                timer.reset();
+                timer.start();
             } else {
-                stopDriving();
+                driveClimberWheelsForward();
+                step++;
+
+            }
+            break;
+
+        case 7: 
+            if (timer.get() < 0.5) {
+                driveClimberWheelsReverse();
+            } else {
+                stopClimberWheelsDriving();
                 step++;
             }
             break;
 
         // lift back leg all the way up
-        case 5:   
-            if(backLimitSwitchBottom.get()) {
+        case 8:   
+            if(backHallEffectBottom.get()) {
                 climberBack.stop();
+                timer.reset();
+                timer.start();
                 step++;
             } else {
                 climberBack.reverse();
@@ -137,18 +180,17 @@ public class AutoClimb {
             break;
 
         // drive forward until all the way on platfrom
-        case 6:
-            //drive swerve how many ever inches to be fully on platform
-            if (getDistanceInInches() > DRIVER_STATION_WALL) {
-                // swerve drive forward
+        case 9:
+            if (timer.get() < 2) {
+                driveSwerve(0.5);
             } else {
-                //swerve drive stop
+                stopSwerve();
+                autoClimbFinish = true;
                 step++;
             }
         }   
 
+        return autoClimbFinish;
     }
-
-//ignore all other inputs? override button
 
 }

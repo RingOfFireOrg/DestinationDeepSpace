@@ -46,11 +46,14 @@ public class Robot extends TimedRobot {
 	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
 	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
 
-	public JoystickButton autoClimbButton = new JoystickButton(manipulatorStickL, 6);
+	public JoystickButton autoClimbButton = new JoystickButton(manipulatorStickL, 6); //find actual button number
+	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorStickR, 7); //find actual button number
 
 	AutoClimb autoClimb;
 
 	boolean driveMode = false;
+
+	boolean autoClimbMode = false;
 	
 	SwerveDrive swerveDrive = new SwerveDrive();
 
@@ -82,42 +85,51 @@ public class Robot extends TimedRobot {
 
 		//check logic
 		if (autoClimbButton.get()) {
-            autoClimb.autoClimb();
-        } else {
-			// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
-    		if (yPosL < 0.25) {
-				climberLeftWheel.forward();
-	 		} else if (yPosL > -0.25) {
-				climberLeftWheel.reverse();
-	  		} else {
-				climberLeftWheel.stop();
-	  		}
-  
-	  		if (yPosR < 0.25) {
-				climberRightWheel.forward();
-	  		} else if (yPosR > -0.25) {
-				climberRightWheel.reverse();
-	  		} else {
-				climberRightWheel.stop();
-	  		}
-  
-	  		if (stickTriggerLeft) {
-				climberFront.reverse();
-	  		} else if (stickThumbLeft) {
-				climberFront.forward();
-	  		} else {
-				climberFront.stop();
-	  		}
-  
-	  		if (stickTriggerRight) {
-				climberBack.reverse();
-	  		} else if (stickThumbRight) {
-				climberBack.forward();
-	  		} else {
-				climberBack.stop();
-	  		}
+			autoClimbMode = true;
+			autoClimb.autoClimbInit();
+		}else if(stopAutoClimbButton.get()) {
+			autoClimbMode = false;
+		}
+
+		if (autoClimbMode == true) {
+			if (autoClimb.autoClimbFinished()) {
+				autoClimbMode = false;
+			}
+			return;
 		}
 		
+		// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
+		if (yPosL < 0.25) {
+			climberLeftWheel.forward();
+			} else if (yPosL > -0.25) {
+			climberLeftWheel.reverse();
+			} else {
+			climberLeftWheel.stop();
+			}
+
+			if (yPosR < 0.25) {
+			climberRightWheel.forward();
+			} else if (yPosR > -0.25) {
+			climberRightWheel.reverse();
+			} else {
+			climberRightWheel.stop();
+			}
+
+			if (stickTriggerLeft) {
+			climberFront.reverse();
+			} else if (stickThumbLeft) {
+			climberFront.forward();
+			} else {
+			climberFront.stop();
+			}
+
+			if (stickTriggerRight) {
+			climberBack.reverse();
+			} else if (stickThumbRight) {
+			climberBack.forward();
+			} else {
+			climberBack.stop();
+			}
 
 	}
 
