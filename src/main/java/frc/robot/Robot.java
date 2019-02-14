@@ -46,6 +46,8 @@ public class Robot extends TimedRobot {
 	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
 	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
 
+	public JoystickButton autoClimbButton = new JoystickButton(manipulatorStickL, 6);
+
 	AutoClimb autoClimb;
 
 	boolean driveMode = false;
@@ -77,39 +79,46 @@ public class Robot extends TimedRobot {
     	boolean stickTriggerRight = stickTriggerR.get();
     	boolean stickThumbLeft = stickThumbL.get();
 		boolean stickThumbRight = stickThumbR.get();
+
+		//check logic
+		if (autoClimbButton.get()) {
+            autoClimb.autoClimb(inInches);
+        } else {
+			// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
+    		if (yPosL < 0.25) {
+				climberLeftWheel.forward();
+	 		} else if (yPosL > -0.25) {
+				climberLeftWheel.reverse();
+	  		} else {
+				climberLeftWheel.stop();
+	  		}
+  
+	  		if (yPosR < 0.25) {
+				climberRightWheel.forward();
+	  		} else if (yPosR > -0.25) {
+				climberRightWheel.reverse();
+	  		} else {
+				climberRightWheel.stop();
+	  		}
+  
+	  		if (stickTriggerLeft) {
+				climberFront.reverse();
+	  		} else if (stickThumbLeft) {
+				climberFront.forward();
+	  		} else {
+				climberFront.stop();
+	  		}
+  
+	  		if (stickTriggerRight) {
+				climberBack.reverse();
+	  		} else if (stickThumbRight) {
+				climberBack.forward();
+	  		} else {
+				climberBack.stop();
+	  		}
+		}
 		
-		// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
-    	if (yPosL < 0.25) {
-			climberLeftWheel.forward();
-	 	} else if (yPosL > -0.25) {
-			climberLeftWheel.reverse();
-	  	} else {
-			climberLeftWheel.stop();
-	  	}
-  
-	  	if (yPosR < 0.25) {
-			climberRightWheel.forward();
-	  	} else if (yPosR > -0.25) {
-			climberRightWheel.reverse();
-	  	} else {
-			climberRightWheel.stop();
-	  	}
-  
-	  	if (stickTriggerLeft) {
-			climberFront.reverse();
-	  	} else if (stickThumbLeft) {
-			climberFront.forward();
-	  	} else {
-			climberFront.stop();
-	  	}
-  
-	  	if (stickTriggerRight) {
-			climberBack.reverse();
-	  	} else if (stickThumbRight) {
-			climberBack.forward();
-	  	} else {
-			climberBack.stop();
-	  	}
+
 	}
 
 	@Override

@@ -72,11 +72,12 @@ public class AutoClimb {
     }
 
     public void autoClimb(double inInches) {
+
         switch(step) {
         
         // drive back a little
         case 0:
-                if (getDistanceInInches() <= AGAINST_PLATFORM) {
+                if (getDistanceInInches() < AGAINST_PLATFORM) {
                     // swerve drive forward
                 } else {
                     //swerve drive stop
@@ -112,7 +113,7 @@ public class AutoClimb {
                 climberFront.stop();
                 step++;
             } else {
-                climberFront.forward();
+                climberFront.reverse();
             }
            break;
 
@@ -139,7 +140,7 @@ public class AutoClimb {
         // drive forward until all the way on platfrom
         case 6:
             //drive swerve how many ever inches to be fully on platform
-            if (getDistanceInInches() <= DRIVER_STATION_WALL) {
+            if (getDistanceInInches() > DRIVER_STATION_WALL) {
                 // swerve drive forward
             } else {
                 //swerve drive stop
