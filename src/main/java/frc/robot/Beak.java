@@ -1,19 +1,23 @@
 package frc.robot;
 
 public class Beak {
-    static private boolean isOpen;
+    private boolean isOpen;
 
-    static void open(){
+    public Beak(){
+        
+    }
+
+    void open(){
         // TODO something that opens beak
         isOpen = true;
     }
 
-    static void close(){
+    void close(){
         //TODO something that closes beak
         isOpen = false;
     }
 
-    static boolean isOpen(){
+    boolean isOpen(){
         return isOpen;
     }    
 }

@@ -126,51 +126,7 @@ public class SwerveDrive {
 		double unregulatedRotationValue = unregulatedTurning;
 		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
 
-		//Rotation Modes -- absolute, unregulated, and none
-		double rotationMagnitude;
-		if (absoluteFieldRelativeDirection != -1) {
-			if (absoluteFieldRelativeDirection < 0) absoluteFieldRelativeDirection += 360;
-
-			if (absoluteFieldRelativeDirection > 337.5 || absoluteFieldRelativeDirection <= 22.5) {
-				absoluteFieldRelativeDirection = 0;
-			} else if (absoluteFieldRelativeDirection > 22.5 && absoluteFieldRelativeDirection <= 67.5) {
-				absoluteFieldRelativeDirection = 45;
-			} else if (absoluteFieldRelativeDirection > 67.5 && absoluteFieldRelativeDirection <= 110.5) {
-				absoluteFieldRelativeDirection = 90;
-			} else if (absoluteFieldRelativeDirection > 110.5 && absoluteFieldRelativeDirection <= 157.5) {
-				absoluteFieldRelativeDirection = 135;
-			} else if (absoluteFieldRelativeDirection > 157.5 && absoluteFieldRelativeDirection <= 202.5) {
-				absoluteFieldRelativeDirection = 180;
-			} else if (absoluteFieldRelativeDirection > 202.5 && absoluteFieldRelativeDirection <= 247.5) {
-				absoluteFieldRelativeDirection = 225;
-			} else if (absoluteFieldRelativeDirection > 247.5 && absoluteFieldRelativeDirection <= 292.5) {
-				absoluteFieldRelativeDirection = 270;
-			} else if (absoluteFieldRelativeDirection == 315) {
-				absoluteFieldRelativeDirection = 315;
-			}
-			rotationMagnitude = (absoluteFieldRelativeDirection - gyroValueProcessed) / 100;
-			if (Math.abs(absoluteFieldRelativeDirection - gyroValueProcessed) > 180) rotationMagnitude *= -1;
-			driveStraight = false;
-		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE || unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
-			rotationMagnitude = unregulatedRotationValue;
-			driveStraight = false;
-		} else {
-			//no turning methods -- goes straight
-			if (driveStraight == false) {
-				driveStraight = true;
-				translationAngle = gyroValueUnprocessed;
-				pidDrivingStraight.reset();
-			}
-			pidDrivingStraight.setError(gyroValueUnprocessed - translationAngle);
-			pidDrivingStraight.update();
-			rotationMagnitude = -pidDrivingStraight.getOutput();
-			SmartDashboard.putNumber("translationAngle", translationAngle);
-			SmartDashboard.putNumber("DSEC - ", -pidDrivingStraight.getOutput());
-		}
-		if (rotationMagnitude > 1) rotationMagnitude = 1;
-		if (rotationMagnitude < -1) rotationMagnitude = -1;
-
-
+		
 		//Translation Modes -- field relative or robot relative
 		double jsMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
 		if (jsMag < RobotMap.TRANSLATION_DEADZONE) jsMag = 0;
@@ -203,6 +159,56 @@ public class SwerveDrive {
 			robotRelativeX = 0;
 			robotRelativeY = 0;
 		}
+		
+
+
+		//Rotation Modes -- absolute, unregulated, and none
+		double rotationMagnitude;
+		if (absoluteFieldRelativeDirection != -1) {
+			if (absoluteFieldRelativeDirection < 0) absoluteFieldRelativeDirection += 360;
+
+			if (absoluteFieldRelativeDirection > 337.5 || absoluteFieldRelativeDirection <= 22.5) {
+				absoluteFieldRelativeDirection = 0;
+			} else if (absoluteFieldRelativeDirection > 22.5 && absoluteFieldRelativeDirection <= 67.5) {
+				absoluteFieldRelativeDirection = 45;
+			} else if (absoluteFieldRelativeDirection > 67.5 && absoluteFieldRelativeDirection <= 110.5) {
+				absoluteFieldRelativeDirection = 90;
+			} else if (absoluteFieldRelativeDirection > 110.5 && absoluteFieldRelativeDirection <= 157.5) {
+				absoluteFieldRelativeDirection = 135;
+			} else if (absoluteFieldRelativeDirection > 157.5 && absoluteFieldRelativeDirection <= 202.5) {
+				absoluteFieldRelativeDirection = 180;
+			} else if (absoluteFieldRelativeDirection > 202.5 && absoluteFieldRelativeDirection <= 247.5) {
+				absoluteFieldRelativeDirection = 225;
+			} else if (absoluteFieldRelativeDirection > 247.5 && absoluteFieldRelativeDirection <= 292.5) {
+				absoluteFieldRelativeDirection = 270;
+			} else if (absoluteFieldRelativeDirection == 315) {
+				absoluteFieldRelativeDirection = 315;
+			}
+			rotationMagnitude = (absoluteFieldRelativeDirection - gyroValueProcessed) / 100;
+			if (Math.abs(absoluteFieldRelativeDirection - gyroValueProcessed) > 180) rotationMagnitude *= -1;
+			driveStraight = false;
+		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE || unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
+			rotationMagnitude = unregulatedRotationValue;
+			driveStraight = false;
+		} else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) > RobotMap.TRANSLATION_DEADZONE) {
+			//no turning methods -- goes straight
+			if (driveStraight == false) {
+				driveStraight = true;
+				translationAngle = gyroValueUnprocessed;
+				pidDrivingStraight.reset();
+			}
+			pidDrivingStraight.setError(gyroValueUnprocessed - translationAngle);
+			pidDrivingStraight.update();
+			rotationMagnitude = -pidDrivingStraight.getOutput();
+			SmartDashboard.putNumber("translationAngle", translationAngle);
+			SmartDashboard.putNumber("DSEC - ", -pidDrivingStraight.getOutput());
+		} else {
+			rotationMagnitude = 0;
+		}
+		if (rotationMagnitude > 1) rotationMagnitude = 1;
+		if (rotationMagnitude < -1) rotationMagnitude = -1;
+
+
 
 		//Vector math to combine the translation and the rotation values
 		//adding the various cartesian points for the end of the vectors

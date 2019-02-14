@@ -7,13 +7,16 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Vision{
-   private static double ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
-   private static double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-   private static double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-   private static boolean cameraFacingBeak;
-   private static int automationStep = 0;
+   private double ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
+   private double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+   private double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+   private boolean cameraFacingBeak;
+   private int automationStep = 0;
+   Beak beak = new Beak();
+   CargoManipulator cargoManipulator = new CargoManipulator();
 
-   private static boolean validTarget(){
+
+   private boolean validTarget(){
        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
        ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
        if((tv == 1) && ((ts >= 13 && ts <=16) || (ts <= -13 && ts >= -16))){
@@ -25,7 +28,7 @@ public class Vision{
    }
 
    //this method will eventually dissapear. currently using for understanding how angle works
-   static void logAngle(){
+   void logAngle(){
        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
        ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
        if(tv == 1){
@@ -33,34 +36,34 @@ public class Vision{
        }
    }
 
-   static void swtichCameraToBeakSide(){
+   void swtichCameraToBeakSide(){
         //TODO Physically switch camera
         cameraFacingBeak = true;
    }
 
-   static void switchCameraToCargoManipulator(){
+   void switchCameraToCargoManipulator(){
        //TODO Physically switch camera
        cameraFacingBeak = false;
    }
 
-   static boolean hatchPickupReady(){
-        if(validTarget() && !Beak.isOpen() && cameraFacingBeak){
+   boolean hatchPickupReady(){
+        if(validTarget() && !beak.isOpen() && cameraFacingBeak){
             return true;
         } else {
             return false;
         }
    }
 
-   static boolean hatchScoreReady(){
-        if(validTarget() && Beak.isOpen()&& cameraFacingBeak){
+   boolean hatchScoreReady(){
+        if(validTarget() && beak.isOpen() && cameraFacingBeak){
             return true;
         } else {
             return false;
         }
    }
 
-   static boolean cargoScoreReady(){
-        if(validTarget() && CargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak && CargoManipulator.inShootingPosition()){
+   boolean cargoScoreReady(){
+        if(validTarget() && cargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak && cargoManipulator.inShootingPosition()){
             return true;
         } else {
             return false;
@@ -69,17 +72,19 @@ public class Vision{
 
 
    
-   double heading_error = -tx;
-   double steering_adjust = 0.0f;
-   double Kp = -0.1f;
-   double min_command = 0.05f;
+  
+   double steering_adjust = 0.0;
 
-   static void aimHatch(){
-        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-    
-        if (tx > 1.0){
+   void aimHatch(){
+        
+    tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    double heading_error = -tx;
+    double Kp = -0.1;
+    double min_command = 0.1;
+
+        if (tx > .1){
             //steering_adjust = Kp*heading_error - min_command;
-        } else if (tx < 1.0) {
+        } else if (tx < .1) {
             //steering_adjust = Kp*heading_error + min_command;
         }
         //left_command += steering_adjust;
@@ -89,7 +94,7 @@ public class Vision{
 
 
 
-   static void hatchPickup(){
+   void hatchPickup(){
        // automation for getting hatch from feeder station
        /*
        switch(automationStep){   
@@ -119,11 +124,11 @@ public class Vision{
 
    }
 
-   static void hatchScore(){
+   void hatchScore(){
        //automation for scoring hatch on cargo ship or lower level rocket
    }
 
-   static void cargoScore(){
+   void cargoScore(){
        //automation for scoring hatch on cargo ship or lower level rocket
    }
 
