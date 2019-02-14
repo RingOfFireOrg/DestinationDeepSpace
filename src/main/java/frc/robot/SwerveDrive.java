@@ -33,7 +33,7 @@ public class SwerveDrive {
 	static double translationAngle;
 	//static double lastJSX;
 
-	static void swerveInit(){
+	void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
 		ahrs.reset();
 		ahrsOffset = ahrs.getAngle();
@@ -47,7 +47,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Version #", 5);
 	}	
 
-	static void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
+	void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
 
 		GenericHID driveController = controller;
 		JoystickButton gyroResetButton = gyroReset;
@@ -100,19 +100,19 @@ public class SwerveDrive {
 		
 	}
 
-	static double degToInches(double degrees) {
+	double degToInches(double degrees) {
 		double wheelRotations = degrees / 360;
 
 		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
 	}
 
-	static double inchesToDeg(double inches) {
+	double inchesToDeg(double inches) {
 		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
 		
 		return wheelRotations * 360;
 	}
 
-	static void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
+	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 
 		//turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
@@ -307,7 +307,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
 	}
 
-	static void parkPosition() {
+	void parkPosition() {
 		//can be activated to give the robot increased traction when stopped
 		frontRight.control(0, -45);
 		frontLeft.control(0, 45);
@@ -315,7 +315,7 @@ public class SwerveDrive {
 		backRight.control(0, 45);
 	}
 
-	static void tuningMode(JoystickButton buttonFR, JoystickButton buttonFL, JoystickButton buttonBL, JoystickButton buttonBR) {
+	void tuningMode(JoystickButton buttonFR, JoystickButton buttonFL, JoystickButton buttonBL, JoystickButton buttonBR) {
 		//used to tune the modules and their zero values
 		/*
 		if (buttonFR.get()) {
@@ -346,7 +346,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 	}
 
-	static void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
+	void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
 		//not field relative yet -- sitll needs work
 		driveAngle += gyroReading;
 
@@ -378,7 +378,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	static void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
+	void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
 		if (buttonfr) {
 			frontRight.control(0.6, 0);
 		} else {
@@ -410,7 +410,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	static double squareWithSignReturn(double inputReading) {
+	double squareWithSignReturn(double inputReading) {
 		return Math.signum(inputReading) * inputReading * inputReading;
 	}
 }
