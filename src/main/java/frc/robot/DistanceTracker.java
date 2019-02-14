@@ -17,7 +17,7 @@ public class DistanceTracker {
         startPoint = this.getDistance();
     }
     public double getDistance() {
-        return 
+        return 0.0; //needs real number here
     }
     
 }

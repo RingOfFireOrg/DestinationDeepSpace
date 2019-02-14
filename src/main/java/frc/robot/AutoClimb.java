@@ -63,21 +63,20 @@ public class AutoClimb {
     }
 
     private void driveSwerve() {
-        // swerveDrive.translateAndRotate(driveFieldTranslationX, driveFieldTranslationY, unregulatedTurning, gyroReading, fieldRelativeRobotDirection, driveRobotTranslationX, driveRobotTranslationY);
-
+        swerveDrive.syncroDrive(-0.75, 0, 0, 0);
     }
 
     private void stopSwerve() {
         // stop driving swerve
     }
 
-    public void autoClimb(double inInches) {
+    public void autoClimb() {
 
         switch(step) {
         
         // drive back a little
         case 0:
-                if (getDistanceInInches() < AGAINST_PLATFORM) {
+                if (getDistanceInInches() > AGAINST_PLATFORM) {
                     // swerve drive forward
                 } else {
                     //swerve drive stop

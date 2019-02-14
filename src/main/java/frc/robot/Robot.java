@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		SwerveDrive.swerveInit();
+		swerveDrive.swerveInit();
 
 		climberFront = new Climber(RobotMap.CAN_CLIMBER_FRONT, RobotMap.SPEED_DEFAULT_TEST);
 		climberBack = new Climber(RobotMap.CAN_CLIMBER_BACK, RobotMap.SPEED_DEFAULT_TEST);
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		SwerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
+		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
 
 		double yPosL = manipulatorStickL.getY();
     	double yPosR = manipulatorStickR.getY();
@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
 
 		//check logic
 		if (autoClimbButton.get()) {
-            autoClimb.autoClimb(inInches);
+            autoClimb.autoClimb();
         } else {
 			// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
     		if (yPosL < 0.25) {
