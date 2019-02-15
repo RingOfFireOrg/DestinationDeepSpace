@@ -21,6 +21,7 @@ public class SwerveModule {
 	double optimizedSpeed;
 	PID speedRegulation;
 	double accumulatedGR = 0;
+	int powerInversion = 1;
 	static final double MAX_DRIVE_POWER = 0.8;
 	static final double MAX_STEER_POWER = 0.8;
 	
@@ -40,6 +41,10 @@ public class SwerveModule {
 		speedRegulation = new PID(0, -0.000001, 0);
 		speedRegulation.setOutputRange(-1, 1);
 		speedRegulation.reset();
+	}
+
+	public void invertModule() {
+		powerInversion = -1;
 	}
 
 	public void resetModule() {
@@ -84,7 +89,7 @@ public class SwerveModule {
 			} else if (drivePower < -MAX_DRIVE_POWER) {
 				drivePower = -MAX_DRIVE_POWER;
 			}
-			drive.set(drivePower);
+			drive.set(powerInversion * drivePower);
 		//} 
 		//}
 		

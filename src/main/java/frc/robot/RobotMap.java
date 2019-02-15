@@ -50,9 +50,9 @@ public class RobotMap {
 	public static final int STEER_BACK_RIGHT_MOTOR = 7;
 
 	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 250;
-	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 12;
-	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 37;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 189;
+	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 195;
+	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 223;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 242;
 
 	public static final int ENCODER_FRONT_RIGHT = 0;
 	public static final int ENCODER_FRONT_LEFT = 1;

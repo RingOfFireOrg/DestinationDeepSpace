@@ -14,6 +14,7 @@ public class SwerveDrive {
 	static AHRS ahrs;
 	static double ahrsOffset;
 	static PID pidDrivingStraight;
+	static RotatingBuffer gyroRateBuffer;
 	
 
 	static SwerveModule frontRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new Talon(RobotMap.STEER_FRONT_RIGHT_MOTOR),
@@ -29,6 +30,7 @@ public class SwerveDrive {
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_RIGHT), RobotMap.ENCODER_ZERO_VALUE_BACK_RIGHT,  
 		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
 
+
 	static boolean driveStraight = false;
 	static double translationAngle;
 	//static double lastJSX;
@@ -37,14 +39,19 @@ public class SwerveDrive {
 		ahrs = new AHRS(SerialPort.Port.kUSB);
 		ahrs.reset();
 		ahrsOffset = ahrs.getAngle();
-		pidDrivingStraight = new PID(0.005, 0.00005, 0);
+		//7:40 pm 2/14 -- 0.0025, 0.000025, 0.05
+		pidDrivingStraight = new PID(0.0025, 0.000025, 0);
 		pidDrivingStraight.setOutputRange(-0.5, 0.5);
 		translationAngle = ahrs.getAngle() - ahrsOffset;
 		frontRight.resetModule();
 		frontLeft.resetModule();
 		backLeft.resetModule();
 		backRight.resetModule();
+		frontLeft.invertModule();
+		backLeft.invertModule();
 		SmartDashboard.putNumber("Version #", 5);
+		gyroRateBuffer = new RotatingBuffer(5);
+	
 	}	
 
 	void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
@@ -114,6 +121,7 @@ public class SwerveDrive {
 
 	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 
+		
 		//turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
 		double gyroValueProcessed = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
@@ -163,10 +171,12 @@ public class SwerveDrive {
 
 
 		//Rotation Modes -- absolute, unregulated, and none
+		//gyro rate buffer updating
+		gyroRateBuffer.add(ahrs.getRate());
 		double rotationMagnitude;
 		if (absoluteFieldRelativeDirection != -1) {
 			if (absoluteFieldRelativeDirection < 0) absoluteFieldRelativeDirection += 360;
-
+			/*
 			if (absoluteFieldRelativeDirection > 337.5 || absoluteFieldRelativeDirection <= 22.5) {
 				absoluteFieldRelativeDirection = 0;
 			} else if (absoluteFieldRelativeDirection > 22.5 && absoluteFieldRelativeDirection <= 67.5) {
@@ -184,13 +194,17 @@ public class SwerveDrive {
 			} else if (absoluteFieldRelativeDirection == 315) {
 				absoluteFieldRelativeDirection = 315;
 			}
-			rotationMagnitude = (absoluteFieldRelativeDirection - gyroValueProcessed) / 100;
+			*/
+			if (gyroValueProcessed > 180 && absoluteFieldRelativeDirection == 0) {
+				absoluteFieldRelativeDirection = 360;
+			}
+			rotationMagnitude = (absoluteFieldRelativeDirection - gyroValueProcessed) * 0.005;
 			if (Math.abs(absoluteFieldRelativeDirection - gyroValueProcessed) > 180) rotationMagnitude *= -1;
 			driveStraight = false;
 		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE || unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
 			rotationMagnitude = unregulatedRotationValue;
 			driveStraight = false;
-		} else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) > RobotMap.TRANSLATION_DEADZONE) {
+		} else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) > RobotMap.TRANSLATION_DEADZONE * 0.75 && Math.abs(gyroRateBuffer.getAverage()) < 3) {
 			//no turning methods -- goes straight
 			if (driveStraight == false) {
 				driveStraight = true;
@@ -208,7 +222,8 @@ public class SwerveDrive {
 		if (rotationMagnitude > 1) rotationMagnitude = 1;
 		if (rotationMagnitude < -1) rotationMagnitude = -1;
 
-
+		SmartDashboard.putNumber("gyroRate", ahrs.getRate());
+		
 
 		//Vector math to combine the translation and the rotation values
 		//adding the various cartesian points for the end of the vectors
@@ -413,4 +428,5 @@ public class SwerveDrive {
 	double squareWithSignReturn(double inputReading) {
 		return Math.signum(inputReading) * inputReading * inputReading;
 	}
+
 }
