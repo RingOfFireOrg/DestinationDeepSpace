@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
-	static AHRS ahrs;
-	static double ahrsOffset;
-	static PID pidDrivingStraight;
-	static RotatingBuffer gyroRateBuffer;
+	AHRS ahrs;
+	double ahrsOffset;
+	PID pidDrivingStraight;
+	RotatingBuffer gyroRateBuffer;
 	
 
 	static SwerveModule frontRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new Talon(RobotMap.STEER_FRONT_RIGHT_MOTOR),
@@ -31,9 +31,8 @@ public class SwerveDrive {
 		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
 
 
-	static boolean driveStraight = false;
-	static double translationAngle;
-	//static double lastJSX;
+	boolean driveStraight = false;
+	double translationAngle;
 
 	void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
@@ -53,71 +52,6 @@ public class SwerveDrive {
 		gyroRateBuffer = new RotatingBuffer(5);
 	
 	}	
-
-	void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
-
-		GenericHID driveController = controller;
-		JoystickButton gyroResetButton = gyroReset;
-		JoystickButton tuningActivation = tuningModeActivation;
-
-		int driveMode = 0;
-
-		double leftX = squareWithSignReturn(driveController.getRawAxis(RobotMap.LEFT_STICK_X_AXIS));
-		double leftY = squareWithSignReturn(-driveController.getRawAxis(RobotMap.LEFT_STICK_Y_AXIS));
-
-		double rightX = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_STICK_X_AXIS));
-		double rightY = squareWithSignReturn(-driveController.getRawAxis(RobotMap.RIGHT_STICK_Y_AXIS));
-		double pov = driveController.getPOV();
-		SmartDashboard.putNumber("POV", driveController.getPOV());
-		//double rightDirection = rightStick.getDirectionDegrees();
-		//double rightMagnitude = rightStick.getMagnitude();
-		double twist = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS) - driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
-
-		if (tuningActivation.get() == true) {
-			driveMode = 1;
-		} else {
-			driveMode = 0;
-		} 
-
-		switch (driveMode) {
-			case 0:
-				//the 0s are temporary replacements for the robot relative joysticks. remember to find the opposite of the y value
-				translateAndRotate(leftX, leftY, twist, ahrs.getAngle() - ahrsOffset, pov, rightX, rightY);
-				break;
-
-			case 1:
-				tuningMode(frb, flb, blb, brb);
-				break;
-
-			case 2:
-
-				break;
-		
-			default:
-				break;
-		}
-		
-		if (gyroResetButton.get() == true) {
-			ahrsOffset = ahrs.getAngle();
-			driveStraight = false;
-			pidDrivingStraight.reset();
-		}
-			  
-		SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
-		
-	}
-
-	double degToInches(double degrees) {
-		double wheelRotations = degrees / 360;
-
-		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
-	}
-
-	double inchesToDeg(double inches) {
-		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
-		
-		return wheelRotations * 360;
-	}
 
 	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 
@@ -427,6 +361,18 @@ public class SwerveDrive {
 
 	double squareWithSignReturn(double inputReading) {
 		return Math.signum(inputReading) * inputReading * inputReading;
+	}
+
+	double degToInches(double degrees) {
+		double wheelRotations = degrees / 360;
+
+		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
+	}
+
+	double inchesToDeg(double inches) {
+		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
+		
+		return wheelRotations * 360;
 	}
 
 }

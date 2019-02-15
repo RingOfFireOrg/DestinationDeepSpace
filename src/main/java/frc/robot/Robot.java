@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
 
 	boolean autoClimbMode = false;
 	
-	SwerveDrive swerveDrive = new SwerveDrive();
+	GamepadSwerve swerveDrive = new GamepadSwerve();
 
   	boolean alignState = false;
 
@@ -78,7 +78,23 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
+		climberControl();
 
+	}
+
+	@Override
+	public void testPeriodic() {
+		//swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
+		
+	}
+
+	//Code below here is not particular to swerve, temporary presence, for line alignment, auto-intervention
+	public void autoAlign() {
+		
+		//swerveDrive.syncroDrive(0.5, 90, 0);
+	}
+
+	public void climberControl() {
 		double yPosL = manipulatorStickL.getY();
     	boolean stickTriggerLeft = stickTriggerL.get();
     	boolean stickTriggerRight = stickTriggerR.get();
@@ -124,19 +140,6 @@ public class Robot extends TimedRobot {
 			} else {
 			climber.stopClimbing(BACK);
 			}
-
-	}
-
-	@Override
-	public void testPeriodic() {
-		//swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
-		
-	}
-
-	//Code below here is not particular to swerve, temporary presence, for line alignment, auto-intervention
-	public void autoAlign() {
-		
-		//swerveDrive.syncroDrive(0.5, 90, 0);
 	}
 
 }
