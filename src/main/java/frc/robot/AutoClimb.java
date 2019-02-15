@@ -12,22 +12,21 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.SwerveDrive;
+import static frc.robot.Climber.Location.FRONT;
+import static frc.robot.Climber.Location.BACK;
 
 /**
  * Add your docs here.
  */
 public class AutoClimb {
     private int step = 0;
-    private Climber climberFront;
-    private Climber climberBack;
-    private Climber climberWheelLeft;
-    private Climber climberWheelRight;
+    private Climber climber;
     private SwerveDrive swerveDrive;
 
-    private DigitalInput frontHallEffectTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
-    private DigitalInput backHallEffectTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
-    private DigitalInput frontHallEffectBottom = new DigitalInput(RobotMap.INPUT_FRONT_BOTTOM_SW);
-    private DigitalInput backHallEffectBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
+    // private DigitalInput frontHallEffectTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
+    // private DigitalInput backHallEffectTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
+    // private DigitalInput frontHallEffectBottom = new DigitalInput(RobotMap.INPUT_FRONT_BOTTOM_SW);
+    // private DigitalInput backHallEffectBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
 
     private DigitalInput frontLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_LEFT_WHEEL);
     private DigitalInput backLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_LEFT_WHEEL);
@@ -38,28 +37,9 @@ public class AutoClimb {
 
     private boolean autoClimbFinish = false; //false means not done
 
-    public AutoClimb(Climber climberFront, Climber climberBack, Climber climberWheelLeft, Climber climberWheelRight, SwerveDrive swerveDrive) {
-        this.climberFront = climberFront;
-        this.climberBack = climberBack;
-        this.climberWheelLeft = climberWheelLeft;
-        this.climberWheelRight = climberWheelRight;
+    public AutoClimb(Climber climber, SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
         timer.reset();
-    }
-
-    private void driveClimberWheelsForward() {
-        climberWheelLeft.forward();
-        climberWheelRight.forward();
-    }
-
-    private void driveClimberWheelsReverse() {
-        climberWheelLeft.reverse();
-        climberWheelRight.reverse();
-    }
-
-    private void stopClimberWheelsDriving() {
-        climberWheelLeft.stop();
-        climberWheelRight.stop();
     }
 
     private void driveSwerve(double speed) {
@@ -87,95 +67,96 @@ public class AutoClimb {
 
         // drive back a little
         case 1:
-                if (timer.get() < 0.5) {
-                    driveSwerve(-0.5);
-                } else {
-                    stopSwerve();
-                    step++;
-                }
+            if (timer.get() < 0.5) {
+                driveSwerve(-0.5);
+            } else {
+                stopSwerve();
+                step++;
+            }
             break;
 
         // raise front and back legs all the way
         case 2:
-            if(frontHallEffectTop.get()) {
-                climberFront.stop();
+            if(climber.isLegBelow(FRONT)) {
+                climber.stopClimbing(FRONT);
             } else {
-                climberFront.forward();
+                climber.up(FRONT);
             }
 
-            if(backHallEffectTop.get()) {
-                climberBack.stop();
+            if(climber.isLegBelow(BACK)) {
+                climber.stopClimbing(BACK);
             } else {
-                climberBack.forward();
+                climber.up(BACK);
             }
 
-            if(frontHallEffectTop.get() && backHallEffectTop.get()) {
+            if(climber.isLegBelow(BACK) && climber.isLegBelow(FRONT)) {
                 step++;
             }
             break;
 
-        // drive forward until front of robot is on platform but not hitting front leg
+        // drive forward until front of robot is on platform and front leg hits platform
         case 3:
             if (frontLeftWheelLimitSwitch.get() || frontRightWheelLimitSwitch.get()) { 
-                stopClimberWheelsDriving();
+                climber.stopDriving();
                 timer.reset();
                 timer.start();
             } else {
-                driveClimberWheelsForward();
+                climber.driveForward();
                 step++;
             }
             break;    
 
+        //back up for 1/2 a second
         case 4:
             if (timer.get() < 0.5) {
-                driveClimberWheelsReverse();
+                climber.driveReverse();
             } else {
-                stopClimberWheelsDriving();
+                climber.stopDriving();
                 step++;
             }
             break;
 
         // lift front leg up all the way
         case 5:    
-            if(frontHallEffectBottom.get()) {
-                climberFront.stop();
+            if(climber.isLegAbove(FRONT)) {
+                climber.stopClimbing(FRONT);
                 step++;
             } else {
-                climberFront.reverse();
+                climber.down(FRONT);
             }
            break;
 
-        // drive forward until robot is on platfrom till right before back leg
+        // drive forward until robot is on platfrom and back leg hits platform
         case 6: 
             if (backLeftWheelLimitSwitch.get() || backRightWheelLimitSwitch.get()) { 
-                stopClimberWheelsDriving();
+                climber.stopDriving();
                 timer.reset();
                 timer.start();
             } else {
-                driveClimberWheelsForward();
+                climber.driveForward();
                 step++;
-
             }
             break;
 
+        //back up for 1/2 a second
         case 7: 
             if (timer.get() < 0.5) {
-                driveClimberWheelsReverse();
+                climber.driveReverse();
             } else {
-                stopClimberWheelsDriving();
+                climber.stopDriving();
                 step++;
             }
             break;
 
         // lift back leg all the way up
         case 8:   
-            if(backHallEffectBottom.get()) {
-                climberBack.stop();
+            if(climber.isLegAbove(BACK)) {
+                climber.stopClimbing(BACK);
                 timer.reset();
                 timer.start();
                 step++;
             } else {
-                climberBack.reverse();
+                climber.down(BACK);
             }
             break;
 

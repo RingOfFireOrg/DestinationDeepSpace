@@ -9,17 +9,38 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static frc.robot.Climber.Location.FRONT;
+import static frc.robot.Climber.Location.BACK;
+
 
 /**
  * Stuff for climber
  */
-public class Climber extends TalonSRX {
+public class Climber {
 /**
      * The default speed to make controlling easier
      */
-    private double defaultSpeed;
+
+    private double defaultDriveSpeed;
+    private double defaultClimbSpeed;
+    private boolean foundFrontTop = false;
+    private boolean foundBackTop = false;
+    private boolean foundFrontBottom = false;
+    private boolean foundBackBottom = false;
+
+    private TalonSRX climberFront = new TalonSRX(RobotMap.CAN_CLIMBER_FRONT);
+    private TalonSRX climberBack = new TalonSRX(RobotMap.CAN_CLIMBER_BACK);
+    private TalonSRX climberLeftWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_LEFT);
+    private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
+
+    private DigitalInput frontHallEffectTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
+    private DigitalInput backHallEffectTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
+    private DigitalInput frontHallEffectBottom = new DigitalInput(RobotMap.INPUT_FRONT_BOTTOM_SW);
+    private DigitalInput backHallEffectBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
 
     /**
      * The name of the object (for use in debug)
@@ -32,39 +53,110 @@ public class Climber extends TalonSRX {
      * @param canPort      - which port on the roboRio it is connectedTo
      * @param defaultSpeed - what speed should be used for forward and reverse
      */
-    Climber(int canPort, double defaultSpeed) {
-        super(canPort); // Set up the motor controller
-        this.defaultSpeed = defaultSpeed;
-        this.name = String.format("Prototype_CAN (%d)", canPort);
+    Climber(double defaultDriveSpeed, double defaultClimbSpeed) {
+        this.defaultDriveSpeed = defaultDriveSpeed;
+        this.defaultClimbSpeed = defaultClimbSpeed;
     }
 
-    /**
-     * Move prototype motor forward
-     */
-    public void forward() {
-        this.set(this.defaultSpeed);
+
+    public void up() {
+        up(FRONT);
+        up(BACK);
     }
 
-    /**
-     * Move prototype motor in reverse
-     */
-    public void reverse() {
-        this.set(-this.defaultSpeed);
+    public void up(Location loc) {
+        if (loc == FRONT && !foundFrontTop) {
+            climberFront.set(ControlMode.PercentOutput, -defaultClimbSpeed);
+            foundFrontBottom = false;
+        } else if(loc == BACK && !foundBackTop) {
+            climberBack.set(ControlMode.PercentOutput, -defaultClimbSpeed);
+            foundBackBottom = false;
+        }
     }
 
-    /**
-     * Stop prototype motor
-     */
-    public void stop() {
-        this.set(0.0);
+    public void down() {
+        down(FRONT);
+        down(BACK);
     }
 
-    /**
-     * Set the speed of the motor controller
-     */
-    public void set(double speed) {
-        SmartDashboard.putNumber(name, speed); // for use in debugging
-        super.set(ControlMode.PercentOutput, speed);
+    public void down(Location loc) {
+        if (loc == BACK && !foundBackBottom) {
+            climberBack.set(ControlMode.PercentOutput, defaultClimbSpeed);
+            foundBackTop = false;
+        } else if(loc == FRONT && !foundFrontBottom) {
+            climberFront.set(ControlMode.PercentOutput, defaultClimbSpeed);
+            foundFrontTop = false;
+        }
+    }
+
+    public void stopClimbing() {
+        stopClimbing(FRONT);
+        stopClimbing(BACK);
+    }
+
+    public void stopClimbing(Location loc) {
+        if (loc == FRONT) {
+            climberFront.set(ControlMode.PercentOutput, 0);
+        } else if(loc == BACK) {
+            climberBack.set(ControlMode.PercentOutput, 0);
+        }
+    }
+
+    public void driveForward() {
+        climberLeftWheel.set(ControlMode.PercentOutput, defaultDriveSpeed);
+        climberRightWheel.set(ControlMode.PercentOutput, defaultDriveSpeed);
+    }
+
+    public void driveReverse() {
+        climberLeftWheel.set(ControlMode.PercentOutput, -defaultDriveSpeed);
+        climberRightWheel.set(ControlMode.PercentOutput, -defaultDriveSpeed);
+    }
+
+    public void stopDriving() {
+        climberLeftWheel.set(ControlMode.PercentOutput, 0);
+        climberRightWheel.set(ControlMode.PercentOutput, 0);
+    }
+
+    public boolean isLegBelow(Location loc) {
+        if (loc == FRONT) {
+            if(frontHallEffectTop.get()) {
+                foundFrontTop = true;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (backHallEffectTop.get()) {
+                foundBackTop = true; 
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public boolean isLegAbove(Location loc) {
+        if (loc == FRONT) {
+            if(frontHallEffectBottom.get()) {
+                foundFrontBottom = true;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (backHallEffectBottom.get()) {
+                foundBackBottom = true; 
+                return true;
+            } else {
+                return false;
+            }
+        }  
+    }
+
+
+    public enum Location {
+        FRONT,
+        BACK
     }
 
 }

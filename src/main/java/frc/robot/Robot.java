@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Climber;
+import frc.robot.AutoClimb;
+
+import static frc.robot.Climber.Location.FRONT;
+import static frc.robot.Climber.Location.BACK;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -51,6 +55,8 @@ public class Robot extends TimedRobot {
 
 	AutoClimb autoClimb;
 
+	Climber climber;
+
 	boolean driveMode = false;
 
 	boolean autoClimbMode = false;
@@ -63,12 +69,9 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		swerveDrive.swerveInit();
 
-		climberFront = new Climber(RobotMap.CAN_CLIMBER_FRONT, RobotMap.SPEED_DEFAULT_TEST);
-		climberBack = new Climber(RobotMap.CAN_CLIMBER_BACK, RobotMap.SPEED_DEFAULT_TEST);
-		climberLeftWheel = new Climber(RobotMap.CAN_CLIMBER_WHEEL_LEFT, RobotMap.SPEED_DEFAULT_TEST);
-		climberRightWheel = new Climber(RobotMap.CAN_CLIMBER_WHEEL_RIGHT, RobotMap.SPEED_DEFAULT_TEST);
+		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
 
-		autoClimb = new AutoClimb(climberFront, climberBack, climberLeftWheel, climberRightWheel, swerveDrive);
+		autoClimb = new AutoClimb(climber, swerveDrive);
 
 	}
 
@@ -77,7 +80,6 @@ public class Robot extends TimedRobot {
 		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
 
 		double yPosL = manipulatorStickL.getY();
-    	double yPosR = manipulatorStickR.getY();
     	boolean stickTriggerLeft = stickTriggerL.get();
     	boolean stickTriggerRight = stickTriggerR.get();
     	boolean stickThumbLeft = stickThumbL.get();
@@ -100,35 +102,27 @@ public class Robot extends TimedRobot {
 		
 		// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
 		if (yPosL < 0.25) {
-			climberLeftWheel.forward();
+			climber.driveForward();
 			} else if (yPosL > -0.25) {
-			climberLeftWheel.reverse();
+			climber.driveReverse();
 			} else {
-			climberLeftWheel.stop();
-			}
-
-			if (yPosR < 0.25) {
-			climberRightWheel.forward();
-			} else if (yPosR > -0.25) {
-			climberRightWheel.reverse();
-			} else {
-			climberRightWheel.stop();
+			climber.stopDriving();
 			}
 
 			if (stickTriggerLeft) {
-			climberFront.reverse();
+				climber.up(FRONT);
 			} else if (stickThumbLeft) {
-			climberFront.forward();
+				climber.down(FRONT);
 			} else {
-			climberFront.stop();
+				climber.stopClimbing(FRONT);
 			}
 
 			if (stickTriggerRight) {
-			climberBack.reverse();
+				climber.up(BACK);
 			} else if (stickThumbRight) {
-			climberBack.forward();
+				climber.down(BACK);
 			} else {
-			climberBack.stop();
+			climber.stopClimbing(BACK);
 			}
 
 	}
