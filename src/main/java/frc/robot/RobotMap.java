@@ -76,7 +76,10 @@ public class RobotMap {
 	public static final int CAN_CLIMBER_WHEEL_RIGHT = 5;
 	
 	// Motor Speeds
-    public static final double SPEED_DEFAULT_TEST = 0.75;
+	public static final double SPEED_DEFAULT_TEST = 0.75;
+	
+	public static final double SPEED_DEFAULT_DRIVE = 0.75;
+	public static final double SPEED_DEFAULT_CLIMB = 0.75;
 	
 	public static final double DEFAULT_FIND_SPEED = 0.5;
 
