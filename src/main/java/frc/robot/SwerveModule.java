@@ -70,8 +70,8 @@ public class SwerveModule {
 	}
 
 	public void stop() {
-		drive.set(0);
-		steer.set(0);
+		drive.set(ControlMode.PercentOutput, 0);
+		steer.set(ControlMode.PercentOutput, 0);
 	}
 
 	public void setDriveSpeed(double drivePower) {
@@ -91,7 +91,7 @@ public class SwerveModule {
 			} else if (drivePower < -MAX_DRIVE_POWER) {
 				drivePower = -MAX_DRIVE_POWER;
 			}
-			drive.set(powerInversion * drivePower);
+			drive.set(ControlMode.PercentOutput, powerInversion * drivePower);
 		//} 
 		//}
 		
@@ -110,7 +110,7 @@ public class SwerveModule {
 		} else if (steerPower < -MAX_STEER_POWER) {
 			steerPower = -MAX_STEER_POWER;
 		}
-		steer.set(steerPower);
+		steer.set(ControlMode.PercentOutput, steerPower);
 		
 	}
 	
@@ -124,11 +124,11 @@ public class SwerveModule {
 
 		if (wheelTurnAngle0to360 < 5 || wheelTurnAngle0to360 > 355) {
 			// stop steering
-			steer.set(0);
+			steer.set(ControlMode.PercentOutput, 0);
 			setDriveSpeed(driveSpeed);
 		} else if (wheelTurnAngle0to360 > 175 && wheelTurnAngle0to360 < 185){
 			//stop steering
-			steer.set(0);
+			steer.set(ControlMode.PercentOutput, 0);
 			setDriveSpeed(-driveSpeed);
 		} else {
 			if (wheelTurnAngle0to360 > 90 && wheelTurnAngle0to360 < 270) // for quadrants 2 & 3
