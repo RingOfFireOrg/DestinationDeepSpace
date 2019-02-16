@@ -3,13 +3,9 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,7 +14,8 @@ public class SwerveDrive {
 	double ahrsOffset;
 	PID pidDrivingStraight;
 	RotatingBuffer gyroRateBuffer;
-	
+	boolean driveStraight = false;
+	double translationAngle;
 
 	static SwerveModule frontRight = new SwerveModule(new TalonSRX(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new VictorSPX(RobotMap.STEER_FRONT_RIGHT_MOTOR),
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, 
@@ -33,9 +30,6 @@ public class SwerveDrive {
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_BACK_RIGHT), RobotMap.ENCODER_ZERO_VALUE_BACK_RIGHT,  
 		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
 
-
-	boolean driveStraight = false;
-	double translationAngle;
 
 	void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
@@ -53,12 +47,9 @@ public class SwerveDrive {
 		backLeft.invertModule();
 		SmartDashboard.putNumber("Version #", 5);
 		gyroRateBuffer = new RotatingBuffer(5);
-	
 	}	
 
 	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
-
-		
 		//turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
 		double gyroValueProcessed = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
