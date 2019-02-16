@@ -27,10 +27,16 @@ public class Climber {
 
     private double defaultDriveSpeed;
     private double defaultClimbSpeed;
+
     private boolean foundFrontTop = false;
     private boolean foundBackTop = false;
     private boolean foundFrontBottom = false;
     private boolean foundBackBottom = false;
+
+    private boolean foundFirstFT = false;
+    private boolean foundFirstFB = false;
+    private boolean foundFirstBT = false;
+    private boolean foundFirstBB = false;
 
     private TalonSRX climberFront = new TalonSRX(RobotMap.CAN_CLIMBER_FRONT);
     private TalonSRX climberBack = new TalonSRX(RobotMap.CAN_CLIMBER_BACK);
@@ -57,7 +63,6 @@ public class Climber {
         this.defaultDriveSpeed = defaultDriveSpeed;
         this.defaultClimbSpeed = defaultClimbSpeed;
     }
-
 
     public void up() {
         up(FRONT);
@@ -121,6 +126,7 @@ public class Climber {
         if (loc == FRONT) {
             if(frontHallEffectTop.get()) {
                 foundFrontTop = true;
+                foundFirstFT = true;
                 return true;
             } else {
                 return false;
@@ -128,6 +134,7 @@ public class Climber {
         } else {
             if (backHallEffectTop.get()) {
                 foundBackTop = true; 
+                foundFirstBT = true;
                 return true;
             } else {
                 return false;
@@ -139,6 +146,7 @@ public class Climber {
         if (loc == FRONT) {
             if(frontHallEffectBottom.get()) {
                 foundFrontBottom = true;
+                foundFirstFB = true;
                 return true;
             } else {
                 return false;
@@ -146,13 +154,13 @@ public class Climber {
         } else {
             if (backHallEffectBottom.get()) {
                 foundBackBottom = true; 
+                foundFirstBB = true;
                 return true;
             } else {
                 return false;
             }
         }  
     }
-
 
     public enum Location {
         FRONT,
