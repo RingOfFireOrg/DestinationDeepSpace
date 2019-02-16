@@ -47,6 +47,7 @@ public class SwerveDrive {
 		frontLeft.invertModule();
 		backLeft.invertModule();
 		SmartDashboard.putNumber("Version #", 5);
+		SmartDashboard.putNumber("IMC", 0);
 		gyroRateBuffer = new RotatingBuffer(5);
 	}	
 
@@ -320,26 +321,26 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	void individualModuleControl(boolean buttonfr, boolean buttonfl, boolean buttonbr, boolean buttonbl) {
-		if (buttonfr) {
-			frontRight.control(0.6, 0);
-		} else {
-			frontRight.stop();
-		}
-		if (buttonfl) {
-			frontLeft.control(0.6, 0);
-		} else {
-			frontLeft.stop();
-		}
-		if (buttonbr) {
-			backRight.control(0.6, 0);
-		} else {
-			backRight.stop();
-		}
-		if (buttonbl) {
-			backLeft.control(0.6, 0);
-		} else {
-			backLeft.stop();
+	void individualModuleControl() {
+		frontRight.setDriveSpeed(0);
+		frontLeft.setDriveSpeed(0); 
+		backLeft.setDriveSpeed(0); 
+		backRight.setDriveSpeed(0);
+		frontRight.setSteerSpeed(0);
+		frontLeft.setSteerSpeed(0); 
+		backLeft.setSteerSpeed(0); 
+		backRight.setSteerSpeed(0);
+
+		switch ((int)(SmartDashboard.getNumber("IMC", 0))) {
+			case 0: frontRight.setDriveSpeed(0.3); break;
+			case 1: frontLeft.setDriveSpeed(0.3); break;
+			case 2: backLeft.setDriveSpeed(0.3); break;
+			case 3: backRight.setDriveSpeed(0.3); break;
+			case 4: frontRight.setSteerSpeed(0.3); break;
+			case 5: frontLeft.setSteerSpeed(0.3); break;
+			case 6: backLeft.setSteerSpeed(0.3); break;
+			case 7: backRight.setSteerSpeed(0.3); break;
+			default: break;
 		}
 		SmartDashboard.putNumber("front right encoder: ", frontRight.getAngle());
 		SmartDashboard.putNumber("front left encoder: ", frontLeft.getAngle());
