@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Prototype_CAN;
 
+import frc.robot.testHE;
+
 /**
  * Don't change the name of this or it won't work. (The manifest looks for
  * "Robot")
@@ -18,6 +20,7 @@ public class Robot extends TimedRobot {
   Prototype_CAN climberBack;
   Prototype_CAN climberWheelLeft;
   Prototype_CAN climberWheelRight;
+  testHE test;
 
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
@@ -40,7 +43,7 @@ public class Robot extends TimedRobot {
     climberBack = new Prototype_CAN(RobotMap.CAN_TEST_CLIMBER_BACK, RobotMap.SPEED_DEFAULT_TEST);
     climberWheelLeft = new Prototype_CAN(RobotMap.CAN_CLIMBER_WHEEL_LEFT, RobotMap.SPEED_DEFAULT_TEST);
     climberWheelRight = new Prototype_CAN(RobotMap.CAN_CLIMBER_WHEEL_RIGHT, RobotMap.SPEED_DEFAULT_TEST);
-
+    test = new testHE();
   }
 
   /**
@@ -97,6 +100,7 @@ public class Robot extends TimedRobot {
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
+    test.testSensor();
 
     // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
     // centered to stop
