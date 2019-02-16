@@ -64,11 +64,15 @@ public class Robot extends TimedRobot {
 	
 	GamepadSwerve swerveDrive = new GamepadSwerve();
 
+	RobotTest robotTest = new RobotTest();
+
   	boolean alignState = false;
 
 	@Override
 	public void robotInit() {
 		swerveDrive.swerveInit();
+
+		robotTest.initTest(swerveDrive);
 
 		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
 
@@ -85,6 +89,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testPeriodic() {
+		robotTest.runTest();
 		//swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
 		
 	}

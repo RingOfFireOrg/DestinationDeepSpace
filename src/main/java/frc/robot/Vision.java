@@ -82,7 +82,7 @@ public class Vision {
         ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
         tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
-        swerveDrive.translateAndRotate(0, 0, 0, 0, drive_cmd, 0, 0);
+       // swerveDrive.translateAndRotate(0, 0, 0, 0, drive_cmd, 0, 0);
 
         switch (automationStep) {
         case 0: //first strafe right and left to line up with target

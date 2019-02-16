@@ -95,14 +95,14 @@ public class RobotMap {
 
 	// Hall Effect Sensors and Limit Switches for autoClimb
 	public static final int INPUT_FRONT_TOP_SW = 0; // find actual port for limit switches
-	public static final int INPUT_BACK_TOP_SW = 0; // find actual port for limit switches
-	public static final int INPUT_FRONT_BOTTOM_SW = 0; // find actual port for limit switches
-	public static final int INPUT_BACK_BOTTOM_SW = 0; // find actual port for limit switches
+	public static final int INPUT_BACK_TOP_SW = 1; // find actual port for limit switches
+	public static final int INPUT_FRONT_BOTTOM_SW = 2; // find actual port for limit switches
+	public static final int INPUT_BACK_BOTTOM_SW = 3; // find actual port for limit switches
 
-	public static final int INPUT_FRONT_LEFT_WHEEL = 0; // find actual port for limit switches
-	public static final int INPUT_BACK_LEFT_WHEEL = 0; // find actual port for limit switches
-	public static final int INPUT_FRONT_RIGHT_WHEEL = 0; // find actual port for limit switches
-	public static final int INPUT_BACK_RIGHT_WHEEL = 0; // find actual port for limit switches
+	public static final int INPUT_FRONT_LEFT_WHEEL = 4; // find actual port for limit switches
+	public static final int INPUT_BACK_LEFT_WHEEL = 5; // find actual port for limit switches
+	public static final int INPUT_FRONT_RIGHT_WHEEL = 6; // find actual port for limit switches
+	public static final int INPUT_BACK_RIGHT_WHEEL = 7; // find actual port for limit switches
 
 	//dimensions of the robot in CM
 	public static final int ROBOT_X_IN_CM = 51;
@@ -111,5 +111,10 @@ public class RobotMap {
 	public static final double TRANSLATION_DEADZONE = 0.1;
 	public static final double ROTATION_DEADZONE = 0.1;
 	public static final double ABSOLUTE_ROTATION_DEADZONE = 0.3;
-    
+	
+	public static final int TEST_FRONT_LEFT_BUTTON = 0;
+	public static final int TEST_FRONT_RIGHT_BUTTON = 1;
+	public static final int TEST_BACK_LEFT_BUTTON = 2;
+	public static final int TEST_BACK_RIGHT_BUTTON = 3;
+
 }
