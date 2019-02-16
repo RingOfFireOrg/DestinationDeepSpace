@@ -38,16 +38,7 @@ public class RobotMap {
 	public static final int RIGHT_MANIPULATOR_THUMB_BUTTON = 2;
 
 	//Robot Ports
-    public static final int DRIVE_FRONT_RIGHT_MOTOR = 0;
-	public static final int DRIVE_FRONT_LEFT_MOTOR = 2;
-	public static final int DRIVE_BACK_LEFT_MOTOR = 4;
-	public static final int DRIVE_BACK_RIGHT_MOTOR = 6;
-
-	public static final int STEER_FRONT_RIGHT_MOTOR = 1;
-	public static final int STEER_FRONT_LEFT_MOTOR = 3;
-	public static final int STEER_BACK_LEFT_MOTOR = 5;
-	public static final int STEER_BACK_RIGHT_MOTOR = 7;
-
+   
 	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 250;
 	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 195;
 	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 223;
@@ -72,7 +63,18 @@ public class RobotMap {
 	public static final int CAN_CLIMBER_FRONT = 7;
     public static final int CAN_CLIMBER_BACK = 9;
     public static final int CAN_CLIMBER_WHEEL_LEFT = 3;
-	public static final int CAN_CLIMBER_WHEEL_RIGHT = 5;
+	public static final int CAN_CLIMBER_WHEEL_RIGHT = 6;
+
+	public static final int DRIVE_FRONT_RIGHT_MOTOR = 11;
+	public static final int DRIVE_FRONT_LEFT_MOTOR = 14;
+	public static final int DRIVE_BACK_LEFT_MOTOR = 5;
+	public static final int DRIVE_BACK_RIGHT_MOTOR = 1;
+
+	public static final int STEER_FRONT_RIGHT_MOTOR = 12;
+	public static final int STEER_FRONT_LEFT_MOTOR = 13;
+	public static final int STEER_BACK_LEFT_MOTOR = 4;
+	public static final int STEER_BACK_RIGHT_MOTOR = 2;
+
 	
 	// Motor Speeds
 	public static final double SPEED_DEFAULT_TEST = 0.75;
