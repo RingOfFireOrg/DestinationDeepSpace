@@ -16,16 +16,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;;
  */
 public class testHE {
      private DigitalInput hallEffectSensor = new DigitalInput(9); 
-     private boolean passSensor = true;
+
+     private boolean foundFirstMagnet = true;
 
      public void testSensor() {
         if(hallEffectSensor.get()) {
-            passSensor = false;
-            SmartDashboard.putBoolean("Did magnet pass HE? ", passSensor);
+            foundFirstMagnet = false;
+            SmartDashboard.putBoolean("Found first magnet? ", foundFirstMagnet);
         } else {
-            passSensor = true;
-            SmartDashboard.putBoolean("Did magnet pass HE? ", passSensor);
-        }     
+            foundFirstMagnet = true;
+            SmartDashboard.putBoolean("Found first magnet? ", foundFirstMagnet);
+        }
+
+        if(foundFirstMagnet = true && hallEffectSensor.get()) {
+            SmartDashboard.putString("Found second magnet?", "Second magnet found");
+        } else {
+            SmartDashboard.putString("Found second magnet?", "Second magnet not found");
+        }
     }
 }
 
