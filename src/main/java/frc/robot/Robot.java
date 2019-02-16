@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Climber;
+import frc.robot.GamepadSwerve.robotFront;
 import frc.robot.AutoClimb;
 
 import static frc.robot.Climber.Location.FRONT;
@@ -54,31 +55,40 @@ public class Robot extends TimedRobot {
 	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorStickR, 7); //find actual button number
 
 	AutoClimb autoClimb;
-
 	Climber climber;
-
 	boolean driveMode = false;
-
 	boolean autoClimbMode = false;
-	
 	GamepadSwerve swerveDrive = new GamepadSwerve();
-
+	GamepadSwerve swerveDriveCargoFront;
+	GamepadSwerve swerveDriveHatchFront;
   	boolean alignState = false;
 
 	@Override
 	public void robotInit() {
 		swerveDrive.swerveInit();
+		swerveDriveCargoFront = new GamepadSwerve(true);
+		swerveDriveHatchFront = new GamepadSwerve(false);
 
 		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
-
 		autoClimb = new AutoClimb(climber, swerveDrive);
 
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
+		GamepadSwerve.robotFront whatsTheFront = swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
+		switch (whatsTheFront) {
+			case SWTCH_TO_CARGO:
+				swerveDrive = swerveDriveCargoFront;
+				break;
+			case SWITCH_TO_HATCH:
+				swerveDrive = swerveDriveHatchFront;
+				break;
+			default:
+				break;
+		}
 		climberControl();
+
 
 	}
 

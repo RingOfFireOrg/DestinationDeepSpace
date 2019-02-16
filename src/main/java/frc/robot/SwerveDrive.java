@@ -11,11 +11,21 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
+
+	public enum robotFront{SWTCH_TO_CARGO, SWITCH_TO_HATCH, NO_SETTING_CHANGE}
 	AHRS ahrs;
 	double ahrsOffset;
 	PID pidDrivingStraight;
 	RotatingBuffer gyroRateBuffer;
+	boolean isCargoFront;
 	
+	public SwerveDrive(){
+		return SwerveDrive(true);
+	}
+
+	public SwerveDrive(boolean isCargoFront){
+		setIsCargoFront(isCargoFront);
+	}
 
 	static SwerveModule frontRight = new SwerveModule(new Jaguar(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new Talon(RobotMap.STEER_FRONT_RIGHT_MOTOR),
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, 
@@ -53,9 +63,7 @@ public class SwerveDrive {
 	
 	}	
 
-	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
-
-		
+	robotFront translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 		//turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
 		double gyroValueProcessed = (Math.abs(((int)(gyroReading)) * 360) + gyroReading) % 360;
@@ -68,7 +76,6 @@ public class SwerveDrive {
 		double unregulatedRotationValue = unregulatedTurning;
 		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
 
-		
 		//Translation Modes -- field relative or robot relative
 		double jsMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
 		if (jsMag < RobotMap.TRANSLATION_DEADZONE) jsMag = 0;
@@ -101,8 +108,6 @@ public class SwerveDrive {
 			robotRelativeX = 0;
 			robotRelativeY = 0;
 		}
-		
-
 
 		//Rotation Modes -- absolute, unregulated, and none
 		//gyro rate buffer updating
@@ -254,6 +259,16 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
 
 		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
+
+		if(){ //buttonpress
+			front = SWTCH_TO_CARGO;
+		} else if(){ //buttonpress
+			front = SWITCH_TO_HATCH;
+		} else{
+			front = NO_SETTING_CHANGE;
+		}
+		
+		return front;
 	}
 
 	void parkPosition() {
@@ -374,5 +389,15 @@ public class SwerveDrive {
 		
 		return wheelRotations * 360;
 	}
+
+	boolean getIsCargoFront(){
+		return this.isCargoFront;
+	}
+
+	void setIsCargoFront(boolean isCargoFront){
+		this.isCargoFront = isCargoFront;
+	}
+
+	
 
 }

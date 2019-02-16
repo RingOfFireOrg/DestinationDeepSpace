@@ -5,13 +5,17 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GamepadSwerve extends SwerveDrive {
-   
     public GamepadSwerve() {
         super();
+	}
+
+	public GamepadSwerve(boolean isCargoFront) {
+        super(isCargoFront);
     }
 
-    public void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
+    public robotFront runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
 
+		robotFront front;
 		GenericHID driveController = controller;
 		JoystickButton gyroResetButton = gyroReset;
 		JoystickButton tuningActivation = tuningModeActivation;
@@ -56,7 +60,9 @@ public class GamepadSwerve extends SwerveDrive {
 		}
 			  
         SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
-        SmartDashboard.putNumber("POV", driveController.getPOV());
+		SmartDashboard.putNumber("POV", driveController.getPOV());
+
+		return translateAndRotate();
 		
 	}
 }
