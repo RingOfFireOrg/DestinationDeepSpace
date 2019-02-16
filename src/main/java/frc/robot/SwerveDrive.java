@@ -122,25 +122,6 @@ public class SwerveDrive {
 		double rotationMagnitude;
 		if (absoluteFieldRelativeDirection != -1) {
 			if (absoluteFieldRelativeDirection < 0) absoluteFieldRelativeDirection += 360;
-			/*
-			if (absoluteFieldRelativeDirection > 337.5 || absoluteFieldRelativeDirection <= 22.5) {
-				absoluteFieldRelativeDirection = 0;
-			} else if (absoluteFieldRelativeDirection > 22.5 && absoluteFieldRelativeDirection <= 67.5) {
-				absoluteFieldRelativeDirection = 45;
-			} else if (absoluteFieldRelativeDirection > 67.5 && absoluteFieldRelativeDirection <= 110.5) {
-				absoluteFieldRelativeDirection = 90;
-			} else if (absoluteFieldRelativeDirection > 110.5 && absoluteFieldRelativeDirection <= 157.5) {
-				absoluteFieldRelativeDirection = 135;
-			} else if (absoluteFieldRelativeDirection > 157.5 && absoluteFieldRelativeDirection <= 202.5) {
-				absoluteFieldRelativeDirection = 180;
-			} else if (absoluteFieldRelativeDirection > 202.5 && absoluteFieldRelativeDirection <= 247.5) {
-				absoluteFieldRelativeDirection = 225;
-			} else if (absoluteFieldRelativeDirection > 247.5 && absoluteFieldRelativeDirection <= 292.5) {
-				absoluteFieldRelativeDirection = 270;
-			} else if (absoluteFieldRelativeDirection == 315) {
-				absoluteFieldRelativeDirection = 315;
-			}
-			*/
 			if (gyroValueProcessed > 180 && absoluteFieldRelativeDirection == 0) {
 				absoluteFieldRelativeDirection = 360;
 			}
