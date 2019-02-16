@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
@@ -8,8 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //need to ifx
 public class SwerveModule {
-	Jaguar drive;
-	Talon steer;
+	TalonSRX drive;
+	VictorSPX steer;
 	AbsoluteAnalogEncoder turnEncoder;
 	Encoder driveEncoder;
 	double speed;
@@ -27,7 +30,7 @@ public class SwerveModule {
 	
 
 	//will need to make changes to the input --Encoder driveRotEncoder <-- add to constructor
-	public SwerveModule(Jaguar driveMotor, Talon steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue, Encoder driveRotEncoder, String name) {
+	public SwerveModule(TalonSRX driveMotor, VictorSPX steerMotor, AbsoluteAnalogEncoder steerEncoder, double zeroValue, Encoder driveRotEncoder, String name) {
 		this.zeroValue = zeroValue;
 		drive = driveMotor;
 		steer = steerMotor;
