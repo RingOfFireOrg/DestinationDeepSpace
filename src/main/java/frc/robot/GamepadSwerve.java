@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
 
 public class GamepadSwerve extends SwerveDrive {
    
@@ -10,9 +11,9 @@ public class GamepadSwerve extends SwerveDrive {
         super();
     }
 
-    public void runSwerve(GenericHID controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
+    public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
 
-		GenericHID driveController = controller;
+		XboxController driveController = controller;
 		JoystickButton gyroResetButton = gyroReset;
 		JoystickButton tuningActivation = tuningModeActivation;
 
@@ -25,6 +26,11 @@ public class GamepadSwerve extends SwerveDrive {
 		double pov = driveController.getPOV();
 		double twist = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS) - driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
 
+		if(controller.getYButton()){
+			setRobotFrontToCargo();
+		} else if(controller.getBButton()){
+			setRobotFrontToCargo();
+		}
 		if (tuningActivation.get() == true) {
 			driveMode = 1;
 		} else {

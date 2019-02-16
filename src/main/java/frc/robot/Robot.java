@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
 
 import frc.robot.Climber;
 import frc.robot.AutoClimb;
@@ -33,7 +34,7 @@ public class Robot extends TimedRobot {
 	public Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
 	private Joystick manipulatorStickL = new Joystick(RobotMap.LEFT_MANIPULATOR_STICK);
 	private Joystick manipulatorStickR = new Joystick(RobotMap.RIGHT_MANIPULATOR_STICK);
-	public GenericHID driverGamepad =  new Joystick(RobotMap.DRIVER_GAMEPAD);
+	public XboxController driverGamepad =  new XboxController(RobotMap.DRIVER_GAMEPAD);
 	SendableChooser<String> chooser = new SendableChooser<>();
 	JoystickButton frButton = new JoystickButton(leftStick, RobotMap.FRONT_RIGHT_BUTTON);
 	JoystickButton flButton = new JoystickButton(leftStick, RobotMap.FRONT_LEFT_BUTTON);

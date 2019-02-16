@@ -16,6 +16,7 @@ public class SwerveDrive {
 	RotatingBuffer gyroRateBuffer;
 	boolean driveStraight = false;
 	double translationAngle;
+	boolean isCargoFront = true;
 
 	static SwerveModule frontRight = new SwerveModule(new TalonSRX(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new VictorSPX(RobotMap.STEER_FRONT_RIGHT_MOTOR),
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, 
@@ -49,6 +50,16 @@ public class SwerveDrive {
 		gyroRateBuffer = new RotatingBuffer(5);
 	}	
 
+		
+	void setRobotFrontToCargo(){
+		isCargoFront = true;
+	}	
+
+	void setRobotFrontToHatch(){
+		isCargoFront = false;
+	}
+		
+
 	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 		//turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
@@ -57,11 +68,19 @@ public class SwerveDrive {
 		//initializing the main variables
 		double fieldRelativeX = driveFieldTranslationX;
 		double fieldRelativeY = driveFieldTranslationY;
-		double robotRelativeX = driveRobotTranslationX;
-		double robotRelativeY = driveRobotTranslationY;
+		double robotRelativeX;
+		double robotRelativeY;
+		
+		if(isCargoFront){
+			robotRelativeX = driveRobotTranslationX;
+			robotRelativeY = driveRobotTranslationY;
+		} else {
+			robotRelativeX = -driveRobotTranslationY;
+			robotRelativeY = -driveRobotTranslationX;
+		}
+		
 		double unregulatedRotationValue = unregulatedTurning;
 		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
-
 		
 		//Translation Modes -- field relative or robot relative
 		double jsMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
@@ -96,7 +115,6 @@ public class SwerveDrive {
 			robotRelativeY = 0;
 		}
 		
-
 
 		//Rotation Modes -- absolute, unregulated, and none
 		//gyro rate buffer updating
