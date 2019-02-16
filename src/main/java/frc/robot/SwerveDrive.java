@@ -33,6 +33,7 @@ public class SwerveDrive {
 
 	boolean driveStraight = false;
 	double translationAngle;
+	boolean isCargoFront;
 
 	void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
@@ -53,6 +54,16 @@ public class SwerveDrive {
 	
 	}	
 
+		
+	void setRobotFrontToCargo(){
+		isCargoFront = true;
+	}	
+
+	void setRobotFrontToHatch(){
+		isCargoFront = false;
+	}
+		
+
 	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 
 		
@@ -63,11 +74,19 @@ public class SwerveDrive {
 		//initializing the main variables
 		double fieldRelativeX = driveFieldTranslationX;
 		double fieldRelativeY = driveFieldTranslationY;
-		double robotRelativeX = driveRobotTranslationX;
-		double robotRelativeY = driveRobotTranslationY;
+		double robotRelativeX;
+		double robotRelativeY;
+		
+		if(isCargoFront){
+			robotRelativeX = driveRobotTranslationX;
+			robotRelativeY = driveRobotTranslationY;
+		} else {
+			robotRelativeX = -driveRobotTranslationY;
+			robotRelativeY = -driveRobotTranslationX;
+		}
+		
 		double unregulatedRotationValue = unregulatedTurning;
 		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
-
 		
 		//Translation Modes -- field relative or robot relative
 		double jsMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
@@ -102,7 +121,6 @@ public class SwerveDrive {
 			robotRelativeY = 0;
 		}
 		
-
 
 		//Rotation Modes -- absolute, unregulated, and none
 		//gyro rate buffer updating

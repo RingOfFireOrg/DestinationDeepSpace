@@ -16,7 +16,6 @@ public class RobotMap {
     public static final int RIGHT_TRIGGER_AXIS = 3;
     public static final int LEFT_STICK_X_AXIS = 4;
     public static final int LEFT_STICK_Y_AXIS = 5;
-
     public static final int START_BUTTON_VALUE = 8;
     public static final int BACK_BUTTON_VALUE = 7;
 
