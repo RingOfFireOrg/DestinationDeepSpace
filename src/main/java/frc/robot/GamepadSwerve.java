@@ -11,7 +11,7 @@ public class GamepadSwerve extends SwerveDrive {
         super();
     }
 
-    public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
+     public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
 
 		XboxController driveController = controller;
 		JoystickButton gyroResetButton = gyroReset;
