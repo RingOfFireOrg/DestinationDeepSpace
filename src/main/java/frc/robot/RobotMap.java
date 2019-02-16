@@ -109,5 +109,10 @@ public class RobotMap {
 	public static final double TRANSLATION_DEADZONE = 0.1;
 	public static final double ROTATION_DEADZONE = 0.1;
 	public static final double ABSOLUTE_ROTATION_DEADZONE = 0.3;
-    
+	
+	public static final int TEST_FRONT_LEFT_BUTTON = 0;
+	public static final int TEST_FRONT_RIGHT_BUTTON = 1;
+	public static final int TEST_BACK_LEFT_BUTTON = 2;
+	public static final int TEST_BACK_RIGHT_BUTTON = 3;
+
 }
