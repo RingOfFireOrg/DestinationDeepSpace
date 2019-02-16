@@ -16,27 +16,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.Climber.Location.FRONT;
 import static frc.robot.Climber.Location.BACK;
 
-
 /**
  * Stuff for climber
  */
 public class Climber {
-/**
+    /**
      * The default speed to make controlling easier
      */
 
     private double defaultDriveSpeed;
     private double defaultClimbSpeed;
 
-    private boolean foundFrontTop = false;
-    private boolean foundBackTop = false;
-    private boolean foundFrontBottom = false;
-    private boolean foundBackBottom = false;
-
-    private boolean foundFirstFT = false;
-    private boolean foundFirstFB = false;
-    private boolean foundFirstBT = false;
-    private boolean foundFirstBB = false;
+    private MovementState frontState = MovementState.ALLOW;
+    private MovementState backState = MovementState.ALLOW;
 
     private TalonSRX climberFront = new TalonSRX(RobotMap.CAN_CLIMBER_FRONT);
     private TalonSRX climberBack = new TalonSRX(RobotMap.CAN_CLIMBER_BACK);
@@ -65,34 +57,58 @@ public class Climber {
     }
 
     public void up() {
-        up(FRONT);
-        up(BACK);
-    }
-
-    public void up(Location loc) {
-        if (loc == FRONT && !foundFrontTop) {
-            climberFront.set(ControlMode.PercentOutput, -defaultClimbSpeed);
-            foundFrontBottom = false;
-        } else if(loc == BACK && !foundBackTop) {
-            climberBack.set(ControlMode.PercentOutput, -defaultClimbSpeed);
-            foundBackBottom = false;
-        }
+        updateLegState(Direction.UP);
+        climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.UP, frontState));
+        climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.UP, backState));
     }
 
     public void down() {
-        down(FRONT);
-        down(BACK);
+        updateLegState(Direction.DOWN);
+        climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.DOWN, frontState));
+        climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.DOWN, backState));
     }
 
-    public void down(Location loc) {
-        if (loc == BACK && !foundBackBottom) {
-            climberBack.set(ControlMode.PercentOutput, defaultClimbSpeed);
-            foundBackTop = false;
-        } else if(loc == FRONT && !foundFrontBottom) {
-            climberFront.set(ControlMode.PercentOutput, defaultClimbSpeed);
-            foundFrontTop = false;
+    public static double getDriveSpeed(Direction direction, MovementState current) {
+        if (direction == Direction.UP) {
+            switch (current) {
+            case STOP_UP:
+            case STOP_MAGNET_UP:
+                return RobotMap.SPEED_STOP;
+            case SLOW_UP:
+            case SLOW_MAGNET_UP:
+                return RobotMap.SPEED_SLOW_CLIMB;
+            default:
+                return RobotMap.SPEED_DEFAULT_CLIMB;
+            }
+        } else {
+            switch (current) {
+            case STOP_DOWN:
+            case STOP_MAGNET_DOWN:
+                return RobotMap.SPEED_STOP;
+            case SLOW_DOWN:
+            case SLOW_MAGNET_DOWN:
+                return -RobotMap.SPEED_SLOW_CLIMB;
+            default:
+                return -RobotMap.SPEED_DEFAULT_CLIMB;
+            }
         }
     }
+
+    // public void up(Location loc) {
+    // if (loc == FRONT && foundFrontTop != MovementState.STOP) {
+    // climberFront.set(ControlMode.PercentOutput, -defaultClimbSpeed);
+    // } else if (loc == BACK && !foundBackTop) {
+    // climberBack.set(ControlMode.PercentOutput, -defaultClimbSpeed);
+    // }
+    // }
+
+    // public void down(Location loc) {
+    // if (loc == BACK && !foundBackBottom) {
+    // climberBack.set(ControlMode.PercentOutput, defaultClimbSpeed);
+    // } else if (loc == FRONT && !foundFrontBottom) {
+    // climberFront.set(ControlMode.PercentOutput, defaultClimbSpeed);
+    // }
+    // }
 
     public void stopClimbing() {
         stopClimbing(FRONT);
@@ -102,7 +118,7 @@ public class Climber {
     public void stopClimbing(Location loc) {
         if (loc == FRONT) {
             climberFront.set(ControlMode.PercentOutput, 0);
-        } else if(loc == BACK) {
+        } else if (loc == BACK) {
             climberBack.set(ControlMode.PercentOutput, 0);
         }
     }
@@ -122,49 +138,99 @@ public class Climber {
         climberRightWheel.set(ControlMode.PercentOutput, 0);
     }
 
-    public boolean isLegBelow(Location loc) {
-        if (loc == FRONT) {
-            if(frontHallEffectTop.get()) {
-                foundFrontTop = true;
-                foundFirstFT = true;
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            if (backHallEffectTop.get()) {
-                foundBackTop = true; 
-                foundFirstBT = true;
-                return true;
-            } else {
-                return false;
-            }
-        }
+    public void updateLegState(Direction direction) {
+        frontState = getState(frontState, frontHallEffectTop.get(), direction);
+        backState = getState(backState, backHallEffectTop.get(), direction);
+        SmartDashboard.putString("Front state", frontState.toString());
+        SmartDashboard.putString("Back state", backState.toString());
     }
 
-    public boolean isLegAbove(Location loc) {
-        if (loc == FRONT) {
-            if(frontHallEffectBottom.get()) {
-                foundFrontBottom = true;
-                foundFirstFB = true;
-                return true;
-            } else {
-                return false;
+    public static MovementState getState(MovementState current, boolean sensorDetected, Direction direction) {
+
+        if (current == MovementState.STOP_UP) {
+            if (direction == Direction.DOWN && sensorDetected) {
+                return MovementState.STOP_MAGNET_UP;
             }
-        } else {
-            if (backHallEffectBottom.get()) {
-                foundBackBottom = true; 
-                foundFirstBB = true;
-                return true;
-            } else {
-                return false;
+        }
+
+        if (current == MovementState.STOP_MAGNET_UP) {
+            if (direction == Direction.UP && !sensorDetected) {
+                return MovementState.STOP_UP;
             }
-        }  
+            if (direction == Direction.DOWN && !sensorDetected) {
+                return MovementState.SLOW_UP;
+            }
+        }
+
+        if (current == MovementState.SLOW_UP) {
+            if (direction == Direction.UP && sensorDetected) {
+                return MovementState.STOP_MAGNET_UP;
+            }
+            if (direction == Direction.DOWN && sensorDetected) {
+                return MovementState.SLOW_MAGNET_UP;
+            }
+        }
+
+        if (current == MovementState.SLOW_MAGNET_UP) {
+            if (direction == Direction.UP && !sensorDetected) {
+                return MovementState.SLOW_UP;
+            }
+            if (direction == Direction.DOWN && !sensorDetected) {
+                return MovementState.ALLOW;
+            }
+        }
+
+        if (current == MovementState.ALLOW) {
+            if (direction == Direction.UP && sensorDetected) {
+                return MovementState.SLOW_MAGNET_UP;
+            }
+            if (direction == Direction.DOWN && sensorDetected) {
+                return MovementState.SLOW_MAGNET_DOWN;
+            }
+        }
+
+        if (current == MovementState.SLOW_MAGNET_DOWN) {
+            if (direction == Direction.UP && !sensorDetected) {
+                return MovementState.ALLOW;
+            }
+            if (direction == Direction.DOWN && !sensorDetected) {
+                return MovementState.SLOW_DOWN;
+            }
+        }
+
+        if (current == MovementState.SLOW_DOWN) {
+            if (direction == Direction.UP && sensorDetected) {
+                return MovementState.SLOW_MAGNET_DOWN;
+            }
+            if (direction == Direction.DOWN && sensorDetected) {
+                return MovementState.STOP_MAGNET_DOWN;
+            }
+        }
+
+        if (current == MovementState.STOP_MAGNET_DOWN) {
+            if (direction == Direction.UP && !sensorDetected) {
+                return MovementState.SLOW_DOWN;
+            }
+            if (direction == Direction.DOWN && !sensorDetected) {
+                return MovementState.STOP_DOWN;
+            }
+        }
+
+        if (current == MovementState.STOP_DOWN) {
+            if (direction == Direction.UP && sensorDetected) {
+                return MovementState.STOP_MAGNET_DOWN;
+            }
+        }
+
+        return current;
     }
 
     public enum Location {
-        FRONT,
-        BACK
+        FRONT, BACK
+    }
+
+    public enum Direction {
+        UP, DOWN
     }
 
 }
