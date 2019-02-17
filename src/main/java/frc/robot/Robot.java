@@ -78,9 +78,9 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		swerveDrive.swerveInit();
 
-		//climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
+		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
 
-		//autoClimb = new AutoClimb(climber, swerveDrive);
+		autoClimb = new AutoClimb(climber, swerveDrive);
 
 	}
 
@@ -89,6 +89,7 @@ public class Robot extends TimedRobot {
 		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
 		climberControl();
 		beakControl();
+		climber.printHallEffectState();
 
 	}
 

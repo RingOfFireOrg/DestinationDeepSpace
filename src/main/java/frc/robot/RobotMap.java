@@ -58,10 +58,8 @@ public class RobotMap {
 
 	//Digital Ports
 	// Hall Effect Sensors and Limit Switches for autoClimb
-	public static final int INPUT_FRONT_TOP_SW = 0; // find actual port for limit switches
-	public static final int INPUT_BACK_TOP_SW = 1; // find actual port for limit switches
-	public static final int INPUT_FRONT_BOTTOM_SW = 2; // find actual port for limit switches
-	public static final int INPUT_BACK_BOTTOM_SW = 3; // find actual port for limit switches
+	public static final int INPUT_FRONT_SW = 9; // find actual port for limit switches
+	public static final int INPUT_BACK_SW = 1; // find actual port for limit switches
 
 	public static final int INPUT_FRONT_LEFT_WHEEL = 4; // find actual port for limit switches
 	public static final int INPUT_BACK_LEFT_WHEEL = 5; // find actual port for limit switches
