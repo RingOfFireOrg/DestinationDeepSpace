@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
 
 	AutoClimb autoClimb;
 
-	Climber climber;
+	public Climber climber;
 
 	boolean driveMode = false;
 
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
-		climberControl();
+		//climberControl();
 		beakControl();
 
 	}
@@ -146,19 +146,19 @@ public class Robot extends TimedRobot {
 			}
 
 			if (stickTriggerLeft) {
-				climber.up(FRONT);
+				climber.up(/*FRONT*/);
 			} else if (stickThumbLeft) {
-				climber.down(FRONT);
+				climber.down(/*FRONT*/);
 			} else {
-				climber.stopClimbing(FRONT);
+				climber.stopClimbing(/*FRONT*/);
 			}
 
 			if (stickTriggerRight) {
-				climber.up(BACK);
+				climber.up(/*BACK*/);
 			} else if (stickThumbRight) {
-				climber.down(BACK);
+				climber.down(/*BACK*/);
 			} else {
-			climber.stopClimbing(BACK);
+			climber.stopClimbing(/*BACK*/);
 			}
 	}
 
