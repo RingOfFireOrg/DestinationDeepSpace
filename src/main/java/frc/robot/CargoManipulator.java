@@ -1,43 +1,57 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 public class CargoManipulator{
-    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP};
+    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP};
     private intakePosition position;
     enum wheelState{IN, OUT, OFF};
     private wheelState wheels;
+    private double wheelPower = RobotMap.WHEEL_INTAKE_SPEED;
+    public TalonSRX leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
+    public TalonSRX rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
+    private PID intakeHeightPID;
 
     public CargoManipulator(){ 
         wheels = wheelState.OFF;
+        intakeHeightPID = new PID(0, 0, 0);
+    }
+
+    public void setPosition(intakePosition position) {
+        this.position = position;
+    }
+
+    public void setState(wheelState wheels) {
+        this.wheels = wheels;
     }
     
-    void intakePosition(){
-        position = intakePosition.INTAKE;
-        //TO DO something that lowers wheel intake to intake posistion
-    }
+   public void updateManipulator() {
+       double target;
+       if (position == intakePosition.INTAKE) {
+           target = 0;
+       } else if (position == intakePosition.LOWER_ROCKET) {
+           target = 30;
+       } else if (position == intakePosition.CARGO_SHIP) {
+           target = 60;
+       } else {
+           target = 90;
+       }
 
-    void lowerRocketPosition(){
-        position = intakePosition.LOWER_ROCKET;
-        //TO DO something that raises wheeled intake to shooting position
-    }
+       intakeHeightPID.setError(target - currentAngle());
+       intakeHeightPID.update();
 
-    void cargoShipPosition() {
-        position = intakePosition.CARGO_SHIP;
-    }
-
-    void wheelsIn(){
-        wheels = wheelState.IN;
-        //TO DO something to turn the wheels to spinning in
-    }
-
-    void wheelsShoot(){
-        wheels = wheelState.OUT;
-        //TO DO something that makes the wheels turn out
-    }
-
-    void wheelsOff(){
-        wheels = wheelState.OFF;
-        //TO DO something that forces the wheels off
-    }
+       if (wheels == wheelState.IN) {
+           leftIntakeWheel.set(ControlMode.PercentOutput, wheelPower);
+           rightIntakeWheel.set(ControlMode.PercentOutput, -wheelPower);
+       } else if (wheels == wheelState.OUT) {
+           leftIntakeWheel.set(ControlMode.PercentOutput, -wheelPower);
+           rightIntakeWheel.set(ControlMode.PercentOutput, wheelPower);
+       } else {
+           leftIntakeWheel.set(ControlMode.PercentOutput, 0);
+           rightIntakeWheel.set(ControlMode.PercentOutput, 0);
+       }
+   }
 
     intakePosition getPosition(){
         return position;
@@ -45,6 +59,10 @@ public class CargoManipulator{
 
     wheelState getWheelState(){
         return wheels;
+    }
+
+    private double currentAngle() {
+        return 0;   
     }
 
 
