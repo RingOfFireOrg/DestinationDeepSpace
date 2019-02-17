@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
 	JoystickButton leftTrigger = new JoystickButton(leftStick, RobotMap.LEFT_TRIGGER);
 	JoystickButton rightTrigger = new JoystickButton(rightStick, RobotMap.RIGHT_TRIGGER);
 	JoystickButton tuningActivation = new JoystickButton(leftStick, RobotMap.LEFT_SWERVE_TUNING_BUTTON);
-	JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_TRIGGER);
+	JoystickButton                            stickTriggerL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_TRIGGER);
 	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_TRIGGER);
 	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
 	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
@@ -144,9 +144,9 @@ public class Robot extends TimedRobot {
 		}
 		
 		// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
-		if (yPosL < 0.25) {
+		if (yPosL > 0.25) {
 			climber.driveForward();
-			} else if (yPosL > -0.25) {
+			} else if (yPosL < -0.25) {
 			climber.driveReverse();
 			} else {
 			climber.stopDriving();
