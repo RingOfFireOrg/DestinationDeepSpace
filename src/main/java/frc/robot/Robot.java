@@ -146,17 +146,17 @@ public class Robot extends TimedRobot {
 			}
 
 			if (stickTriggerLeft) {
-				climber.up(/*FRONT*/);
+				climber.extend(FRONT);
 			} else if (stickThumbLeft) {
-				climber.down(/*FRONT*/);
+				climber.retract(FRONT);
 			} else {
 				climber.stopClimbing(/*FRONT*/);
 			}
 
 			if (stickTriggerRight) {
-				climber.up(/*BACK*/);
+				climber.extend(BACK);
 			} else if (stickThumbRight) {
-				climber.down(/*BACK*/);
+				climber.retract(BACK);
 			} else {
 			climber.stopClimbing(/*BACK*/);
 			}
