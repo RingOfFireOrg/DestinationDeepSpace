@@ -23,11 +23,6 @@ public class AutoClimb {
     private Climber climber;
     private SwerveDrive swerveDrive;
 
-    // private DigitalInput frontHallEffectTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
-    // private DigitalInput backHallEffectTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
-    // private DigitalInput frontHallEffectBottom = new DigitalInput(RobotMap.INPUT_FRONT_BOTTOM_SW);
-    // private DigitalInput backHallEffectBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
-
     private DigitalInput frontLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_LEFT_WHEEL);
     private DigitalInput backLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_LEFT_WHEEL);
     private DigitalInput frontRightWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_RIGHT_WHEEL);
@@ -77,19 +72,9 @@ public class AutoClimb {
 
         // raise front and back legs all the way
         case 2:
-            if(climber.isLegBelow(FRONT)) {
-                climber.stopClimbing(FRONT);
-            } else {
-                climber.up(FRONT);
-            }
+            climber.extend();
 
-            if(climber.isLegBelow(BACK)) {
-                climber.stopClimbing(BACK);
-            } else {
-                climber.up(BACK);
-            }
-
-            if(climber.isLegBelow(BACK) && climber.isLegBelow(FRONT)) {
+            if(climber.isFullyExtended()) {
                 step++;
             }
             break;
@@ -118,11 +103,10 @@ public class AutoClimb {
 
         // lift front leg up all the way
         case 5:    
-            if(climber.isLegAbove(FRONT)) {
-                climber.stopClimbing(FRONT);
+            if(climber.isFullyRetracted(FRONT)) {
                 step++;
             } else {
-                climber.down(FRONT);
+                climber.retract(FRONT);
             }
            break;
 
@@ -150,13 +134,12 @@ public class AutoClimb {
 
         // lift back leg all the way up
         case 8:   
-            if(climber.isLegAbove(BACK)) {
-                climber.stopClimbing(BACK);
+            if(climber.isFullyRetracted(BACK)) {
                 timer.reset();
                 timer.start();
                 step++;
             } else {
-                climber.down(BACK);
+                climber.retract(BACK);
             }
             break;
 
