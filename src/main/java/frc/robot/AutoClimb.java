@@ -15,9 +15,6 @@ import frc.robot.SwerveDrive;
 import static frc.robot.Climber.Location.FRONT;
 import static frc.robot.Climber.Location.BACK;
 
-/**
- * Add your docs here.
- */
 public class AutoClimb {
     private int step = 0;
     private Climber climber;

@@ -37,10 +37,8 @@ public class Climber {
     private DigitalInput frontHallEffect = new DigitalInput(RobotMap.INPUT_FRONT_SW);
     private DigitalInput backHallEffect = new DigitalInput(RobotMap.INPUT_BACK_SW);
 
-    /**
-     * The name of the object (for use in debug)
-     */
-    private String name;
+    //The name of the object (for use in debug)
+    //private String name;
 
     /**
      * The constructor for our class
@@ -260,6 +258,7 @@ public class Climber {
         SmartDashboard.putBoolean("Back HE sensor", !backHallEffect.get());
 
     }
+
     public enum Location {
         FRONT, BACK
     }
@@ -267,5 +266,4 @@ public class Climber {
     public enum Direction {
         EXTEND, RETRACT
     }
-
 }
