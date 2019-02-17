@@ -22,9 +22,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class Robot extends TimedRobot {
 	Climber climberFront;
   	Climber climberBack;
-	 Climber climberLeftWheel;
+	Climber climberLeftWheel;
+	Climber climberRightWheel;
+	  
 	Beak beak = new Beak();
-  	Climber climberRightWheel;
+	CargoManipulator cargo = new CargoManipulator();
 
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
@@ -47,6 +49,8 @@ public class Robot extends TimedRobot {
 	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_TRIGGER);
 	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
 	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
+	JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
+	JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
 
 	//private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
 
@@ -56,6 +60,8 @@ public class Robot extends TimedRobot {
 
 	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_A_BUTTON_VALUE);
 	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_B_BUTTON_VALUE);
+	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_X_BUTTON_VALUE);
+	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
 
 	public JoystickButton autoClimbButton = new JoystickButton(manipulatorStickL, 6); //find actual button number
 	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorStickR, 7); //find actual button number
@@ -176,6 +182,26 @@ public class Robot extends TimedRobot {
 		} else {
 			beak.stopActuation();
 		}
+	}
+
+	public void cargoManipulatorControl() {
+		if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) > 0.3) {
+			cargo.setOut();
+		} else if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) > 0.3) {
+			cargo.setIn();
+		} else {
+			cargo.setOff();
+		}
+		if (manipulatorLeftBumper.get() == true) {
+			cargo.setUp();
+		} else if (manipulatorRightBumber.get() == true) {
+			cargo.setIntake();
+		} else if (manipulatorXButton.get() == true) {
+			cargo.setCargoShip();
+		} else if (manipulatorYButton.get() == true) {
+			cargo.setLowerRocket();
+		}
+		cargo.updateCargo();
 	}
 }
 

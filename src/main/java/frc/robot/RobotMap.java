@@ -14,8 +14,14 @@ public class RobotMap {
 
 
 	//Manipulator gamepad buttons and axis:
+	public static final int MANIPULATOR_LEFT_TRIGGER_AXIS = 2;
+	public static final int MANIPULATOR_RIGHT_TRIGGER_AXIS = 3;
 	public static final int MANIPULATOR_A_BUTTON_VALUE = 1;
 	public static final int MANIPULATOR_B_BUTTON_VALUE = 2;
+	public static final int MANIPULATOR_X_BUTTON_VALUE = 3;
+	public static final int MANIPULATOR_Y_BUTTON_VALUE = 4;
+	public static final int MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE = 5;
+	public static final int MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE = 6;
 
     //Driver Gamepad Buttons axes:
     public static final int RIGHT_STICK_X_AXIS = 0;
@@ -66,8 +72,8 @@ public class RobotMap {
 
 	//PWM ports
 	//Motors:
-	public static final int CARGO_MANIULATOR_LIFT_CHANNEL = 0;
-	public static final int CAMERA_ROTATION_SERVO_CHANNEL = 1;
+	public static final int CAMERA_ROTATION_SERVO_CHANNEL = 0;
+	public static final int CARGO_MANIULATOR_LIFT_CHANNEL = 1;
 	public static final int BEAK_ACTUATOR_CHANNEL = 8;
 	public static final int BEAK_DEPLOYER_CHANNEL = 9;
 
@@ -102,8 +108,8 @@ public class RobotMap {
     public static final int CAN_CLIMBER_BACK = 6;
     public static final int CAN_CLIMBER_WHEELS = 3;
 
-	public static final int LEFT_INTAKE_WHEEL = 0;
-	public static final int RIGHT_INTAKE_WHEEL = 0;
+	public static final int LEFT_INTAKE_WHEEL = 8;
+	public static final int RIGHT_INTAKE_WHEEL = 7;
 
 	public static final int DRIVE_FRONT_RIGHT_MOTOR = 11;
 	public static final int DRIVE_FRONT_LEFT_MOTOR = 14;
