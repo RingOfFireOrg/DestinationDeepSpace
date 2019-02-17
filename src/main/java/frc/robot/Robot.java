@@ -1,18 +1,16 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import static frc.robot.Climber.Location.BACK;
+import static frc.robot.Climber.Location.FRONT;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.XboxController;
-
-import frc.robot.Climber;
-import frc.robot.AutoClimb;
-
-import static frc.robot.Climber.Location.FRONT;
-import static frc.robot.Climber.Location.BACK;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,8 +22,9 @@ import static frc.robot.Climber.Location.BACK;
 public class Robot extends TimedRobot {
 	Climber climberFront;
   	Climber climberBack;
- 	Climber climberLeftWheel;
-  	Climber climberRightWheel;
+	 Climber climberLeftWheel;
+	Beak beak = new Beak();
+  	//Climber climberRightWheel;
 
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
@@ -35,6 +34,7 @@ public class Robot extends TimedRobot {
 	private Joystick manipulatorStickL = new Joystick(RobotMap.LEFT_MANIPULATOR_STICK);
 	private Joystick manipulatorStickR = new Joystick(RobotMap.RIGHT_MANIPULATOR_STICK);
 	public XboxController driverGamepad =  new XboxController(RobotMap.DRIVER_GAMEPAD);
+	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
 	SendableChooser<String> chooser = new SendableChooser<>();
 	JoystickButton frButton = new JoystickButton(leftStick, RobotMap.FRONT_RIGHT_BUTTON);
 	JoystickButton flButton = new JoystickButton(leftStick, RobotMap.FRONT_LEFT_BUTTON);
@@ -48,8 +48,14 @@ public class Robot extends TimedRobot {
 	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
 	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
 
+	//private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
+
+
 	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
 	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
+
+	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_A_BUTTON_VALUE);
+	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_B_BUTTON_VALUE);
 
 	public JoystickButton autoClimbButton = new JoystickButton(manipulatorStickL, 6); //find actual button number
 	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorStickR, 7); //find actual button number
@@ -70,9 +76,9 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		swerveDrive.swerveInit();
 
-		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
+		//climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
 
-		autoClimb = new AutoClimb(climber, swerveDrive);
+		//autoClimb = new AutoClimb(climber, swerveDrive);
 
 	}
 
@@ -80,13 +86,23 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
 		climberControl();
+		beakControl();
 
 	}
 
 	@Override
 	public void testPeriodic() {
 		//swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
-		
+		/*
+		climberRightWheel.set(ControlMode.PercentOutput, 0);
+		if (driverGamepad.getRawAxis(2) > 0.3) {
+			climberRightWheel.set(ControlMode.PercentOutput, 0.1);
+		} else if (driverGamepad.getRawAxis(3) > 0.3) {
+			climberRightWheel.set(ControlMode.PercentOutput, -0.1);
+		} else {
+			climberRightWheel.set(ControlMode.PercentOutput, 0);
+		}
+		*/
 	}
 
 	//Code below here is not particular to swerve, temporary presence, for line alignment, auto-intervention
@@ -143,5 +159,19 @@ public class Robot extends TimedRobot {
 			}
 	}
 
+	public void beakControl() {
+		if (manipulatorAButton.get() == true) {
+			beak.open();
+		} else if (manipulatorBButton.get() == true) {
+			beak.close();
+		}
+		if (manipulatorGamepad.getPOV() == 0) {
+			beak.extend();
+		} else if (manipulatorGamepad.getPOV() == 180) {
+			beak.retract();
+		} else {
+			beak.stopActuation();
+		}
+	}
 }
 
