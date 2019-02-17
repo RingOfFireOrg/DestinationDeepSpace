@@ -4,8 +4,8 @@ public class RobotMap {
 	//Joysticks
 	public static final int LEFT_JOYSTICK = 0;
 	public static final int RIGHT_JOYSTICK = 1;
-	public static final int LEFT_MANIPULATOR_STICK = 2;
-    public static final int RIGHT_MANIPULATOR_STICK = 3;
+	public static final int LEFT_MANIPULATOR_STICK = 1;
+    public static final int RIGHT_MANIPULATOR_STICK = 2;
     
     public static final int DRIVER_GAMEPAD = 0;
 
@@ -60,10 +60,9 @@ public class RobotMap {
 	public static final int DRIVE_ENCODER_BACK_RIGHT_B = 17;
 
 	// all CANs for robot
-	public static final int CAN_CLIMBER_FRONT = 7;
-    public static final int CAN_CLIMBER_BACK = 9;
-    public static final int CAN_CLIMBER_WHEEL_LEFT = 3;
-	public static final int CAN_CLIMBER_WHEEL_RIGHT = 6;
+	public static final int CAN_CLIMBER_FRONT = 10;
+    public static final int CAN_CLIMBER_BACK = 6;
+    public static final int CAN_CLIMBER_WHEELS = 3;
 
 	public static final int DRIVE_FRONT_RIGHT_MOTOR = 11;
 	public static final int DRIVE_FRONT_LEFT_MOTOR = 14;

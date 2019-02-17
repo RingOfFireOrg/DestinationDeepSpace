@@ -10,7 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
-
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Climber.Location.FRONT;
@@ -34,8 +34,7 @@ public class Climber {
 
     private TalonSRX climberFront = new TalonSRX(RobotMap.CAN_CLIMBER_FRONT);
     private TalonSRX climberBack = new TalonSRX(RobotMap.CAN_CLIMBER_BACK);
-    private TalonSRX climberLeftWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_LEFT);
-    private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
+    private VictorSP climberWheels = new VictorSP(RobotMap.CAN_CLIMBER_WHEELS);
 
     private DigitalInput frontHallEffectTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
     private DigitalInput backHallEffectTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
@@ -103,18 +102,15 @@ public class Climber {
     }
 
     public void driveForward() {
-        climberLeftWheel.set(ControlMode.PercentOutput, defaultDriveSpeed);
-        climberRightWheel.set(ControlMode.PercentOutput, defaultDriveSpeed);
+        climberWheels.set(defaultDriveSpeed);
     }
 
     public void driveReverse() {
-        climberLeftWheel.set(ControlMode.PercentOutput, -defaultDriveSpeed);
-        climberRightWheel.set(ControlMode.PercentOutput, -defaultDriveSpeed);
+        climberWheels.set(-defaultDriveSpeed);
     }
 
     public void stopDriving() {
-        climberLeftWheel.set(ControlMode.PercentOutput, 0);
-        climberRightWheel.set(ControlMode.PercentOutput, 0);
+        climberWheels.set(0);
     }
 
     public boolean isLegBelow(Location loc) {
