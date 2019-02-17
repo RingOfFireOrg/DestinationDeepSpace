@@ -3,30 +3,58 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.VictorSP;
+
 public class CargoManipulator{
     enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP};
     private intakePosition position;
     enum wheelState{IN, OUT, OFF};
     private wheelState wheels;
     private double wheelPower = RobotMap.WHEEL_INTAKE_SPEED;
-    public TalonSRX leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
-    public TalonSRX rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
+    public TalonSRX leftIntakeWheel;
+    public TalonSRX rightIntakeWheel;
+    public VictorSP intakeLift;
     private PID intakeHeightPID;
 
     public CargoManipulator(){ 
+        leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
+        rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
+        intakeLift = new VictorSP(1);
         wheels = wheelState.OFF;
-        intakeHeightPID = new PID(0, 0, 0);
+        position = intakePosition.UP;
+        intakeHeightPID = new PID(0.1, 0, 0);
+        intakeHeightPID.setOutputRange(-1, 1);
     }
 
-    public void setPosition(intakePosition position) {
-        this.position = position;
+    public void setIntake() {
+        this.position = intakePosition.INTAKE;
     }
 
-    public void setState(wheelState wheels) {
-        this.wheels = wheels;
+    public void setLowerRocket() {
+        this.position = intakePosition.LOWER_ROCKET;
+    }
+
+    public void setCargoShip() {
+        this.position = intakePosition.CARGO_SHIP;
+    }
+
+    public void setUp() {
+        this.position = intakePosition.UP;
+    }
+
+    public void setOff() {
+        this.wheels = wheelState.OFF;
+    }
+
+    public void setIn() {
+        this.wheels = wheelState.IN;
+    }
+
+    public void setOut() {
+        this.wheels = wheelState.OUT;
     }
     
-   public void updateManipulator() {
+   public void updateCargo() {
        double target;
        if (position == intakePosition.INTAKE) {
            target = 0;
@@ -40,6 +68,8 @@ public class CargoManipulator{
 
        intakeHeightPID.setError(target - currentAngle());
        intakeHeightPID.update();
+       intakeLift.set(intakeHeightPID.getOutput());
+
 
        if (wheels == wheelState.IN) {
            leftIntakeWheel.set(ControlMode.PercentOutput, wheelPower);
