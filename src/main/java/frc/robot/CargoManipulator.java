@@ -1,22 +1,27 @@
 package frc.robot;
 
 public class CargoManipulator{
-    private boolean inShootingPosition;
+    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP};
+    private intakePosition position;
     enum wheelState{IN, OUT, OFF};
     private wheelState wheels;
 
-    public CargoManipulator(){
-
+    public CargoManipulator(){ 
+        wheels = wheelState.OFF;
     }
     
     void intakePosition(){
-        inShootingPosition = false;
+        position = intakePosition.INTAKE;
         //TO DO something that lowers wheel intake to intake posistion
     }
 
-    void shootingPosition(){
-        inShootingPosition = true;
+    void lowerRocketPosition(){
+        position = intakePosition.LOWER_ROCKET;
         //TO DO something that raises wheeled intake to shooting position
+    }
+
+    void cargoShipPosition() {
+        position = intakePosition.CARGO_SHIP;
     }
 
     void wheelsIn(){
@@ -34,8 +39,8 @@ public class CargoManipulator{
         //TO DO something that forces the wheels off
     }
 
-    boolean inShootingPosition(){
-        return inShootingPosition;
+    intakePosition getPosition(){
+        return position;
     }
 
     wheelState getWheelState(){

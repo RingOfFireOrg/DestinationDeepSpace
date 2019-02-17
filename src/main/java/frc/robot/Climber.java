@@ -35,10 +35,8 @@ public class Climber {
     private TalonSRX climberLeftWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_LEFT);
     private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
 
-    private DigitalInput frontHallEffectTop = new DigitalInput(RobotMap.INPUT_FRONT_TOP_SW);
-    private DigitalInput backHallEffectTop = new DigitalInput(RobotMap.INPUT_BACK_TOP_SW);
-    private DigitalInput frontHallEffectBottom = new DigitalInput(RobotMap.INPUT_FRONT_BOTTOM_SW);
-    private DigitalInput backHallEffectBottom = new DigitalInput(RobotMap.INPUT_BACK_BOTTOM_SW);
+    private DigitalInput frontHallEffect = new DigitalInput(RobotMap.INPUT_FRONT_SW);
+    private DigitalInput backHallEffect = new DigitalInput(RobotMap.INPUT_BACK_SW);
 
     /**
      * The name of the object (for use in debug)
@@ -175,8 +173,8 @@ public class Climber {
     }
 
     public void updateLegState(Direction direction) {
-        frontState = getState(frontState, frontHallEffectTop.get(), direction);
-        backState = getState(backState, backHallEffectTop.get(), direction);
+        frontState = getState(frontState, !frontHallEffect.get(), direction);
+        backState = getState(backState, !backHallEffect.get(), direction);
         SmartDashboard.putString("Front state", frontState.toString());
         SmartDashboard.putString("Back state", backState.toString());
     }
@@ -261,6 +259,11 @@ public class Climber {
         return current;
     }
 
+    public void printHallEffectState(){
+        SmartDashboard.putBoolean("Front HE Sensor", !frontHallEffect.get());
+        SmartDashboard.putBoolean("Back HE sensor", !backHallEffect.get());
+
+    }
     public enum Location {
         FRONT, BACK
     }

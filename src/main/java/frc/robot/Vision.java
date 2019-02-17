@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CargoManipulator.intakePosition;
 import frc.robot.CargoManipulator.wheelState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -72,7 +73,7 @@ public class Vision {
 
     boolean cargoScoreReady() {
         if (validTarget() && cargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak
-                && !cargoManipulator.inShootingPosition()) {
+                && cargoManipulator.getPosition() == intakePosition.INTAKE) {
             return true;
         } else {
             return false;
