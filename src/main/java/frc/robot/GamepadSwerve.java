@@ -6,13 +6,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class GamepadSwerve extends SwerveDrive {
-   
+	Vision limelight = new Vision();
     public GamepadSwerve() {
         super();
     }
 
-     public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
-
+    public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
+		//this MUST be the first step so automation overrides everything else
+		if(limelight.isAutomationRunning()){ //when rug gets around to it there would be one like this coming from climber
+            return;
+		}
+		
 		XboxController driveController = controller;
 		JoystickButton gyroResetButton = gyroReset;
 		JoystickButton tuningActivation = tuningModeActivation;

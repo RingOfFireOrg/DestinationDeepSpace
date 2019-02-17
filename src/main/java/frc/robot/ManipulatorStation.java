@@ -9,11 +9,9 @@ public class ManipulatorStation{
     }
 
     public void runManipulation(){
-        //this if else statement MUST be the first part of this class so that if you are running automation nothing else can occur
-        if((limelight.hatchPickup() || limelight.hatchScore() || limelight.cargoScoreCargoShip() || limelight.cargoScoreRocket()) && limelight.automationRunning){
+        //this if statement MUST be the first part of this class so that if you are running automation nothing else can occur
+        if(limelight.isAutomationRunning()){ //when rug gets around to it there would be one like this coming from climber
             return;
-        } else {
-            limelight.automationRunning = false;
         }
 
 

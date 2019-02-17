@@ -18,7 +18,7 @@ public class Vision {
     private double tvert;
     AHRS ahrs;
 
-    boolean automationRunning = false;
+    private boolean automationRunning = false;
 
     // These numbers must be tuned for your Robot! Be careful!
     final double STEER_K = 0.03; // how hard to drive sideways to center on the target
@@ -231,8 +231,8 @@ public class Vision {
             }
             break;
         case 4: // score
-            if (!beak.isOpen()) {
-                beak.open();
+            if (beak.isOpen()) {
+                beak.close();
             } else {
                 automationStep++;
             }
@@ -249,6 +249,7 @@ public class Vision {
         }
 
         if (automationStep == 6) {
+            automationRunning = false;
             return true;
         } else {
             return false;
@@ -270,6 +271,10 @@ public class Vision {
         } else {
             return false;
         }
+    }
+
+    boolean isAutomationRunning(){
+        return automationRunning;
     }
 
 }
