@@ -9,13 +9,13 @@ import com.kauailabs.navx.frc.AHRS;
 
 
 public class Vision {
-    private double ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
-    private double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-    private double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    private double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    private double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-    private double thor = NetworkTableInstance.getDefault().getTable("limelight").getEntry("thor").getDouble(0);
-    private double tvert = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert").getDouble(0);
+    private double ts;
+    private double tv;
+    private double tx;
+    private double ty;
+    private double ta;
+    private double thor;
+    private double tvert;
     AHRS ahrs;
 
     // These numbers must be tuned for your Robot! Be careful!
@@ -152,7 +152,6 @@ public class Vision {
             } else {
                 automationStep++;
             }
-            break;
         }
     }
 
@@ -229,7 +228,6 @@ public class Vision {
             } else {
                 automationStep++;
             }
-            break;
         }
     }
 
