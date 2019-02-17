@@ -12,6 +12,7 @@ public class PID {
     double error;
     boolean velocityControlMode = false;
     double lastTarget = 0;
+    double target = 0;
     double targetMargin = 1;
      
     PID (double P, double I, double D) {
@@ -29,6 +30,7 @@ public class PID {
         velocityControlMode = velocityControl;
     }
 
+    //only if the target will be rapidly changing
     void setTargetMargin(double newTargetMargin) {
         targetMargin = newTargetMargin;
     }

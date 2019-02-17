@@ -29,7 +29,7 @@ public class GamepadSwerve extends SwerveDrive {
 		if(controller.getYButton()){
 			setRobotFrontToCargo();
 		} else if(controller.getBButton()){
-			setRobotFrontToCargo();
+			setRobotFrontToHatch();
 		}
 		if (tuningActivation.get() == true) {
 			driveMode = 1;
