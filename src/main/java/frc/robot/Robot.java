@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   	Climber climberBack;
 	 Climber climberLeftWheel;
 	Beak beak = new Beak();
-  	//Climber climberRightWheel;
+  	Climber climberRightWheel;
 
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
@@ -70,6 +70,8 @@ public class Robot extends TimedRobot {
 	
 	GamepadSwerve swerveDrive = new GamepadSwerve();
 
+	RobotTest robotTest = new RobotTest();
+
   	boolean alignState = false;
 
 	@Override
@@ -92,6 +94,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testPeriodic() {
+		robotTest.runTest();
 		//swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
 		/*
 		climberRightWheel.set(ControlMode.PercentOutput, 0);

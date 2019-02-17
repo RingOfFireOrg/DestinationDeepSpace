@@ -368,5 +368,22 @@ public class SwerveDrive {
 		
 		return wheelRotations * 360;
 	}
-
+void testSwerveModule (boolean isFront, boolean isLeft, double driveSpeed, double steerSpeed){
+	if (isFront && isLeft){
+		frontLeft.setDriveSpeed(driveSpeed);
+		frontLeft.setSteerSpeed(steerSpeed);
+	}
+	else if (isFront && !isLeft) {
+		frontRight.setDriveSpeed(driveSpeed);
+		frontRight.setSteerSpeed(steerSpeed);
+	}
+	else if (!isFront && isLeft) {
+		backLeft.setDriveSpeed(driveSpeed);
+		backLeft.setSteerSpeed(steerSpeed);
+	}
+	else if (!isFront && !isLeft){
+		backRight.setDriveSpeed(driveSpeed);
+		backRight.setSteerSpeed(steerSpeed);
+	}
+}
 }
