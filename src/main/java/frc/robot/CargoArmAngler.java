@@ -29,7 +29,8 @@ public class CargoArmAngler {
 
     public void printVoltage() {
         SmartDashboard.putNumber("Cargo Encoder Voltage: ", cargoEncoder.getVoltage());
-        SmartDashboard.putNumber("Cargo Encoder Value:", cargoEncoder.getValue());
+        SmartDashboard.putNumber("Cargo Encoder Value:", cargoEncoder.getVoltage() * 54);
+        SmartDashboard.putNumber("Version #", 1);
     }
 
     public boolean isGoingToTop() {
@@ -40,5 +41,43 @@ public class CargoArmAngler {
             cargoArmMotor.setSpeed(0);
             return false;
         }
+    }
+
+    public boolean isAtBottom() {
+        if(cargoEncoder.getValue() > ARM_BOTTOM) {
+            cargoArmMotor.setSpeed(-RobotMap.CARGO_ARM_ROTATION_SPEED);
+            return false;
+        } else { 
+            cargoArmMotor.setSpeed(0);
+            return true;
+        }
+    }
+
+    public boolean isAtCargoShip() {
+        if(cargoEncoder.getValue() > ARM_AT_CARGO_SHIP) {
+            cargoArmMotor.setSpeed(-RobotMap.CARGO_ARM_ROTATION_SPEED);
+            return false;
+        } else if(cargoEncoder.getValue() < ARM_AT_CARGO_SHIP){
+            cargoArmMotor.setSpeed(RobotMap.CARGO_ARM_ROTATION_SPEED);
+            return false;
+        } else {
+            cargoArmMotor.setSpeed(0);
+            return true;
+        }
+    }
+
+        public boolean isAtRocketBottom() {
+            if(cargoEncoder.getValue() > ARM_AT_ROCKET_BOTTOM) {
+                cargoArmMotor.setSpeed(-RobotMap.CARGO_ARM_ROTATION_SPEED);
+                return false;
+            } else if(cargoEncoder.getValue() < ARM_AT_ROCKET_BOTTOM){
+                cargoArmMotor.setSpeed(RobotMap.CARGO_ARM_ROTATION_SPEED);
+                return false;
+            } else {
+                cargoArmMotor.setSpeed(0);
+                return true;
+            }
+            
+        
     }
 }

@@ -74,19 +74,17 @@ public class AutoClimb {
             if(climber.isFullyExtended()) {
                 step++;
             }
-            //Does the climber ever stop going up???
             break;
 
         // drive forward until front of robot is on platform and front leg hits platform
         case 3:
             if (frontLeftWheelLimitSwitch.get() || frontRightWheelLimitSwitch.get()) { 
                 climber.stopDriving();
+                step++;
                 timer.reset();
                 timer.start();
             } else {
                 climber.driveForward();
-                step++;
-                //shouldn't this be in the if statement???
             }
             break;    
 
@@ -107,19 +105,17 @@ public class AutoClimb {
             } else {
                 climber.retract(FRONT);
             }
-            //is the front ever stopped???
            break;
 
         // drive forward until robot is on platfrom and back leg hits platform AND MOVE CLIMBER BACK UP
         case 6: 
             if (backLeftWheelLimitSwitch.get() || backRightWheelLimitSwitch.get()) { 
                 climber.stopDriving(); 
+                step++;
                 timer.reset();
                 timer.start();
             } else {
                 climber.driveForward();
-                step++;
-                //shouldn't the step be in the if statement???
             }
             break;
 
@@ -141,7 +137,6 @@ public class AutoClimb {
                 step++;
             } else {
                 climber.retract(BACK);
-                //is the back ever stopped
             }
             break;
 
