@@ -57,7 +57,7 @@ public class Vision {
     }
 
     boolean hatchPickupReady() {
-        if (validTarget() && !beak.isOpen() && cameraFacingBeak && beak.isOut()) {
+        if (validTarget() && !beak.isOpen() && cameraFacingBeak) {
             return true;
         } else {
             return false;
@@ -65,7 +65,7 @@ public class Vision {
     }
 
     boolean hatchScoreReady() {
-        if (validTarget() && beak.isOpen() && cameraFacingBeak && beak.isOut()) {
+        if (validTarget() && beak.isOpen() && cameraFacingBeak) {
             return true;
         } else {
             return false;
