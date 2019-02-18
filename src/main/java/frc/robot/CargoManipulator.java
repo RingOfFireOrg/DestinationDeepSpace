@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.VictorSP;
 
 public class CargoManipulator{
-    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP};
+    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP, STALL};
     private intakePosition position;
     enum wheelState{IN, OUT, OFF};
     private wheelState wheels;
@@ -21,7 +21,7 @@ public class CargoManipulator{
         rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
         intakeLift = new VictorSP(1);
         wheels = wheelState.OFF;
-        position = intakePosition.UP;
+        position = intakePosition.STALL;
         intakeHeightPID = new PID(0.1, 0, 0);
         intakeHeightPID.setOutputRange(-1, 1);
     }
@@ -42,6 +42,10 @@ public class CargoManipulator{
         this.position = intakePosition.UP;
     }
 
+    public void setStall() {
+        this.position = intakePosition.STALL;
+    }
+
     public void setOff() {
         this.wheels = wheelState.OFF;
     }
@@ -57,18 +61,22 @@ public class CargoManipulator{
    public void updateCargo() {
        double target;
        if (position == intakePosition.INTAKE) {
-           target = 0;
+           //target = 0;
+           intakeLift.set(-0.5);
        } else if (position == intakePosition.LOWER_ROCKET) {
-           target = 30;
+           //target = 30;
        } else if (position == intakePosition.CARGO_SHIP) {
-           target = 60;
+           //target = 60;
+       } else if (position == intakePosition.UP) {
+           intakeLift.set(0.5);
+           //target = 90;
        } else {
-           target = 90;
+           intakeLift.set(0);
        }
 
-       intakeHeightPID.setError(target - currentAngle());
-       intakeHeightPID.update();
-       intakeLift.set(intakeHeightPID.getOutput());
+     //  intakeHeightPID.setError(target - currentAngle());
+     //  intakeHeightPID.update();
+      // intakeLift.set(intakeHeightPID.getOutput());
 
 
        if (wheels == wheelState.IN) {

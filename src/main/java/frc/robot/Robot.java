@@ -52,6 +52,8 @@ public class Robot extends TimedRobot {
 	JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
 	JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
 
+	public Vision limelight = new Vision();
+
 	//private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
 
 
@@ -92,9 +94,14 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
-		//climberControl();
-		beakControl();
+		if (/*limelight.isAutomationRunning()*/false) {
+
+		} else {
+			swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
+			beakControl();
+			cargoManipulatorControl();
+		}
+		
 		climber.printHallEffectState();
 
 	}
@@ -200,8 +207,11 @@ public class Robot extends TimedRobot {
 			cargo.setCargoShip();
 		} else if (manipulatorYButton.get() == true) {
 			cargo.setLowerRocket();
+		} else {
+			cargo.setStall();
 		}
 		cargo.updateCargo();
 	}
+
 }
 
