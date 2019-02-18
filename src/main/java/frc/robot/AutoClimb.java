@@ -60,7 +60,7 @@ public class AutoClimb {
             step++;
             break;
 
-        // drive back a little
+        // drive back a little 
         case 1:
             if (timer.get() < 0.5) {
                 driveSwerve(-0.5);
@@ -110,10 +110,10 @@ public class AutoClimb {
             }
            break;
 
-        // drive forward until robot is on platfrom and back leg hits platform
+        // drive forward until robot is on platfrom and back leg hits platform AND MOVE CLIMBER BACK UP
         case 6: 
             if (backLeftWheelLimitSwitch.get() || backRightWheelLimitSwitch.get()) { 
-                climber.stopDriving();
+                climber.stopDriving(); 
                 timer.reset();
                 timer.start();
             } else {
