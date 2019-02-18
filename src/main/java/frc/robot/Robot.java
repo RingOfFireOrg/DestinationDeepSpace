@@ -170,13 +170,6 @@ public class Robot extends TimedRobot {
 		} else if (manipulatorBButton.get() == true) {
 			beak.close();
 		}
-		if (manipulatorGamepad.getPOV() == 0) {
-			beak.extend();
-		} else if (manipulatorGamepad.getPOV() == 180) {
-			beak.retract();
-		} else {
-			beak.stopActuation();
-		}
 	}
 
 	public void cargoManipulatorControl() {

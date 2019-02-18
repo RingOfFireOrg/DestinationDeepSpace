@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class CargoArmAngler {
 
+
+//these are in A/D values
+//is this here for _______?
     private static final double ARM_TOP = 3351;
     private static final double ARM_BOTTOM = 420;
     private static final double ARM_AT_CARGO_SHIP = 1180;

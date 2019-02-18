@@ -26,7 +26,6 @@ public class CargoManipulator{
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
         rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
         intakeLift = new TalonSRX(RobotMap.CARGO_ARM);
-       // intakeLift.enableB
         wheels = wheelState.OFF;
         position = intakePosition.STALL;
         intakeHeightPID = new PID(0.1, 0, 0);
