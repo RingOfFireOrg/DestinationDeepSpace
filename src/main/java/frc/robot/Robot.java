@@ -4,7 +4,6 @@ import static frc.robot.Climber.Location.BACK;
 import static frc.robot.Climber.Location.FRONT;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -45,17 +44,12 @@ public class Robot extends TimedRobot {
 	JoystickButton leftTrigger = new JoystickButton(leftStick, RobotMap.LEFT_TRIGGER);
 	JoystickButton rightTrigger = new JoystickButton(rightStick, RobotMap.RIGHT_TRIGGER);
 	JoystickButton tuningActivation = new JoystickButton(leftStick, RobotMap.LEFT_SWERVE_TUNING_BUTTON);
-	JoystickButton                            stickTriggerL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_TRIGGER);
+	JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_TRIGGER);
 	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_TRIGGER);
 	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
 	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
 	JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
 	JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
-
-	public Vision limelight = new Vision();
-
-	//private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
-
 
 	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
 	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
@@ -89,7 +83,6 @@ public class Robot extends TimedRobot {
 		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
 
 		autoClimb = new AutoClimb(climber, swerveDrive);
-
 	}
 
 	@Override
@@ -103,7 +96,6 @@ public class Robot extends TimedRobot {
 		}
 		
 		climber.printHallEffectState();
-
 	}
 
 	@Override
@@ -150,7 +142,6 @@ public class Robot extends TimedRobot {
 			return;
 		}
 		
-		// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
 		if (yPosL > 0.25) {
 			climber.driveForward();
 			} else if (yPosL < -0.25) {
@@ -164,7 +155,7 @@ public class Robot extends TimedRobot {
 			} else if (stickThumbLeft) {
 				climber.retract(FRONT);
 			} else {
-				climber.stopClimbing(/*FRONT*/);
+				climber.stopClimbing(FRONT);
 			}
 
 			if (stickTriggerRight) {
@@ -172,7 +163,7 @@ public class Robot extends TimedRobot {
 			} else if (stickThumbRight) {
 				climber.retract(BACK);
 			} else {
-			climber.stopClimbing(/*BACK*/);
+			climber.stopClimbing(BACK);
 			}
 	}
 
