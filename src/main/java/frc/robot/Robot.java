@@ -4,7 +4,6 @@ import static frc.robot.Climber.Location.BACK;
 import static frc.robot.Climber.Location.FRONT;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -20,22 +19,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  * directory.
  */
 public class Robot extends TimedRobot {
+	//Are these used??? 
 	Climber climberFront;
   	Climber climberBack;
-	 Climber climberLeftWheel;
-	Beak beak = new Beak();
-  	Climber climberRightWheel;
+	Climber climberLeftWheel;
+	Climber climberRightWheel;
+	  
+    Beak beak = Beak.getInstance();
+	CargoManipulator cargoManipulator = CargoManipulator.getInstance();
 
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	String autoSelected;
+	SendableChooser<String> chooser = new SendableChooser<>();
+
+	/*
 	public Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
 	public Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
 	private Joystick manipulatorStickL = new Joystick(RobotMap.LEFT_MANIPULATOR_STICK);
 	private Joystick manipulatorStickR = new Joystick(RobotMap.RIGHT_MANIPULATOR_STICK);
-	public XboxController driverGamepad =  new XboxController(RobotMap.DRIVER_GAMEPAD);
-	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
-	SendableChooser<String> chooser = new SendableChooser<>();
 	JoystickButton frButton = new JoystickButton(leftStick, RobotMap.FRONT_RIGHT_BUTTON);
 	JoystickButton flButton = new JoystickButton(leftStick, RobotMap.FRONT_LEFT_BUTTON);
 	JoystickButton brButton = new JoystickButton(leftStick, RobotMap.BACK_RIGHT_BUTTON);
@@ -47,18 +49,23 @@ public class Robot extends TimedRobot {
 	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_TRIGGER);
 	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
 	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
+	*/
 
-	//private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
-
+	public XboxController driverGamepad =  new XboxController(RobotMap.DRIVER_GAMEPAD);
+	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
 
 	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
 	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
 
 	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_A_BUTTON_VALUE);
 	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_B_BUTTON_VALUE);
+	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_X_BUTTON_VALUE);
+	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
+	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
+	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
+	public JoystickButton autoClimbButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
+	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
 
-	public JoystickButton autoClimbButton = new JoystickButton(manipulatorStickL, 6); //find actual button number
-	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorStickR, 7); //find actual button number
 
 	AutoClimb autoClimb;
 
@@ -67,12 +74,15 @@ public class Robot extends TimedRobot {
 	boolean driveMode = false;
 
 	boolean autoClimbMode = false;
+
+	Vision limelight = new Vision();
 	
 	GamepadSwerve swerveDrive = new GamepadSwerve();
 
+	ManipulatorStation manipulatorStation = new ManipulatorStation();
+
 	RobotTest robotTest = new RobotTest();
 
-  	boolean alignState = false;
 
 	@Override
 	public void robotInit() {
@@ -81,46 +91,35 @@ public class Robot extends TimedRobot {
 		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
 
 		autoClimb = new AutoClimb(climber, swerveDrive);
-
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton, frButton, flButton, blButton, brButton);
-		//climberControl();
-		beakControl();
-		climber.printHallEffectState();
+		if (limelight.isAutomationRunning() || autoClimbMode) {
 
+		} else {
+			swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton);
+			beakControl();
+			cargoManipulatorControl();
+		}
+		
+		climber.printHallEffectState();
 	}
 
 	@Override
 	public void testPeriodic() {
 		robotTest.runTest();
-		//swerveDrive.individualModuleControl(frButton.get(), flButton.get(), brButton.get(), blButton.get());
-		/*
-		climberRightWheel.set(ControlMode.PercentOutput, 0);
-		if (driverGamepad.getRawAxis(2) > 0.3) {
-			climberRightWheel.set(ControlMode.PercentOutput, 0.1);
-		} else if (driverGamepad.getRawAxis(3) > 0.3) {
-			climberRightWheel.set(ControlMode.PercentOutput, -0.1);
-		} else {
-			climberRightWheel.set(ControlMode.PercentOutput, 0);
-		}
-		*/
-	}
-
-	//Code below here is not particular to swerve, temporary presence, for line alignment, auto-intervention
-	public void autoAlign() {
-		
-		//swerveDrive.syncroDrive(0.5, 90, 0);
 	}
 
 	public void climberControl() {
+
+		/*
 		double yPosL = manipulatorStickL.getY();
     	boolean stickTriggerLeft = stickTriggerL.get();
     	boolean stickTriggerRight = stickTriggerR.get();
     	boolean stickThumbLeft = stickThumbL.get();
 		boolean stickThumbRight = stickThumbR.get();
+		*/
 
 		//check logic
 		if (autoClimbButton.get()) {
@@ -137,10 +136,10 @@ public class Robot extends TimedRobot {
 			return;
 		}
 		
-		// The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly centered to stop
-		if (yPosL < 0.25) {
+		/*
+		if (yPosL > 0.25) {
 			climber.driveForward();
-			} else if (yPosL > -0.25) {
+			} else if (yPosL < -0.25) {
 			climber.driveReverse();
 			} else {
 			climber.stopDriving();
@@ -151,7 +150,7 @@ public class Robot extends TimedRobot {
 			} else if (stickThumbLeft) {
 				climber.retract(FRONT);
 			} else {
-				climber.stopClimbing(/*FRONT*/);
+				climber.stopClimbing(FRONT);
 			}
 
 			if (stickTriggerRight) {
@@ -159,8 +158,10 @@ public class Robot extends TimedRobot {
 			} else if (stickThumbRight) {
 				climber.retract(BACK);
 			} else {
-			climber.stopClimbing(/*BACK*/);
+			climber.stopClimbing(BACK);
 			}
+			*/
+			
 	}
 
 	public void beakControl() {
@@ -169,13 +170,29 @@ public class Robot extends TimedRobot {
 		} else if (manipulatorBButton.get() == true) {
 			beak.close();
 		}
-		if (manipulatorGamepad.getPOV() == 0) {
-			beak.extend();
-		} else if (manipulatorGamepad.getPOV() == 180) {
-			beak.retract();
-		} else {
-			beak.stopActuation();
-		}
 	}
+
+	public void cargoManipulatorControl() {
+		if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) > 0.3) {
+			cargoManipulator.setOut();
+		} else if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) > 0.3) {
+			cargoManipulator.setIn();
+		} else {
+			cargoManipulator.setOff();
+		}
+		if (manipulatorLeftBumper.get() == true) {
+			cargoManipulator.setUp();
+		} else if (manipulatorRightBumber.get() == true) {
+			cargoManipulator.setIntake();
+		} else if (manipulatorXButton.get() == true) {
+			cargoManipulator.setCargoShip();
+		} else if (manipulatorYButton.get() == true) {
+			cargoManipulator.setLowerRocket();
+		} else {
+			cargoManipulator.setStall();
+		}
+		cargoManipulator.updateCargo();
+	}
+
 }
 

@@ -10,7 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
-
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Climber.Location.FRONT;
@@ -31,17 +31,14 @@ public class Climber {
     private MovementState backState = MovementState.ALLOW;
 
     private TalonSRX climberFront = new TalonSRX(RobotMap.CAN_CLIMBER_FRONT);
-    private TalonSRX climberBack = new TalonSRX(RobotMap.CAN_CLIMBER_BACK);
-    private TalonSRX climberLeftWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_LEFT);
-    private TalonSRX climberRightWheel = new TalonSRX(RobotMap.CAN_CLIMBER_WHEEL_RIGHT);
+    private VictorSP climberBack = new VictorSP(RobotMap.CAN_CLIMBER_BACK);
+    private VictorSP climberWheels = new VictorSP(RobotMap.CAN_CLIMBER_WHEELS);
 
     private DigitalInput frontHallEffect = new DigitalInput(RobotMap.INPUT_FRONT_SW);
     private DigitalInput backHallEffect = new DigitalInput(RobotMap.INPUT_BACK_SW);
 
-    /**
-     * The name of the object (for use in debug)
-     */
-    private String name;
+    //The name of the object (for use in debug)
+    //private String name;
 
     /**
      * The constructor for our class
@@ -57,7 +54,7 @@ public class Climber {
     public void extend() {
         updateLegState(Direction.EXTEND);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
-        climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, backState));
+        climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
     }
 
     public void extend(Location location) {
@@ -66,14 +63,14 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         } else {
-            climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, backState));
+            climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
         }
     }
 
     public void retract() {
         updateLegState(Direction.RETRACT);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
-        climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, backState));
+        climberBack.set(getDriveSpeed(Direction.RETRACT, backState));
     }
 
     public void retract(Location location) {
@@ -82,7 +79,7 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
         } else {
-            climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, backState));
+            climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
         }
     }
 
@@ -153,23 +150,20 @@ public class Climber {
         if (loc == FRONT) {
             climberFront.set(ControlMode.PercentOutput, 0);
         } else if (loc == BACK) {
-            climberBack.set(ControlMode.PercentOutput, 0);
+            climberBack.set(0);
         }
     }
 
     public void driveForward() {
-        climberLeftWheel.set(ControlMode.PercentOutput, defaultDriveSpeed);
-        climberRightWheel.set(ControlMode.PercentOutput, defaultDriveSpeed);
+        climberWheels.set(defaultDriveSpeed);
     }
 
     public void driveReverse() {
-        climberLeftWheel.set(ControlMode.PercentOutput, -defaultDriveSpeed);
-        climberRightWheel.set(ControlMode.PercentOutput, -defaultDriveSpeed);
+        climberWheels.set(-defaultDriveSpeed);
     }
 
     public void stopDriving() {
-        climberLeftWheel.set(ControlMode.PercentOutput, 0);
-        climberRightWheel.set(ControlMode.PercentOutput, 0);
+        climberWheels.set(0);
     }
 
     public void updateLegState(Direction direction) {
@@ -264,6 +258,7 @@ public class Climber {
         SmartDashboard.putBoolean("Back HE sensor", !backHallEffect.get());
 
     }
+
     public enum Location {
         FRONT, BACK
     }
@@ -271,5 +266,4 @@ public class Climber {
     public enum Direction {
         EXTEND, RETRACT
     }
-
 }
