@@ -33,8 +33,4 @@ public class Beak {
     boolean isOpen(){
         return isOpen;
     }    
-
-    boolean isOut(){
-        return isOut();
-    }
 }
