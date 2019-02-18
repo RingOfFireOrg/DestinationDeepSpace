@@ -18,6 +18,8 @@ public class SwerveDrive {
 	double translationAngle;
 	boolean isCargoFront = true;
 
+	private static SwerveDrive swerveDrive;
+
 	static SwerveModule frontRight = new SwerveModule(new TalonSRX(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new VictorSPX(RobotMap.STEER_FRONT_RIGHT_MOTOR),
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, 
 		 new Encoder(RobotMap.DRIVE_ENCODER_FRONT_RIGHT_A, RobotMap.DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X), "FrontRight");
@@ -32,6 +34,17 @@ public class SwerveDrive {
 		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
 
 
+	protected SwerveDrive(){
+
+	}
+
+	public static SwerveDrive getInstance(){
+        if(swerveDrive == null){
+            swerveDrive = new SwerveDrive();
+        }
+        return swerveDrive;
+    }
+	
 	void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
 		ahrs.reset();
@@ -258,30 +271,8 @@ public class SwerveDrive {
 		backRight.control(0, 45);
 	}
 
-	void tuningMode(JoystickButton buttonFR, JoystickButton buttonFL, JoystickButton buttonBL, JoystickButton buttonBR) {
+	void tuningMode() {
 		//used to tune the modules and their zero values
-		/*
-		if (buttonFR.get()) {
-			frontRight.control(0.1, 0);
-		} else {
-			frontRight.stop();
-		}
-		if (buttonFL.get()) {
-			frontLeft.control(0.1, 0);
-		} else {
-			frontLeft.stop();
-		}
-		if (buttonBR.get()) {
-			backRight.control(0.1, 0);
-		} else {
-			backRight.stop();
-		}
-		if (buttonBL.get()) {
-			backLeft.control(0.1, 0);
-		} else {
-			backLeft.stop();
-		}
-		*/
 
 		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
 		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());

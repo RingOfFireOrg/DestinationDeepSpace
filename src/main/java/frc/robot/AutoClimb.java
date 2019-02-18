@@ -1,13 +1,5 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;  
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -48,6 +40,14 @@ public class AutoClimb {
         autoClimbFinish = false;
     }
 
+    public boolean autoClimbEnabled() {
+        if (autoClimbFinish || step == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public boolean autoClimbFinished() {
 
         switch(step) {
@@ -57,7 +57,7 @@ public class AutoClimb {
             step++;
             break;
 
-        // drive back a little
+        // drive back a little 
         case 1:
             if (timer.get() < 0.5) {
                 driveSwerve(-0.5);
@@ -74,6 +74,7 @@ public class AutoClimb {
             if(climber.isFullyExtended()) {
                 step++;
             }
+            //Does the climber ever stop going up???
             break;
 
         // drive forward until front of robot is on platform and front leg hits platform
@@ -85,6 +86,7 @@ public class AutoClimb {
             } else {
                 climber.driveForward();
                 step++;
+                //shouldn't this be in the if statement???
             }
             break;    
 
@@ -105,17 +107,19 @@ public class AutoClimb {
             } else {
                 climber.retract(FRONT);
             }
+            //is the front ever stopped???
            break;
 
-        // drive forward until robot is on platfrom and back leg hits platform
+        // drive forward until robot is on platfrom and back leg hits platform AND MOVE CLIMBER BACK UP
         case 6: 
             if (backLeftWheelLimitSwitch.get() || backRightWheelLimitSwitch.get()) { 
-                climber.stopDriving();
+                climber.stopDriving(); 
                 timer.reset();
                 timer.start();
             } else {
                 climber.driveForward();
                 step++;
+                //shouldn't the step be in the if statement???
             }
             break;
 
@@ -137,6 +141,7 @@ public class AutoClimb {
                 step++;
             } else {
                 climber.retract(BACK);
+                //is the back ever stopped
             }
             break;
 

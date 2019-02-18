@@ -25,9 +25,9 @@ public class Vision {
     final double DRIVE_K = 0.7; // how hard to drive fwd toward the target
     final double DESIRED_TARGET_AREA = 13.0; // Area of the target when the robot reaches the wall
 
-    SwerveDrive swerveDrive = new SwerveDrive();
-    Beak beak = new Beak();
-    CargoManipulator cargoManipulator = new CargoManipulator();
+    SwerveDrive swerveDrive = SwerveDrive.getInstance();
+    Beak beak = Beak.getInstance();
+    CargoManipulator cargoManipulator = CargoManipulator.getInstance();
     private boolean cameraFacingBeak;
     private int automationStep = 0;
 
@@ -162,6 +162,7 @@ public class Vision {
         }
 
         if (automationStep == 6) {
+            automationRunning = false;
             return true;
         } else {
             return false;

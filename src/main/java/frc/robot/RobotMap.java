@@ -15,12 +15,15 @@ public class RobotMap {
 	//Manipulator gamepad buttons and axis:
 	public static final int MANIPULATOR_LEFT_TRIGGER_AXIS = 2;
 	public static final int MANIPULATOR_RIGHT_TRIGGER_AXIS = 3;
+
 	public static final int MANIPULATOR_A_BUTTON_VALUE = 1;
 	public static final int MANIPULATOR_B_BUTTON_VALUE = 2;
 	public static final int MANIPULATOR_X_BUTTON_VALUE = 3;
 	public static final int MANIPULATOR_Y_BUTTON_VALUE = 4;
 	public static final int MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE = 5;
 	public static final int MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE = 6;
+	public static final int MANIPULATOR_BACK_BUTTON_VALUE = 7;
+	public static final int MANIPULATOR_START_BUTTON_VALUE = 8;
 
     //Driver Gamepad Buttons axes:
     public static final int RIGHT_STICK_X_AXIS = 0;
@@ -28,14 +31,14 @@ public class RobotMap {
     public static final int LEFT_TRIGGER_AXIS = 2;
     public static final int RIGHT_TRIGGER_AXIS = 3;
     public static final int LEFT_STICK_X_AXIS = 4;
-    public static final int LEFT_STICK_Y_AXIS = 5;
-    public static final int START_BUTTON_VALUE = 8;
-	public static final int BACK_BUTTON_VALUE = 7;
+	public static final int LEFT_STICK_Y_AXIS = 5;
 	
 	public static final int TEST_FRONT_LEFT_BUTTON = 0;
 	public static final int TEST_FRONT_RIGHT_BUTTON = 1;
 	public static final int TEST_BACK_LEFT_BUTTON = 2;
 	public static final int TEST_BACK_RIGHT_BUTTON = 3;
+	public static final int BACK_BUTTON_VALUE = 7;
+    public static final int START_BUTTON_VALUE = 8;
 
 	//Left Stick Buttons:
 	public static final int LEFT_TRIGGER = 1;
@@ -67,7 +70,7 @@ public class RobotMap {
 	//PWM ports
 	//Motors:
 	public static final int CAMERA_ROTATION_SERVO_CHANNEL = 0;
-	public static final int CARGO_MANIULATOR_LIFT_CHANNEL = 1;
+	public static final int CAN_CLIMBER_BACK = 1;
 	public static final int BEAK_ACTUATOR_CHANNEL = 8;
 	public static final int BEAK_DEPLOYER_CHANNEL = 9;
 
@@ -93,12 +96,11 @@ public class RobotMap {
 
 	// all CANs for robot
 	public static final int CAN_CLIMBER_FRONT = 10;
-    public static final int CAN_CLIMBER_BACK = 6;
     public static final int CAN_CLIMBER_WHEELS = 3;
 
 	public static final int LEFT_INTAKE_WHEEL = 8;
 	public static final int RIGHT_INTAKE_WHEEL = 7;
-	public static final int CARGO_ARM = 1;
+	public static final int CARGO_ARM = 6;
 
 	public static final int DRIVE_FRONT_RIGHT_MOTOR = 11;
 	public static final int DRIVE_FRONT_LEFT_MOTOR = 14;
