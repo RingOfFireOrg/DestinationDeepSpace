@@ -3,7 +3,9 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoManipulator{
     enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP, STALL};
@@ -15,6 +17,8 @@ public class CargoManipulator{
     public TalonSRX rightIntakeWheel;
     public TalonSRX intakeLift;
     private PID intakeHeightPID;
+    private AnalogInput cargoEncoder;
+    private double target;
 
     private static CargoManipulator cargoManipulator;
 
@@ -27,6 +31,8 @@ public class CargoManipulator{
         position = intakePosition.STALL;
         intakeHeightPID = new PID(0.1, 0, 0);
         intakeHeightPID.setOutputRange(-1, 1);
+        cargoEncoder = new AnalogInput(4);
+        target = 0;
     }
 
     public static CargoManipulator getInstance(){
@@ -69,24 +75,23 @@ public class CargoManipulator{
     }
     
    public void updateCargo() {
-       double target;
        if (position == intakePosition.INTAKE) {
-           //target = 0;
-           intakeLift.set(ControlMode.PercentOutput, -0.5);
+           target = 0;
+           //intakeLift.set(ControlMode.PercentOutput, -0.5);
        } else if (position == intakePosition.LOWER_ROCKET) {
-           //target = 30;
+           target = 30;
        } else if (position == intakePosition.CARGO_SHIP) {
-           //target = 60;
+           target = 60;
        } else if (position == intakePosition.UP) {
-           intakeLift.set(ControlMode.PercentOutput, 0.5);
-           //target = 90;
+           //intakeLift.set(ControlMode.PercentOutput, 0.5);
+           target = 90;
        } else {
-           intakeLift.set(ControlMode.PercentOutput, 0);
+           //intakeLift.set(ControlMode.PercentOutput, 0);
        }
 
-     //  intakeHeightPID.setError(target - currentAngle());
-     //  intakeHeightPID.update();
-      // intakeLift.set(intakeHeightPID.getOutput());
+       intakeHeightPID.setError(target - currentAngle());
+       intakeHeightPID.update();
+       intakeLift.set(ControlMode.PercentOutput, intakeHeightPID.getOutput());
 
 
        if (wheels == wheelState.IN) {
@@ -110,7 +115,8 @@ public class CargoManipulator{
     }
 
     private double currentAngle() {
-        return 0;   
+        SmartDashboard.putNumber("CargoEncoder", cargoEncoder.getVoltage() * 54);
+        return cargoEncoder.getVoltage() * 54;
     }
 
 

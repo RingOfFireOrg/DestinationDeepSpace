@@ -10,7 +10,7 @@ public class GamepadSwerve extends SwerveDrive {
         super();
     }
 
-    public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation, JoystickButton frb, JoystickButton flb, JoystickButton blb, JoystickButton brb) {
+    public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation) {
 		//this MUST be the first step so automation overrides everything else
 		
 		XboxController driveController = controller;
@@ -44,7 +44,7 @@ public class GamepadSwerve extends SwerveDrive {
 				break;
 
 			case 1:
-				tuningMode(frb, flb, blb, brb);
+				tuningMode();
 				break;
 
 			case 2:
