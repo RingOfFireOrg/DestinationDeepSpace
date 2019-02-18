@@ -72,7 +72,6 @@ public class RobotMap {
 	public static final int CAMERA_ROTATION_SERVO_CHANNEL = 0;
 	public static final int CAN_CLIMBER_BACK = 1;
 	public static final int BEAK_ACTUATOR_CHANNEL = 8;
-	public static final int BEAK_DEPLOYER_CHANNEL = 9;
 
 	//Digital Ports
 	// Hall Effect Sensors and Limit Switches for autoClimb
