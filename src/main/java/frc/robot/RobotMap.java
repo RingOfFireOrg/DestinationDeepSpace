@@ -67,7 +67,7 @@ public class RobotMap {
 	//PWM ports
 	//Motors:
 	public static final int CAMERA_ROTATION_SERVO_CHANNEL = 0;
-	public static final int CARGO_MANIULATOR_LIFT_CHANNEL = 1;
+	public static final int CAN_CLIMBER_BACK = 1;
 	public static final int BEAK_ACTUATOR_CHANNEL = 8;
 	public static final int BEAK_DEPLOYER_CHANNEL = 9;
 
@@ -93,12 +93,11 @@ public class RobotMap {
 
 	// all CANs for robot
 	public static final int CAN_CLIMBER_FRONT = 10;
-    public static final int CAN_CLIMBER_BACK = 6;
     public static final int CAN_CLIMBER_WHEELS = 3;
 
 	public static final int LEFT_INTAKE_WHEEL = 8;
 	public static final int RIGHT_INTAKE_WHEEL = 7;
-	public static final int CARGO_ARM = 1;
+	public static final int CARGO_ARM = 6;
 
 	public static final int DRIVE_FRONT_RIGHT_MOTOR = 11;
 	public static final int DRIVE_FRONT_LEFT_MOTOR = 14;

@@ -31,7 +31,7 @@ public class Climber {
     private MovementState backState = MovementState.ALLOW;
 
     private TalonSRX climberFront = new TalonSRX(RobotMap.CAN_CLIMBER_FRONT);
-    private TalonSRX climberBack = new TalonSRX(RobotMap.CAN_CLIMBER_BACK);
+    private VictorSP climberBack = new VictorSP(RobotMap.CAN_CLIMBER_BACK);
     private VictorSP climberWheels = new VictorSP(RobotMap.CAN_CLIMBER_WHEELS);
 
     private DigitalInput frontHallEffect = new DigitalInput(RobotMap.INPUT_FRONT_SW);
@@ -54,7 +54,7 @@ public class Climber {
     public void extend() {
         updateLegState(Direction.EXTEND);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
-        climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, backState));
+        climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
     }
 
     public void extend(Location location) {
@@ -63,14 +63,14 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         } else {
-            climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, backState));
+            climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
         }
     }
 
     public void retract() {
         updateLegState(Direction.RETRACT);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
-        climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, backState));
+        climberBack.set(getDriveSpeed(Direction.RETRACT, backState));
     }
 
     public void retract(Location location) {
@@ -79,7 +79,7 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
         } else {
-            climberBack.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, backState));
+            climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
         }
     }
 
@@ -150,7 +150,7 @@ public class Climber {
         if (loc == FRONT) {
             climberFront.set(ControlMode.PercentOutput, 0);
         } else if (loc == BACK) {
-            climberBack.set(ControlMode.PercentOutput, 0);
+            climberBack.set(0);
         }
     }
 

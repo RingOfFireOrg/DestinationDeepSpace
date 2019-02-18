@@ -13,13 +13,14 @@ public class CargoManipulator{
     private double wheelPower = RobotMap.WHEEL_INTAKE_SPEED;
     public TalonSRX leftIntakeWheel;
     public TalonSRX rightIntakeWheel;
-    public VictorSP intakeLift;
+    public TalonSRX intakeLift;
     private PID intakeHeightPID;
 
     public CargoManipulator(){ 
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
         rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
-        intakeLift = new VictorSP(1);
+        intakeLift = new TalonSRX(RobotMap.CARGO_ARM);
+       // intakeLift.enableB
         wheels = wheelState.OFF;
         position = intakePosition.STALL;
         intakeHeightPID = new PID(0.1, 0, 0);
@@ -62,16 +63,16 @@ public class CargoManipulator{
        double target;
        if (position == intakePosition.INTAKE) {
            //target = 0;
-           intakeLift.set(-0.5);
+           intakeLift.set(ControlMode.PercentOutput, -0.5);
        } else if (position == intakePosition.LOWER_ROCKET) {
            //target = 30;
        } else if (position == intakePosition.CARGO_SHIP) {
            //target = 60;
        } else if (position == intakePosition.UP) {
-           intakeLift.set(0.5);
+           intakeLift.set(ControlMode.PercentOutput, 0.5);
            //target = 90;
        } else {
-           intakeLift.set(0);
+           intakeLift.set(ControlMode.PercentOutput, 0);
        }
 
      //  intakeHeightPID.setError(target - currentAngle());
