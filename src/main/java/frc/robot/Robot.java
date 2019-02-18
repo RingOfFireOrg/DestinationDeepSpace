@@ -1,11 +1,8 @@
 package frc.robot;
 
-import static frc.robot.Climber.Location.BACK;
-import static frc.robot.Climber.Location.FRONT;
+import com.kauailabs.navx.frc.AHRS;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -67,6 +64,8 @@ public class Robot extends TimedRobot {
 	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
 
 
+	AHRS ahrs;
+
 	AutoClimb autoClimb;
 
 	public Climber climber;
@@ -77,7 +76,7 @@ public class Robot extends TimedRobot {
 
 	Vision limelight = new Vision();
 	
-	GamepadSwerve swerveDrive = new GamepadSwerve();
+	GamepadSwerve swerveDrive;
 
 	ManipulatorStation manipulatorStation = new ManipulatorStation();
 
@@ -86,7 +85,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		swerveDrive.swerveInit();
+		ahrs = new AHRS(SerialPort.Port.kUSB);
+		ahrs.reset();
+	
+		swerveDrive = new GamepadSwerve(ahrs);
 
 		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
 

@@ -39,43 +39,27 @@ public class SwerveDrive {
 					RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X),
 			"BackRight");
 
-	protected SwerveDrive() {
+	protected SwerveDrive(AHRS ahrs) {
+		this.ahrs = ahrs;
+		ahrsOffset = ahrs.getAngle();
+		translationAngle = 0;
 
+		pidDrivingStraight = new PID(0.0025, 0.000025, 0);
+		pidDrivingStraight.setOutputRange(-0.5, 0.5);
+
+		reset();
+		gyroRateBuffer = new RotatingBuffer(5);
+		SmartDashboard.putNumber("Version #", 5);
 	}
 
-	public static SwerveDrive getInstance() {
+	public static SwerveDrive getInstance(AHRS ahrs) {
 		if (swerveDrive == null) {
-			swerveDrive = new SwerveDrive();
+			swerveDrive = new SwerveDrive(ahrs);
 		}
 		return swerveDrive;
 	}
 
-	void swerveInit() {
-		ahrs = new AHRS(SerialPort.Port.kUSB);
-		ahrs.reset();
-		ahrsOffset = ahrs.getAngle();
-		// 7:40 pm 2/14 -- 0.0025, 0.000025, 0.05
-		pidDrivingStraight = new PID(0.0025, 0.000025, 0);
-		pidDrivingStraight.setOutputRange(-0.5, 0.5);
-		translationAngle = ahrs.getAngle() - ahrsOffset;
-		frontRight.resetModule();
-		frontLeft.resetModule();
-		backLeft.resetModule();
-		backRight.resetModule();
-		frontLeft.invertModule();
-		backLeft.invertModule();
-		SmartDashboard.putNumber("Version #", 5);
-		SmartDashboard.putNumber("IMC", 0);
-		gyroRateBuffer = new RotatingBuffer(5);
-	}
 
-	void setRobotFrontToCargo() {
-		isCargoFront = true;
-	}
-
-	void setRobotFrontToHatch() {
-		isCargoFront = false;
-	}
 
 	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning,
 			double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX,
@@ -293,15 +277,6 @@ public class SwerveDrive {
 		backRight.control(0, 45);
 	}
 
-	void tuningMode() {
-		// used to tune the modules and their zero values
-
-		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
-		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
-		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
-		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
-	}
-
 	void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
 		// not field relative yet -- sitll needs work
 		driveAngle += gyroReading;
@@ -334,6 +309,55 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
+	
+
+	void tuningMode() {
+		// used to tune the modules and their zero values
+
+		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
+		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
+		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
+		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
+	}
+
+
+
+
+	void setRobotFrontToCargo() {
+		isCargoFront = true;
+	}
+
+	void setRobotFrontToHatch() {
+		isCargoFront = false;
+	}
+
+	double squareWithSignReturn(double inputReading) {
+		return Math.signum(inputReading) * inputReading * inputReading;
+	}
+
+	double degToInches(double degrees) {
+		double wheelRotations = degrees / 360;
+
+		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
+	}
+
+	double inchesToDeg(double inches) {
+		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
+
+		return wheelRotations * 360;
+	}
+
+	protected void reset() {
+		frontRight.resetModule();
+		frontLeft.resetModule();
+		backLeft.resetModule();
+		backRight.resetModule();
+		frontLeft.invertModule();
+		backLeft.invertModule();
+	}
+
+
+	//For testing purposes
 	void individualModuleControl() {
 		frontRight.setDriveSpeed(0);
 		frontLeft.setDriveSpeed(0);
@@ -372,6 +396,7 @@ public class SwerveDrive {
 		default:
 			break;
 		}
+
 		SmartDashboard.putNumber("front right encoder: ", frontRight.getAngle());
 		SmartDashboard.putNumber("front left encoder: ", frontLeft.getAngle());
 		SmartDashboard.putNumber("back right encoder: ", backRight.getAngle());
@@ -381,22 +406,6 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
 		SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
-	}
-
-	double squareWithSignReturn(double inputReading) {
-		return Math.signum(inputReading) * inputReading * inputReading;
-	}
-
-	double degToInches(double degrees) {
-		double wheelRotations = degrees / 360;
-
-		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
-	}
-
-	double inchesToDeg(double inches) {
-		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
-
-		return wheelRotations * 360;
 	}
 
 	void testSwerveModule(boolean isFront, boolean isLeft, double driveSpeed, double steerSpeed) {
