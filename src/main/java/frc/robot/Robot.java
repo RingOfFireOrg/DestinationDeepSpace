@@ -24,8 +24,8 @@ public class Robot extends TimedRobot {
 	Climber climberLeftWheel;
 	Climber climberRightWheel;
 	  
-	Beak beak = new Beak();
-	CargoManipulator cargo = new CargoManipulator();
+    Beak beak = Beak.getInstance();
+	CargoManipulator cargoManipulator = CargoManipulator.getInstance();
 
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
@@ -184,24 +184,24 @@ public class Robot extends TimedRobot {
 
 	public void cargoManipulatorControl() {
 		if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) > 0.3) {
-			cargo.setOut();
+			cargoManipulator.setOut();
 		} else if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) > 0.3) {
-			cargo.setIn();
+			cargoManipulator.setIn();
 		} else {
-			cargo.setOff();
+			cargoManipulator.setOff();
 		}
 		if (manipulatorLeftBumper.get() == true) {
-			cargo.setUp();
+			cargoManipulator.setUp();
 		} else if (manipulatorRightBumber.get() == true) {
-			cargo.setIntake();
+			cargoManipulator.setIntake();
 		} else if (manipulatorXButton.get() == true) {
-			cargo.setCargoShip();
+			cargoManipulator.setCargoShip();
 		} else if (manipulatorYButton.get() == true) {
-			cargo.setLowerRocket();
+			cargoManipulator.setLowerRocket();
 		} else {
-			cargo.setStall();
+			cargoManipulator.setStall();
 		}
-		cargo.updateCargo();
+		cargoManipulator.updateCargo();
 	}
 
 }

@@ -18,6 +18,8 @@ public class SwerveDrive {
 	double translationAngle;
 	boolean isCargoFront = true;
 
+	private static SwerveDrive swerveDrive;
+
 	static SwerveModule frontRight = new SwerveModule(new TalonSRX(RobotMap.DRIVE_FRONT_RIGHT_MOTOR), new VictorSPX(RobotMap.STEER_FRONT_RIGHT_MOTOR),
 		 new AbsoluteAnalogEncoder(RobotMap.ENCODER_FRONT_RIGHT), RobotMap.ENCODER_ZERO_VALUE_FRONT_RIGHT, 
 		 new Encoder(RobotMap.DRIVE_ENCODER_FRONT_RIGHT_A, RobotMap.DRIVE_ENCODER_FRONT_RIGHT_B, false, Encoder.EncodingType.k2X), "FrontRight");
@@ -32,6 +34,17 @@ public class SwerveDrive {
 		 new Encoder(RobotMap.DRIVE_ENCODER_BACK_RIGHT_A, RobotMap.DRIVE_ENCODER_BACK_RIGHT_B, false, Encoder.EncodingType.k2X), "BackRight");
 
 
+	protected SwerveDrive(){
+
+	}
+
+	public static SwerveDrive getInstance(){
+        if(swerveDrive == null){
+            swerveDrive = new SwerveDrive();
+        }
+        return swerveDrive;
+    }
+	
 	void swerveInit(){
 		ahrs = new AHRS(SerialPort.Port.kUSB);
 		ahrs.reset();

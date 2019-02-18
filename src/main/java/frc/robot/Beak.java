@@ -9,9 +9,18 @@ public class Beak {
     private Servo beakActuator = new Servo(RobotMap.BEAK_ACTUATOR_CHANNEL);
     private VictorSP beakDeployer = new VictorSP(9);
 
-    public Beak(){
+    private static Beak beak;
+
+    protected Beak(){
         beakActuator.set(0);
         beakDeployer.set(0);
+    }
+    
+    public static Beak getInstance(){
+        if(beak == null){
+            beak = new Beak();
+        }
+        return beak;
     }
 
     void open(){

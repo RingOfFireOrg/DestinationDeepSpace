@@ -16,7 +16,9 @@ public class CargoManipulator{
     public VictorSP intakeLift;
     private PID intakeHeightPID;
 
-    public CargoManipulator(){ 
+    private static CargoManipulator cargoManipulator;
+
+    protected CargoManipulator(){ 
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
         rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
         intakeLift = new VictorSP(1);
@@ -24,6 +26,13 @@ public class CargoManipulator{
         position = intakePosition.STALL;
         intakeHeightPID = new PID(0.1, 0, 0);
         intakeHeightPID.setOutputRange(-1, 1);
+    }
+
+    public static CargoManipulator getInstance(){
+        if(cargoManipulator == null){
+            cargoManipulator = new CargoManipulator();
+        }
+        return cargoManipulator;
     }
 
     public void setIntake() {
