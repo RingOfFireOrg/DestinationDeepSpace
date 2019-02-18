@@ -1,13 +1,15 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.XboxController;
 
 public class GamepadSwerve extends SwerveDrive {
-    public GamepadSwerve() {
-        super();
+
+    public GamepadSwerve(AHRS ahrs) {
+        super(ahrs);
     }
 
     public void runSwerve(XboxController controller, JoystickButton gyroReset, JoystickButton tuningModeActivation) {

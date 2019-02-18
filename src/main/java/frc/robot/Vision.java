@@ -25,7 +25,7 @@ public class Vision {
     final double DRIVE_K = 0.7; // how hard to drive fwd toward the target
     final double DESIRED_TARGET_AREA = 13.0; // Area of the target when the robot reaches the wall
 
-    SwerveDrive swerveDrive = SwerveDrive.getInstance();
+    SwerveDrive swerveDrive = SwerveDrive.getInstance(ahrs);
     Beak beak = Beak.getInstance();
     CargoManipulator cargoManipulator = CargoManipulator.getInstance();
     private boolean cameraFacingBeak;
@@ -57,7 +57,7 @@ public class Vision {
     }
 
     boolean hatchPickupReady() {
-        if (validTarget() && !beak.isOpen() && cameraFacingBeak && beak.isOut()) {
+        if (validTarget() && !beak.isOpen() && cameraFacingBeak) {
             return true;
         } else {
             return false;
@@ -65,7 +65,7 @@ public class Vision {
     }
 
     boolean hatchScoreReady() {
-        if (validTarget() && beak.isOpen() && cameraFacingBeak && beak.isOut()) {
+        if (validTarget() && beak.isOpen() && cameraFacingBeak) {
             return true;
         } else {
             return false;
