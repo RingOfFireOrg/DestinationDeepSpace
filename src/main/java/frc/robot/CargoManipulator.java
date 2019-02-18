@@ -115,8 +115,8 @@ public class CargoManipulator{
     }
 
     private double currentAngle() {
-        SmartDashboard.putNumber("CargoEncoder", cargoEncoder.getVoltage() * 54);
-        return cargoEncoder.getVoltage() * 54;
+        SmartDashboard.putNumber("CargoEncoder", 180 - (cargoEncoder.getVoltage() * 54));
+        return 180 - (cargoEncoder.getVoltage() * 54);
     }
 
 
