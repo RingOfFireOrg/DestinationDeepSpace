@@ -11,10 +11,10 @@ public final class RobotMap {
     public static final int PWM_TEST_ATTACHMENT = 2;
 
     // Drive Train Motors
-    public static final int MOTOR_FRONT_LEFT = 2;
+    public static final int MOTOR_FRONT_LEFT = 1;
     public static final int MOTOR_FRONT_RIGHT = 0;
-    public static final int MOTOR_BACK_LEFT = 3;
-    public static final int MOTOR_BACK_RIGHT = 1;
+    public static final int MOTOR_BACK_LEFT = 4;
+    public static final int MOTOR_BACK_RIGHT = 8;
 
     // Digital I/O
     // Example: public static final int IO_UPPER_LIMIT_SW = 6;
