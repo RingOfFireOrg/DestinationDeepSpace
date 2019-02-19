@@ -84,13 +84,13 @@ public class RobotMap {
 
 	//Digital Ports
 	// Hall Effect Sensors and Limit Switches for autoClimb
-	public static final int INPUT_FRONT_SW = 9; // find actual port for limit switches
-	public static final int INPUT_BACK_SW = 1; // find actual port for limit switches
+	public static final int INPUT_FRONT_SW = 8; 
+	public static final int INPUT_BACK_SW = 9; 
 
-	public static final int INPUT_FRONT_LEFT_WHEEL = 4; // find actual port for limit switches
-	public static final int INPUT_BACK_LEFT_WHEEL = 5; // find actual port for limit switches
-	public static final int INPUT_FRONT_RIGHT_WHEEL = 6; // find actual port for limit switches
-	public static final int INPUT_BACK_RIGHT_WHEEL = 7; // find actual port for limit switches
+	public static final int INPUT_FRONT_LEFT_WHEEL = 3; 
+	public static final int INPUT_BACK_LEFT_WHEEL = 0; 
+	public static final int INPUT_FRONT_RIGHT_WHEEL = 2; 
+	public static final int INPUT_BACK_RIGHT_WHEEL = 1; 
 
 	//need to get real numbers for drive encoders
 	public static final int DRIVE_ENCODER_FRONT_RIGHT_A = 10;
@@ -130,7 +130,7 @@ public class RobotMap {
 	public static final double SPEED_DEFAULT_TEST = 0.75;
 	
 	public static final double SPEED_DEFAULT_DRIVE = 0.75;
-	public static final double SPEED_DEFAULT_CLIMB = 0.75;
+	public static final double SPEED_DEFAULT_CLIMB = 1.0;
 	public static final double SPEED_STOP = 0;
 	public static final double SPEED_SLOW_CLIMB = 0.4;
 	

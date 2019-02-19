@@ -23,6 +23,7 @@ public class AutoClimb {
 
     public AutoClimb(Climber climber, SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
+        this.climber = climber;
         timer.reset();
     }
 
@@ -59,7 +60,7 @@ public class AutoClimb {
 
         // drive back a little 
         case 1:
-            if (timer.get() < 0.5) {
+            if (timer.get() < 0.05) {
                 driveSwerve(-0.5);
             } else {
                 stopSwerve();
@@ -90,7 +91,7 @@ public class AutoClimb {
 
         //back up for 1/2 a second
         case 4:
-            if (timer.get() < 0.5) {
+            if (timer.get() < 0.05) {
                 climber.driveReverse();
             } else {
                 climber.stopDriving();
@@ -121,7 +122,7 @@ public class AutoClimb {
 
         //back up for 1/2 a second
         case 7: 
-            if (timer.get() < 0.5) {
+            if (timer.get() < 0.05) {
                 climber.driveReverse();
             } else {
                 climber.stopDriving();
@@ -142,7 +143,7 @@ public class AutoClimb {
 
         // drive forward until all the way on platfrom
         case 9:
-            if (timer.get() < 2) {
+            if (timer.get() < 0.5) {
                 driveSwerve(0.5);
             } else {
                 stopSwerve();

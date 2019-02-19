@@ -24,8 +24,8 @@ public class Climber {
      * The default speed to make controlling easier
      */
 
-    private MovementState frontState = MovementState.ALLOW;
-    private MovementState backState = MovementState.ALLOW;
+    private MovementState frontState = MovementState.STOP_MAGNET_DOWN;
+    private MovementState backState = MovementState.STOP_MAGNET_DOWN;
 
     private TalonSRX climberFront = new TalonSRX(RobotMap.CAN_CLIMBER_FRONT);
     private VictorSP climberBack = new VictorSP(RobotMap.CAN_CLIMBER_BACK);
@@ -37,7 +37,7 @@ public class Climber {
     public void extend() {
         updateLegState(Direction.EXTEND);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
-        climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
+        climberBack.set(0.7*getDriveSpeed(Direction.EXTEND, backState));
     }
 
     public void extend(Location location) {
@@ -46,14 +46,14 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         } else {
-            climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
+            climberBack.set(0.7*getDriveSpeed(Direction.EXTEND, backState));
         }
     }
 
     public void retract() {
         updateLegState(Direction.RETRACT);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
-        climberBack.set(getDriveSpeed(Direction.RETRACT, backState));
+        climberBack.set(0.7*getDriveSpeed(Direction.RETRACT, backState));
     }
 
     public void retract(Location location) {
@@ -62,7 +62,7 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
         } else {
-            climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
+            climberBack.set(0.7*getDriveSpeed(Direction.RETRACT, backState));
         }
     }
 

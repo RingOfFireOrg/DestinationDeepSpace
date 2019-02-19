@@ -23,6 +23,8 @@ public class ClimberController {
     }
 
     public void run() {
+        climber.printHallEffectState();
+
         if (startAutoClimbBtn.get()) {
             autoClimb.autoClimbRestart();
         } else if (stopAutoClimbBtn.get()) {

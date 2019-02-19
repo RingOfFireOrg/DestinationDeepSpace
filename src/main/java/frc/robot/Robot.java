@@ -66,14 +66,14 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		if (/*limelight.isAutomationRunning() || autoClimbMode*/ false) {
+		//if (/*limelight.isAutomationRunning() || autoClimbMode*/ false) {
 
-		} else {
+	//	} else {
 			swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton);
 			beakControl();
 			cargoManipulatorControl();
 			climberController.run();
-		}
+	//	}
 	}
 
 	@Override
