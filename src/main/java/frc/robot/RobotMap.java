@@ -61,10 +61,10 @@ public class RobotMap {
 	public static final int RIGHT_MANIPULATOR_THUMB_BUTTON = 2;
 
 	//Climber Joystick Buttons:
-	public static final int CLIMBER_EXTEND_FRONT = 10;
-	public static final int CLIMBER_EXTEND_BACK = 9;
-	public static final int CLIMBER_RETRACT_FRONT = 12;
-	public static final int CLIMBER_RETRACT_BACK = 11;
+	public static final int CLIMBER_EXTEND_FRONT = 9; 
+	public static final int CLIMBER_EXTEND_BACK = 10; 
+	public static final int CLIMBER_RETRACT_FRONT = 11; 
+	public static final int CLIMBER_RETRACT_BACK = 12; 
 	public static final int START_AUTOCLIMB = 1;
 	public static final int STOP_AUTOCLIMB = 2;
 
