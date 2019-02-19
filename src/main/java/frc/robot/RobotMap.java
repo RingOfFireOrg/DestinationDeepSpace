@@ -80,7 +80,7 @@ public class RobotMap {
 	//Motors:
 	public static final int CAMERA_ROTATION_SERVO_CHANNEL = 0;
 	public static final int CAN_CLIMBER_BACK = 1;
-	public static final int BEAK_ACTUATOR_CHANNEL = 8;
+	public static final int BEAK_ACTUATOR_CHANNEL = 2;
 
 	//Digital Ports
 	// Hall Effect Sensors and Limit Switches for autoClimb
@@ -104,6 +104,7 @@ public class RobotMap {
 
 	// all CANs for robot
 	public static final int CAN_CLIMBER_FRONT = 10;
+	//can climber wheels are coded as pwm -- check where it is wrong
     public static final int CAN_CLIMBER_WHEELS = 3;
 
 	public static final int LEFT_INTAKE_WHEEL = 8;
@@ -148,6 +149,6 @@ public class RobotMap {
 	public static final double TRANSLATION_DEADZONE = 0.1;
 	public static final double ROTATION_DEADZONE = 0.1;
 	public static final double ABSOLUTE_ROTATION_DEADZONE = 0.3;
-	public static final double WHEEL_INTAKE_SPEED = 0.2;
+	public static final double WHEEL_INTAKE_SPEED = 0.4;
 	public static final double CARGO_ARM_ROTATION_SPEED = 0.75;
 }

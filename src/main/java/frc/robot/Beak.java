@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Beak {
@@ -8,23 +9,25 @@ public class Beak {
 
     private static Beak beak;
 
-    protected Beak(){
+    protected Beak() {
     }
-    
-    public static Beak getInstance(){
-        if(beak == null){
+
+    public static Beak getInstance() {
+        if (beak == null) {
             beak = new Beak();
         }
         return beak;
     }
 
-    void open(){
-        beakActuator.set(0);
+    void open() {
+        beakActuator.set(1);
+        DriverStation.reportError("Beak Open", false);
         isOpen = true;
     }
 
     void close(){
-        beakActuator.set(1);
+        beakActuator.set(0);
+        DriverStation.reportError("Beak Close", false);
         isOpen = false;
     }
 
