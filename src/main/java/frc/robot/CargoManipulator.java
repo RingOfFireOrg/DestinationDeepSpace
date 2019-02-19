@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoManipulator{
-    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP, STALL};
+    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP, STALL, ELSE};
     private intakePosition position;
     enum wheelState{IN, OUT, OFF};
     private wheelState wheels;
@@ -39,6 +39,10 @@ public class CargoManipulator{
             cargoManipulator = new CargoManipulator();
         }
         return cargoManipulator;
+    }
+
+    public void overrideTarget(double adjustment) {
+        target += adjustment;
     }
 
     public void setIntake() {
@@ -74,25 +78,6 @@ public class CargoManipulator{
     }
     
    public void updateCargo() {
-       if (position == intakePosition.INTAKE) {
-           target = 0;
-           //intakeLift.set(ControlMode.PercentOutput, -0.5);
-       } else if (position == intakePosition.LOWER_ROCKET) {
-           target = 30;
-       } else if (position == intakePosition.CARGO_SHIP) {
-           target = 60;
-       } else if (position == intakePosition.UP) {
-           //intakeLift.set(ControlMode.PercentOutput, 0.5);
-           target = 90;
-       } else {
-           //intakeLift.set(ControlMode.PercentOutput, 0);
-       }
-
-       intakeHeightPID.setError(target - currentAngle());
-       intakeHeightPID.update();
-       intakeLift.set(ControlMode.PercentOutput, intakeHeightPID.getOutput());
-
-
        if (wheels == wheelState.IN) {
            leftIntakeWheel.set(ControlMode.PercentOutput, wheelPower);
            rightIntakeWheel.set(ControlMode.PercentOutput, -wheelPower);
@@ -103,6 +88,26 @@ public class CargoManipulator{
            leftIntakeWheel.set(ControlMode.PercentOutput, 0);
            rightIntakeWheel.set(ControlMode.PercentOutput, 0);
        }
+
+       if (position == intakePosition.INTAKE) {
+           if (currentAngle() < 0) {
+               intakeLift.set(ControlMode.PercentOutput, 0);
+               return;
+           }
+           target = -6;
+       } else if (position == intakePosition.LOWER_ROCKET) {
+           target = 24;
+       } else if (position == intakePosition.CARGO_SHIP) {
+           target = 70;
+       } else if (position == intakePosition.UP) {
+           target = 90;
+       } else if (position == intakePosition.ELSE) {
+    
+       }
+
+       intakeHeightPID.setError(target - currentAngle());
+       intakeHeightPID.update();
+       intakeLift.set(ControlMode.PercentOutput, intakeHeightPID.getOutput());
    }
 
     intakePosition getPosition(){

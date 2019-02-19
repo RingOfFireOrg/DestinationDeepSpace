@@ -181,7 +181,13 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setOut();
 		} else if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) > 0.3) {
 			cargoManipulator.setIn();
-		} else {
+		} else if (manipulatorGamepad.getPOV() == 0) {
+			cargoManipulator.overrideTarget(-1);
+		} else if (manipulatorGamepad.getPOV() == 180) {
+			cargoManipulator.overrideTarget(1);
+		}
+			
+			else {
 			cargoManipulator.setOff();
 		}
 		if (manipulatorLeftBumper.get() == true) {

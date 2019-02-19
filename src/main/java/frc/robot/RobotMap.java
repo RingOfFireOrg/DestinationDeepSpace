@@ -139,6 +139,6 @@ public class RobotMap {
 	public static final double TRANSLATION_DEADZONE = 0.1;
 	public static final double ROTATION_DEADZONE = 0.1;
 	public static final double ABSOLUTE_ROTATION_DEADZONE = 0.3;
-	public static final double WHEEL_INTAKE_SPEED = 0.6;
+	public static final double WHEEL_INTAKE_SPEED = 0.2;
 	public static final double CARGO_ARM_ROTATION_SPEED = 0.75;
 }
