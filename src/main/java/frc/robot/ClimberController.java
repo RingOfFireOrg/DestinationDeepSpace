@@ -50,17 +50,17 @@ public class ClimberController {
         }
 
         if (extendFrontBtn.get()) {
-            climber.extend(FRONT);
+            climber.extendManual(FRONT);
         } else if (retractFrontBtn.get()) {
-            climber.retract(FRONT);
+            climber.retractManual(FRONT);
         } else {
             climber.stopClimbing(FRONT);
         }
 
         if (extendBackBtn.get()) {
-            climber.extend(BACK);
+            climber.extendManual(BACK);
         } else if (retractBackBtn.get()) {
-            climber.retract(BACK);
+            climber.retractManual(BACK);
         } else {
             climber.stopClimbing(BACK);
         }

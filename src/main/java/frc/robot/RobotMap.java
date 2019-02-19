@@ -132,6 +132,7 @@ public class RobotMap {
 	
 	public static final double SPEED_DEFAULT_DRIVE = 0.75;
 	public static final double SPEED_DEFAULT_CLIMB = 1.0;
+	public static final double BACK_CLIMBER_SPEED_MULTIPLE = 0.7;
 	public static final double SPEED_STOP = 0;
 	public static final double SPEED_SLOW_CLIMB = 0.4;
 	

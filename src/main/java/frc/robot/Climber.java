@@ -34,10 +34,15 @@ public class Climber {
     private DigitalInput frontHallEffect = new DigitalInput(RobotMap.INPUT_FRONT_SW);
     private DigitalInput backHallEffect = new DigitalInput(RobotMap.INPUT_BACK_SW);
 
+    public void reset() {
+        frontState = MovementState.STOP_MAGNET_DOWN;
+        backState = MovementState.STOP_MAGNET_DOWN;
+    }
+
     public void extend() {
         updateLegState(Direction.EXTEND);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
-        climberBack.set(0.7*getDriveSpeed(Direction.EXTEND, backState));
+        climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * getDriveSpeed(Direction.EXTEND, backState));
     }
 
     public void extend(Location location) {
@@ -46,14 +51,14 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         } else {
-            climberBack.set(0.7*getDriveSpeed(Direction.EXTEND, backState));
+            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE*getDriveSpeed(Direction.EXTEND, backState));
         }
     }
 
     public void retract() {
         updateLegState(Direction.RETRACT);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
-        climberBack.set(0.7*getDriveSpeed(Direction.RETRACT, backState));
+        climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE*getDriveSpeed(Direction.RETRACT, backState));
     }
 
     public void retract(Location location) {
@@ -62,7 +67,23 @@ public class Climber {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
         } else {
-            climberBack.set(0.7*getDriveSpeed(Direction.RETRACT, backState));
+            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE*getDriveSpeed(Direction.RETRACT, backState));
+        }
+    }
+
+    public void extendManual(Location location) {
+        if (location == Location.FRONT) {
+            climberFront.set(ControlMode.PercentOutput, RobotMap.SPEED_DEFAULT_CLIMB);
+        } else {
+            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * RobotMap.SPEED_DEFAULT_CLIMB);
+        }
+    }
+
+    public void retractManual(Location location) {
+        if (location == Location.FRONT) {
+            climberFront.set(ControlMode.PercentOutput, RobotMap.SPEED_DEFAULT_CLIMB);
+        } else {
+            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * RobotMap.SPEED_DEFAULT_CLIMB);
         }
     }
 
