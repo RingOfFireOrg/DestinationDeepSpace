@@ -10,7 +10,6 @@ public class Beak {
     private static Beak beak;
 
     protected Beak(){
-        beakActuator.set(0);
     }
     
     public static Beak getInstance(){

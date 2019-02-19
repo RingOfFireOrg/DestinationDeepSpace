@@ -97,8 +97,8 @@ public class CargoManipulator{
            leftIntakeWheel.set(ControlMode.PercentOutput, wheelPower);
            rightIntakeWheel.set(ControlMode.PercentOutput, -wheelPower);
        } else if (wheels == wheelState.OUT) {
-           leftIntakeWheel.set(ControlMode.PercentOutput, -wheelPower);
-           rightIntakeWheel.set(ControlMode.PercentOutput, wheelPower);
+           leftIntakeWheel.set(ControlMode.PercentOutput, -1);
+           rightIntakeWheel.set(ControlMode.PercentOutput, 1);
        } else {
            leftIntakeWheel.set(ControlMode.PercentOutput, 0);
            rightIntakeWheel.set(ControlMode.PercentOutput, 0);
