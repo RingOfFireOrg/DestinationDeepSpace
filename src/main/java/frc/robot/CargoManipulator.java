@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoManipulator{
@@ -42,7 +41,13 @@ public class CargoManipulator{
     }
 
     public void overrideTarget(double adjustment) {
+        this.position = intakePosition.ELSE;
         target += adjustment;
+    }
+
+    public void setTarget(double target) {
+        this.position = intakePosition.ELSE;
+        this.target = target;
     }
 
     public void setIntake() {
