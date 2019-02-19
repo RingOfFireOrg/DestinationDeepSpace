@@ -11,6 +11,7 @@ public class RobotMap {
     
 	public static final int DRIVER_GAMEPAD = 0;
 	public static final int MANIPULATOR_GAMEPAD = 1;
+	public static final int CLIMBER_JOYSTICK = 2;
 
 	//Manipulator gamepad buttons and axis:
 	public static final int MANIPULATOR_LEFT_TRIGGER_AXIS = 2;
@@ -58,6 +59,14 @@ public class RobotMap {
 	//Right Manipulator Stick Buttons:
 	public static final int RIGHT_MANIPULATOR_TRIGGER = 1;
 	public static final int RIGHT_MANIPULATOR_THUMB_BUTTON = 2;
+
+	//Climber Joystick Buttons:
+	public static final int CLIMBER_EXTEND_FRONT = 10;
+	public static final int CLIMBER_EXTEND_BACK = 9;
+	public static final int CLIMBER_RETRACT_FRONT = 12;
+	public static final int CLIMBER_RETRACT_BACK = 11;
+	public static final int START_AUTOCLIMB = 1;
+	public static final int STOP_AUTOCLIMB = 2;
 
 	//Analog Ports
 	//Robot Ports
