@@ -3,10 +3,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-
-import org.opencv.core.Point;
-
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
@@ -61,91 +59,6 @@ public class SwerveDrive {
 		return swerveDrive;
 	}
 
-	protected Point getRobotTranslationPoint(Point fieldXY, Point robotXY, double gyroValue) {
-
-		if (!isCargoFront) {
-			robotXY.x = -robotXY.x;
-			robotXY.y = -robotXY.y;			
-		} 
-
-		double jsMag = Math.sqrt(Math.pow(fieldXY.x, 2) + Math.pow(fieldXY.y, 2));
-
-		if (jsMag > RobotMap.TRANSLATION_DEADZONE) {
-			double initialAngle;
-
-			if (fieldXY.x == 0) {
-				if (fieldXY.y > 0) {
-					initialAngle = 90;
-				} else {
-					initialAngle = -90;
-				}
-			} else {
-				initialAngle = Math.toDegrees(Math.atan(fieldXY.y / fieldXY.y));
-			}
-
-			if (fieldXY.x < 0) {
-				if (fieldXY.y > 0) {
-					initialAngle += 180;
-				} else {
-					initialAngle -= 180;
-				}
-			}
-
-			double processedAngle = initialAngle + gyroValue;
-			robotXY.x = jsMag * Math.cos(Math.toRadians(processedAngle));
-			robotXY.y = jsMag * Math.sin(Math.toRadians(processedAngle));
-		} else if (Math.sqrt(Math.pow(robotXY.x, 2) + Math.pow(robotXY.y, 2)) < RobotMap.TRANSLATION_DEADZONE) {
-			// if the field relative code didn't run, robot rel will still be set from its
-			// declaration, this rules out deadzones
-			robotXY.x = 0;
-			robotXY.y = 0;
-		}
-		return robotXY;
-	}
-
-	/*
-	 * In the middle of factoring this out
-	protected double getRobotRotation(Point translationXY, double absoluteDirection, double ) {
-		// Rotation Modes -- absolute, unregulated, and none
-		// gyro rate buffer updating
-		gyroRateBuffer.add(ahrs.getRate());
-		double rotationMagnitude;
-		if (absoluteFieldRelativeDirection != -1) {  // valid POV given
-			if (absoluteFieldRelativeDirection < 0)
-				absoluteFieldRelativeDirection += 360;
-			if (gyroValueProcessed > 180 && absoluteFieldRelativeDirection == 0) {
-				absoluteFieldRelativeDirection = 360;
-			}
-			rotationMagnitude = (absoluteFieldRelativeDirection - gyroValueProcessed) * 0.005;
-			if (Math.abs(absoluteFieldRelativeDirection - gyroValueProcessed) > 180)
-				rotationMagnitude *= -1;
-			driveStraight = false;
-		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE
-				|| unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
-			rotationMagnitude = unregulatedRotationValue;
-			driveStraight = false;
-		} else if (Math.sqrt(Math.pow(translationXY.x, 2) + Math.pow(translationXY.y, 2)) > RobotMap.TRANSLATION_DEADZONE * 0.75 && Math.abs(gyroRateBuffer.getAverage()) < 3) {
-			// no turning methods -- goes straight
-			if (driveStraight == false) {
-				driveStraight = true;
-				translationAngle = gyroValueUnprocessed;
-				pidDrivingStraight.reset();
-			}
-			pidDrivingStraight.setError(gyroValueUnprocessed - translationAngle);
-			pidDrivingStraight.update();
-			rotationMagnitude = -pidDrivingStraight.getOutput();
-			SmartDashboard.putNumber("translationAngle", translationAngle);
-			SmartDashboard.putNumber("DSEC - ", -pidDrivingStraight.getOutput());
-		} else {
-			rotationMagnitude = 0;
-		}
-		if (rotationMagnitude > 1)
-			rotationMagnitude = 1;
-		if (rotationMagnitude < -1)
-			rotationMagnitude = -1;
-	}
-	*/
-
 	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning,
 			double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX,
 			double driveRobotTranslationY) {
@@ -154,18 +67,57 @@ public class SwerveDrive {
 		double gyroValueProcessed = (Math.abs(((int) (gyroReading)) * 360) + gyroReading) % 360;
 
 		// initializing the main variables
-		Point fieldRelativeXY = new Point(driveFieldTranslationX, driveFieldTranslationY);
-		Point robotRelativeXY = new Point(driveRobotTranslationX, driveRobotTranslationY);
-
-		double unregulatedRotationValue = unregulatedTurning;
-		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
-		/*
 		double fieldRelativeX = driveFieldTranslationX;
 		double fieldRelativeY = driveFieldTranslationY;
 		double robotRelativeX;
 		double robotRelativeY;
-		*/
-		Point translationXY = getRobotTranslationPoint(fieldRelativeXY, robotRelativeXY, gyroValueProcessed);
+
+		if (isCargoFront) {
+			robotRelativeX = driveRobotTranslationX;
+			robotRelativeY = driveRobotTranslationY;
+		} else {
+			robotRelativeX = -driveRobotTranslationY;
+			robotRelativeY = -driveRobotTranslationX;
+		}
+
+		double unregulatedRotationValue = unregulatedTurning;
+		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
+
+		// Translation Modes -- field relative or robot relative
+		double jsMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
+		if (jsMag < RobotMap.TRANSLATION_DEADZONE)
+			jsMag = 0;
+		if (jsMag != 0) {
+			double initialAngle;
+
+			if (fieldRelativeX == 0) {
+				if (fieldRelativeY > 0) {
+					initialAngle = 90;
+				} else {
+					initialAngle = -90;
+				}
+			} else {
+				initialAngle = Math.toDegrees(Math.atan(fieldRelativeY / fieldRelativeX));
+			}
+
+			if (fieldRelativeX < 0) {
+				if (fieldRelativeY > 0) {
+					initialAngle += 180;
+				} else {
+					initialAngle -= 180;
+				}
+			}
+
+			double processedAngle = initialAngle + gyroValueProcessed;
+			robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));
+			robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
+		} else if (Math
+				.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) < RobotMap.TRANSLATION_DEADZONE) {
+			// if the field relative code didn't run, robot rel will still be set from its
+			// declaration, this rules out deadzones
+			robotRelativeX = 0;
+			robotRelativeY = 0;
+		}
 
 		// Rotation Modes -- absolute, unregulated, and none
 		// gyro rate buffer updating
@@ -185,7 +137,8 @@ public class SwerveDrive {
 				|| unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
 			rotationMagnitude = unregulatedRotationValue;
 			driveStraight = false;
-		} else if (Math.sqrt(Math.pow(translationXY.x, 2) + Math.pow(translationXY.y, 2)) > RobotMap.TRANSLATION_DEADZONE * 0.75 && Math.abs(gyroRateBuffer.getAverage()) < 3) {
+		} else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) > RobotMap.TRANSLATION_DEADZONE
+				* 0.75 && Math.abs(gyroRateBuffer.getAverage()) < 3) {
 			// no turning methods -- goes straight
 			if (driveStraight == false) {
 				driveStraight = true;
@@ -209,10 +162,10 @@ public class SwerveDrive {
 
 		// Vector math to combine the translation and the rotation values
 		// adding the various cartesian points for the end of the vectors
-		double xWithRotation = translationXY.x + rotationMagnitude;
-		double xWithoutRotation = translationXY.x - rotationMagnitude;
-		double yWithRotation = translationXY.y + rotationMagnitude;
-		double yWithoutRotation = translationXY.y - rotationMagnitude;
+		double xWithRotation = robotRelativeX + rotationMagnitude;
+		double xWithoutRotation = robotRelativeX - rotationMagnitude;
+		double yWithRotation = robotRelativeY + rotationMagnitude;
+		double yWithoutRotation = robotRelativeY - rotationMagnitude;
 
 		// Constructing the arrays to be used to determine outcomes for each wheel
 		double wheelX[] = new double[4]; // the x value of the wheels vector
@@ -354,8 +307,6 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	
-
 	void tuningMode() {
 		// used to tune the modules and their zero values
 
@@ -364,9 +315,6 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 	}
-
-
-
 
 	void setRobotFrontToCargo() {
 		isCargoFront = true;
@@ -401,8 +349,7 @@ public class SwerveDrive {
 		backLeft.invertModule();
 	}
 
-
-	//For testing purposes
+	// For testing purposes
 	void individualModuleControl() {
 		frontRight.setDriveSpeed(0);
 		frontLeft.setDriveSpeed(0);

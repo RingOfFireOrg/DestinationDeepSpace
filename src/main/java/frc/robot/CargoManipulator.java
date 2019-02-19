@@ -28,8 +28,8 @@ public class CargoManipulator{
         intakeLift = new TalonSRX(RobotMap.CARGO_ARM);
         wheels = wheelState.OFF;
         position = intakePosition.STALL;
-        intakeHeightPID = new PID(0.1, 0, 0);
-        intakeHeightPID.setOutputRange(-1, 1);
+        intakeHeightPID = new PID(0.0075, 0.00002, 0);
+        intakeHeightPID.setOutputRange(-0.75, 0.75);
         cargoEncoder = new AnalogInput(4);
         target = 0;
     }
@@ -113,9 +113,10 @@ public class CargoManipulator{
         return wheels;
     }
 
-    private double currentAngle() {
-        SmartDashboard.putNumber("CargoEncoder", 180 - (cargoEncoder.getVoltage() * 54));
-        return 180 - (cargoEncoder.getVoltage() * 54);
+    public double currentAngle() {
+        SmartDashboard.putNumber("CargoEncoder", 180.0 - (cargoEncoder.getVoltage() * 54.0));
+        SmartDashboard.putNumber("Voltage", cargoEncoder.getVoltage());
+        return (180.0 - (cargoEncoder.getVoltage() * 54.0));
     }
 
 

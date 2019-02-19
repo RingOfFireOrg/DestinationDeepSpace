@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -74,11 +75,11 @@ public class Robot extends TimedRobot {
 
 	boolean autoClimbMode = false;
 
-	Vision limelight = new Vision();
+//	Vision limelight = new Vision();
 	
 	GamepadSwerve swerveDrive;
 
-	ManipulatorStation manipulatorStation = new ManipulatorStation();
+	//ManipulatorStation manipulatorStation = new ManipulatorStation();
 
 	RobotTest robotTest = new RobotTest();
 
@@ -97,7 +98,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		if (limelight.isAutomationRunning() || autoClimbMode) {
+		if (/*limelight.isAutomationRunning() || autoClimbMode*/ false) {
 
 		} else {
 			swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton);
@@ -110,7 +111,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testPeriodic() {
-		robotTest.runTest();
+		//robotTest.runTest();
+		cargoManipulator.currentAngle();
 	}
 
 	public void climberControl() {
