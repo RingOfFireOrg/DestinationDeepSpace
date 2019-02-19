@@ -19,7 +19,7 @@ public class AutoClimb {
 
     private Timer timer = new Timer();
 
-    private boolean autoClimbFinish = false; //false means not done
+    private boolean doingAutoClimb = false; //false means not done
 
     public AutoClimb(Climber climber, SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
@@ -34,21 +34,21 @@ public class AutoClimb {
         swerveDrive.syncroDrive(0, 0, 0, 0);
     }
 
-    public void autoClimbInit() {
+    public void autoClimbRestart() {
         step = 0;
         timer.reset();
-        autoClimbFinish = false;
+        doingAutoClimb = true;
     }
 
     public boolean autoClimbEnabled() {
-        if (autoClimbFinish || step == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return doingAutoClimb;
     }
 
-    public boolean autoClimbFinished() {
+    public void stopAutoClimb() {
+        doingAutoClimb = false;
+    }
+
+    public void autoClimb() {
 
         switch(step) {
         
@@ -146,12 +146,10 @@ public class AutoClimb {
                 driveSwerve(0.5);
             } else {
                 stopSwerve();
-                autoClimbFinish = true;
+                doingAutoClimb = false;
                 step++;
             }
         }   
-
-        return autoClimbFinish;
     }
 
 }

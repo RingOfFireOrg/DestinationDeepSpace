@@ -24,9 +24,6 @@ public class Climber {
      * The default speed to make controlling easier
      */
 
-    private double defaultDriveSpeed;
-    private double defaultClimbSpeed;
-
     private MovementState frontState = MovementState.ALLOW;
     private MovementState backState = MovementState.ALLOW;
 
@@ -36,20 +33,6 @@ public class Climber {
 
     private DigitalInput frontHallEffect = new DigitalInput(RobotMap.INPUT_FRONT_SW);
     private DigitalInput backHallEffect = new DigitalInput(RobotMap.INPUT_BACK_SW);
-
-    //The name of the object (for use in debug)
-    //private String name;
-
-    /**
-     * The constructor for our class
-     * 
-     * @param canPort      - which port on the roboRio it is connectedTo
-     * @param defaultSpeed - what speed should be used for forward and reverse
-     */
-    Climber(double defaultDriveSpeed, double defaultClimbSpeed) {
-        this.defaultDriveSpeed = defaultDriveSpeed;
-        this.defaultClimbSpeed = defaultClimbSpeed;
-    }
 
     public void extend() {
         updateLegState(Direction.EXTEND);
@@ -155,11 +138,11 @@ public class Climber {
     }
 
     public void driveForward() {
-        climberWheels.set(defaultDriveSpeed);
+        climberWheels.set(RobotMap.SPEED_DEFAULT_DRIVE);
     }
 
     public void driveReverse() {
-        climberWheels.set(-defaultDriveSpeed);
+        climberWheels.set(-RobotMap.SPEED_DEFAULT_DRIVE);
     }
 
     public void stopDriving() {

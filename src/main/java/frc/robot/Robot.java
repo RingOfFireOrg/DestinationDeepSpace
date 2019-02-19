@@ -17,11 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends TimedRobot {
-	//Are these used??? 
-	Climber climberFront;
-  	Climber climberBack;
-	Climber climberLeftWheel;
-	Climber climberRightWheel;
 	  
     Beak beak = Beak.getInstance();
 	CargoManipulator cargoManipulator = CargoManipulator.getInstance();
@@ -30,24 +25,6 @@ public class Robot extends TimedRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-
-	/*
-	public Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
-	public Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
-	private Joystick manipulatorStickL = new Joystick(RobotMap.LEFT_MANIPULATOR_STICK);
-	private Joystick manipulatorStickR = new Joystick(RobotMap.RIGHT_MANIPULATOR_STICK);
-	JoystickButton frButton = new JoystickButton(leftStick, RobotMap.FRONT_RIGHT_BUTTON);
-	JoystickButton flButton = new JoystickButton(leftStick, RobotMap.FRONT_LEFT_BUTTON);
-	JoystickButton brButton = new JoystickButton(leftStick, RobotMap.BACK_RIGHT_BUTTON);
-	JoystickButton blButton = new JoystickButton(leftStick, RobotMap.BACK_LEFT_BUTTON);
-	JoystickButton leftTrigger = new JoystickButton(leftStick, RobotMap.LEFT_TRIGGER);
-	JoystickButton rightTrigger = new JoystickButton(rightStick, RobotMap.RIGHT_TRIGGER);
-	JoystickButton tuningActivation = new JoystickButton(leftStick, RobotMap.LEFT_SWERVE_TUNING_BUTTON);
-	JoystickButton stickTriggerL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_TRIGGER);
-	JoystickButton stickTriggerR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_TRIGGER);
-	JoystickButton stickThumbL = new JoystickButton(manipulatorStickL, RobotMap.LEFT_MANIPULATOR_THUMB_BUTTON);
-	JoystickButton stickThumbR = new JoystickButton(manipulatorStickR, RobotMap.RIGHT_MANIPULATOR_THUMB_BUTTON);
-	*/
 
 	public XboxController driverGamepad =  new XboxController(RobotMap.DRIVER_GAMEPAD);
 	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
@@ -61,15 +38,8 @@ public class Robot extends TimedRobot {
 	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
 	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
 	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
-	public JoystickButton autoClimbButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
-	public JoystickButton stopAutoClimbButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
-
-
+	
 	AHRS ahrs;
-
-	AutoClimb autoClimb;
-
-	public Climber climber;
 
 	boolean driveMode = false;
 
@@ -81,6 +51,8 @@ public class Robot extends TimedRobot {
 
 	//ManipulatorStation manipulatorStation = new ManipulatorStation();
 
+	ClimberController climberController;
+
 	RobotTest robotTest = new RobotTest();
 
 
@@ -90,10 +62,7 @@ public class Robot extends TimedRobot {
 		ahrs.reset();
 	
 		swerveDrive = new GamepadSwerve(ahrs);
-
-		climber = new Climber(RobotMap.SPEED_DEFAULT_DRIVE, RobotMap.SPEED_DEFAULT_CLIMB);
-
-		autoClimb = new AutoClimb(climber, swerveDrive);
+		climberController = new ClimberController(swerveDrive);
 	}
 
 	@Override
@@ -104,68 +73,14 @@ public class Robot extends TimedRobot {
 			swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton);
 			beakControl();
 			cargoManipulatorControl();
+			climberController.run();
 		}
-		
-		climber.printHallEffectState();
 	}
 
 	@Override
 	public void testPeriodic() {
 		//robotTest.runTest();
 		cargoManipulator.currentAngle();
-	}
-
-	public void climberControl() {
-
-		/*
-		double yPosL = manipulatorStickL.getY();
-    	boolean stickTriggerLeft = stickTriggerL.get();
-    	boolean stickTriggerRight = stickTriggerR.get();
-    	boolean stickThumbLeft = stickThumbL.get();
-		boolean stickThumbRight = stickThumbR.get();
-		*/
-
-		//check logic
-		if (autoClimbButton.get()) {
-			autoClimbMode = true;
-			autoClimb.autoClimbInit();
-		}else if(stopAutoClimbButton.get()) {
-			autoClimbMode = false;
-		}
-
-		if (autoClimbMode == true) {
-			if (autoClimb.autoClimbFinished()) {
-				autoClimbMode = false;
-			}
-			return;
-		}
-		
-		/*
-		if (yPosL > 0.25) {
-			climber.driveForward();
-			} else if (yPosL < -0.25) {
-			climber.driveReverse();
-			} else {
-			climber.stopDriving();
-			}
-
-			if (stickTriggerLeft) {
-				climber.extend(FRONT);
-			} else if (stickThumbLeft) {
-				climber.retract(FRONT);
-			} else {
-				climber.stopClimbing(FRONT);
-			}
-
-			if (stickTriggerRight) {
-				climber.extend(BACK);
-			} else if (stickThumbRight) {
-				climber.retract(BACK);
-			} else {
-			climber.stopClimbing(BACK);
-			}
-			*/
-			
 	}
 
 	public void beakControl() {
