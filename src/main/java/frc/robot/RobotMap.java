@@ -35,6 +35,9 @@ public final class RobotMap {
     public static final int JOYSTICK_DRIVE_RIGHT = 1;
     public static final int JOYSTICK_MANIPULATOR = 2;
 
+    //motor for vacuum rotation
+    public static final int MOTOR_VACUUM = 2;
+
     // Joystick Buttons
     // Example: public static final int BUTTON_LIFT_UP = 6;
 
