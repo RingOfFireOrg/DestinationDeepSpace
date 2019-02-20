@@ -74,7 +74,8 @@ public class RobotMap {
 	public static final int ENCODER_FRONT_LEFT = 1;
 	public static final int ENCODER_BACK_LEFT = 2;
 	public static final int ENCODER_BACK_RIGHT = 3;
-	public static final int ENCODER_CARGO_LIFT = 4;
+	public static final int ENCODER_CARGO_ARM = 4;
+	
 
 	//PWM ports
 	//Motors:
@@ -148,6 +149,16 @@ public class RobotMap {
 	public static final double TRANSLATION_DEADZONE = 0.1;
 	public static final double ROTATION_DEADZONE = 0.1;
 	public static final double ABSOLUTE_ROTATION_DEADZONE = 0.3;
-	public static final double WHEEL_INTAKE_SPEED = 0.2;
 	public static final double CARGO_ARM_ROTATION_SPEED = 0.75;
+
+	//wheels speeds on cargo manipulator
+	public static final double RIGHT_CARGO_WHEEL_OFF_SPEED = 0;
+	public static final double LEFT_CARGO_WHEEL_OFF_SPEED = 0;
+	public static final double RIGHT_CARGO_WHEEL_SHOOT_SPEED = 1;
+	public static final double LEFT_CARGO_WHEEL_SHOOT_SPEED = -1;
+	public static final double RIGHT_CARGO_WHEEL_INTAKE_SPEED = -0.4;
+	public static final double LEFT_CARGO_WHEEL_INTAKE_SPEED = 0.4;
+
+	//arm speed on cargo manipulator
+	public static final double ARM_RAW_SPEED = 0.4;
 }

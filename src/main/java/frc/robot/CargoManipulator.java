@@ -6,128 +6,159 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class CargoManipulator{
-    enum intakePosition{INTAKE, LOWER_ROCKET, CARGO_SHIP, UP, STALL, ELSE};
+public class CargoManipulator {
+    enum intakePosition {
+        INTAKE, LOWER_ROCKET, CARGO_SHIP, UP, ELSE
+    };
+
+    enum wheelState {
+        IN, OUT, OFF
+    };
+    
     private intakePosition position;
-    enum wheelState{IN, OUT, OFF};
     private wheelState wheels;
-    private double wheelPower = RobotMap.WHEEL_INTAKE_SPEED;
     public TalonSRX leftIntakeWheel;
     public TalonSRX rightIntakeWheel;
-    public TalonSRX intakeLift;
-    private PID intakeHeightPID;
+    public TalonSRX cargoArmMotor;
+    private PID armAngleControl;
     private AnalogInput cargoEncoder;
-    private double target;
+    private double adjustment = 0;
+    private boolean atTargetAngle = false;
 
     private static CargoManipulator cargoManipulator;
 
-    protected CargoManipulator(){ 
+    final double INTAKE_POSITION_DEGREES = -6;
+    final double LOWER_ROCKET_POSITION_DEGREES = 24;
+    final double CARGO_SHIP_POSITION_DEGREES = 70;
+    final double UP_POSITION_DEGREES = 90;
+
+    protected CargoManipulator() {
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
         rightIntakeWheel = new TalonSRX(RobotMap.RIGHT_INTAKE_WHEEL);
-        intakeLift = new TalonSRX(RobotMap.CARGO_ARM);
+        cargoArmMotor = new TalonSRX(RobotMap.CARGO_ARM);
         wheels = wheelState.OFF;
-        position = intakePosition.STALL;
-        intakeHeightPID = new PID(0.0075, 0.00002, 0);
-        intakeHeightPID.setOutputRange(-0.75, 0.75);
-        cargoEncoder = new AnalogInput(4);
-        target = 0;
+        armAngleControl = new PID(0.0075, 0.00002, 0);
+        armAngleControl.setOutputRange(-0.75, 0.75);
+        cargoEncoder = new AnalogInput(RobotMap.ENCODER_CARGO_ARM);
     }
 
-    public static CargoManipulator getInstance(){
-        if(cargoManipulator == null){
+    // ensures we only ever have one instance of our manipulator
+    public static CargoManipulator getInstance() {
+        if (cargoManipulator == null) {
             cargoManipulator = new CargoManipulator();
         }
         return cargoManipulator;
     }
 
-    public void overrideTarget(double adjustment) {
+    // Helps for if the encoder slips we can just adjust all the values
+    public void adjustAllTargets(double adjustment) {
+        this.adjustment = adjustment;
+    }
+
+    // if for some reason we need to give it an angle other than a set scoring angle
+    public void setToCustomPosition(double targetAngle) {
         this.position = intakePosition.ELSE;
-        target += adjustment;
+        moveCargoArmToAngle(targetAngle);
     }
 
-    public void setTarget(double target) {
-        this.position = intakePosition.ELSE;
-        this.target = target;
+    public void setToIntakePosition() {
+        if (currentAngle() < 0) {
+            cargoArmMotor.set(ControlMode.PercentOutput, 0);
+            return;
+        }
+
+        moveCargoArmToAngle(INTAKE_POSITION_DEGREES);
+
+        if (atTargetAngle) {
+            this.position = intakePosition.INTAKE;
+        } else {
+            this.position = intakePosition.ELSE;
+        }
     }
 
-    public void setIntake() {
-        this.position = intakePosition.INTAKE;
+    public void setToLowerRocketPosition() {
+        moveCargoArmToAngle(LOWER_ROCKET_POSITION_DEGREES);
+        if (atTargetAngle) {
+            this.position = intakePosition.LOWER_ROCKET;
+        } else {
+            this.position = intakePosition.ELSE;
+        }
     }
 
-    public void setLowerRocket() {
-        this.position = intakePosition.LOWER_ROCKET;
+    public void setToCargoShipPosition() {
+        moveCargoArmToAngle(CARGO_SHIP_POSITION_DEGREES);
+        if (atTargetAngle) {
+            this.position = intakePosition.CARGO_SHIP;
+        } else {
+            this.position = intakePosition.ELSE;
+        }
     }
 
-    public void setCargoShip() {
-        this.position = intakePosition.CARGO_SHIP;
+    public void setToUpPosition() {
+        moveCargoArmToAngle(UP_POSITION_DEGREES);
+        if (atTargetAngle) {
+            this.position = intakePosition.UP;
+        } else {
+            this.position = intakePosition.ELSE;
+        }
     }
 
-    public void setUp() {
-        this.position = intakePosition.UP;
+    public void moveArmUp(double speed){
+        cargoArmMotor.set(ControlMode.PercentOutput, speed);
     }
 
-    public void setStall() {
-        this.position = intakePosition.STALL;
+    public void moveArmDown(double speed){
+        cargoArmMotor.set(ControlMode.PercentOutput, -speed);
     }
 
-    public void setOff() {
+    public void setWheelsOff() {
         this.wheels = wheelState.OFF;
+        leftIntakeWheel.set(ControlMode.PercentOutput, RobotMap.LEFT_CARGO_WHEEL_OFF_SPEED);
+        rightIntakeWheel.set(ControlMode.PercentOutput, RobotMap.RIGHT_CARGO_WHEEL_OFF_SPEED);
     }
 
-    public void setIn() {
+    public void setWheelsIn() {
         this.wheels = wheelState.IN;
+        leftIntakeWheel.set(ControlMode.PercentOutput, RobotMap.LEFT_CARGO_WHEEL_INTAKE_SPEED);
+        rightIntakeWheel.set(ControlMode.PercentOutput, RobotMap.RIGHT_CARGO_WHEEL_INTAKE_SPEED);
     }
 
-    public void setOut() {
+    public void setWheelsOut() {
         this.wheels = wheelState.OUT;
+        leftIntakeWheel.set(ControlMode.PercentOutput, RobotMap.LEFT_CARGO_WHEEL_SHOOT_SPEED);
+        rightIntakeWheel.set(ControlMode.PercentOutput, RobotMap.RIGHT_CARGO_WHEEL_SHOOT_SPEED);
     }
-    
-   public void updateCargo() {
-       if (wheels == wheelState.IN) {
-           leftIntakeWheel.set(ControlMode.PercentOutput, wheelPower);
-           rightIntakeWheel.set(ControlMode.PercentOutput, -wheelPower);
-       } else if (wheels == wheelState.OUT) {
-           leftIntakeWheel.set(ControlMode.PercentOutput, -1);
-           rightIntakeWheel.set(ControlMode.PercentOutput, 1);
-       } else {
-           leftIntakeWheel.set(ControlMode.PercentOutput, 0);
-           rightIntakeWheel.set(ControlMode.PercentOutput, 0);
-       }
 
-       if (position == intakePosition.INTAKE) {
-           if (currentAngle() < 0) {
-               intakeLift.set(ControlMode.PercentOutput, 0);
-               return;
-           }
-           target = -6;
-       } else if (position == intakePosition.LOWER_ROCKET) {
-           target = 24;
-       } else if (position == intakePosition.CARGO_SHIP) {
-           target = 70;
-       } else if (position == intakePosition.UP) {
-           target = 90;
-       } else if (position == intakePosition.ELSE) {
-    
-       }
+    private void moveCargoArmToAngle(double targetAngle) {
+        double error = targetAngle + adjustment - currentAngle();
+        armAngleControl.setError(error);
+        armAngleControl.update();
+        cargoArmMotor.set(ControlMode.PercentOutput, armAngleControl.getOutput());
+        if (Math.abs(error) < 5) {
+            atTargetAngle = true;
+        } else {
+            atTargetAngle = false;
+        }
+    }
 
-       intakeHeightPID.setError(target - currentAngle());
-       intakeHeightPID.update();
-       intakeLift.set(ControlMode.PercentOutput, intakeHeightPID.getOutput());
-   }
-
-    intakePosition getPosition(){
+    intakePosition getPosition() {
         return position;
     }
 
-    wheelState getWheelState(){
+    wheelState getWheelState() {
         return wheels;
     }
 
-    public double currentAngle() {
-        SmartDashboard.putNumber("CargoEncoder", 180.0 - (cargoEncoder.getVoltage() * 54.0));
-        SmartDashboard.putNumber("Voltage", cargoEncoder.getVoltage());
+    double getEncoderInDegrees() {
         return (180.0 - (cargoEncoder.getVoltage() * 54.0));
+        // this number is to convert voltage which comes back 0 to 5 to a number from 0
+        // to 270 which is what the potentiometer returns. It is subtrated from 180 so
+        // that zero is the intake arm being flat
     }
 
-
+    public double currentAngle() {
+        SmartDashboard.putNumber("CargoEncoder", getEncoderInDegrees());
+        SmartDashboard.putNumber("Cargo Voltage", cargoEncoder.getVoltage());
+        return (getEncoderInDegrees());
+    }
 }

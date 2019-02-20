@@ -92,30 +92,30 @@ public class Robot extends TimedRobot {
 
 	public void cargoManipulatorControl() {
 		if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) > 0.3) {
-			cargoManipulator.setOut();
+			cargoManipulator.setToIntakePosition();
 		} else if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) > 0.3) {
-			cargoManipulator.setIn();
-		} else if (manipulatorGamepad.getPOV() == 0) {
+			cargoManipulator.setToUpPosition();
+		} 
+		//piece below is meant to make the arm go up or down unbounded
+		/*
+		else if (manipulatorGamepad.getPOV() == 0) {
 			cargoManipulator.overrideTarget(-1);
 		} else if (manipulatorGamepad.getPOV() == 180) {
 			cargoManipulator.overrideTarget(1);
 		}
-			
-			else {
-			cargoManipulator.setOff();
+		*/	
+		else {
+			cargoManipulator.setWheelsOff();
 		}
 		if (manipulatorLeftBumper.get() == true) {
-			cargoManipulator.setUp();
+			cargoManipulator.setToUpPosition();
 		} else if (manipulatorRightBumber.get() == true) {
-			cargoManipulator.setIntake();
+			cargoManipulator.setToIntakePosition();
 		} else if (manipulatorXButton.get() == true) {
-			cargoManipulator.setCargoShip();
+			cargoManipulator.setToCargoShipPosition();
 		} else if (manipulatorYButton.get() == true) {
-			cargoManipulator.setLowerRocket();
-		} else {
-			cargoManipulator.setStall();
+			cargoManipulator.setToLowerRocketPosition();
 		}
-		cargoManipulator.updateCargo();
 	}
 
 }
