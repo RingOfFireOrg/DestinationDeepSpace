@@ -38,6 +38,7 @@ public class AutoClimb {
     public void autoClimbRestart() {
         step = 0;
         timer.reset();
+        climber.reset();
         doingAutoClimb = true;
     }
 

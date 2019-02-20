@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -80,14 +81,17 @@ public class Robot extends TimedRobot {
 	public void testPeriodic() {
 		//robotTest.runTest();
 		cargoManipulator.currentAngle();
+		beak.close();
 	}
 
 	public void beakControl() {
+		
 		if (manipulatorAButton.get() == true) {
 			beak.open();
 		} else if (manipulatorBButton.get() == true) {
 			beak.close();
-		}
+		} 
+		
 	}
 
 	public void cargoManipulatorControl() {

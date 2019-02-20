@@ -61,10 +61,10 @@ public class RobotMap {
 	public static final int RIGHT_MANIPULATOR_THUMB_BUTTON = 2;
 
 	//Climber Joystick Buttons:
-	public static final int CLIMBER_EXTEND_FRONT = 10;
-	public static final int CLIMBER_EXTEND_BACK = 9;
-	public static final int CLIMBER_RETRACT_FRONT = 12;
-	public static final int CLIMBER_RETRACT_BACK = 11;
+	public static final int CLIMBER_EXTEND_FRONT = 9; 
+	public static final int CLIMBER_EXTEND_BACK = 10; 
+	public static final int CLIMBER_RETRACT_FRONT = 11; 
+	public static final int CLIMBER_RETRACT_BACK = 12; 
 	public static final int START_AUTOCLIMB = 1;
 	public static final int STOP_AUTOCLIMB = 2;
 
@@ -81,7 +81,7 @@ public class RobotMap {
 	//Motors:
 	public static final int CAMERA_ROTATION_SERVO_CHANNEL = 0;
 	public static final int CAN_CLIMBER_BACK = 1;
-	public static final int BEAK_ACTUATOR_CHANNEL = 8;
+	public static final int BEAK_ACTUATOR_CHANNEL = 2;
 
 	//Digital Ports
 	// Hall Effect Sensors and Limit Switches for autoClimb
@@ -105,6 +105,7 @@ public class RobotMap {
 
 	// all CANs for robot
 	public static final int CAN_CLIMBER_FRONT = 10;
+	//can climber wheels are coded as pwm -- check where it is wrong
     public static final int CAN_CLIMBER_WHEELS = 3;
 
 	public static final int LEFT_INTAKE_WHEEL = 8;
@@ -132,8 +133,9 @@ public class RobotMap {
 	
 	public static final double SPEED_DEFAULT_DRIVE = 0.75;
 	public static final double SPEED_DEFAULT_CLIMB = 1.0;
+	public static final double BACK_CLIMBER_SPEED_MULTIPLE = 0.85;
 	public static final double SPEED_STOP = 0;
-	public static final double SPEED_SLOW_CLIMB = 0.4;
+	public static final double SPEED_SLOW_CLIMB = 0.6;
 	
 	public static final double DEFAULT_FIND_SPEED = 0.5;
 
