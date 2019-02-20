@@ -25,7 +25,6 @@ public class AutoClimb {
         this.swerveDrive = swerveDrive;
         this.climber = climber;
         timer.reset();
-        climber.reset();
     }
 
     private void driveSwerve(double speed) {
@@ -39,6 +38,7 @@ public class AutoClimb {
     public void autoClimbRestart() {
         step = 0;
         timer.reset();
+        climber.reset();
         doingAutoClimb = true;
     }
 

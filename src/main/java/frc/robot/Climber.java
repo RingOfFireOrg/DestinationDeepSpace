@@ -81,9 +81,9 @@ public class Climber {
 
     public void retractManual(Location location) {
         if (location == Location.FRONT) {
-            climberFront.set(ControlMode.PercentOutput, RobotMap.SPEED_DEFAULT_CLIMB);
+            climberFront.set(ControlMode.PercentOutput, -RobotMap.SPEED_DEFAULT_CLIMB);
         } else {
-            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * RobotMap.SPEED_DEFAULT_CLIMB);
+            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * -RobotMap.SPEED_DEFAULT_CLIMB);
         }
     }
 
