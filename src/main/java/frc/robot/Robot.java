@@ -4,19 +4,19 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-
-import frc.robot.Prototype_CAN;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 /**
  * Don't change the name of this or it won't work. (The manifest looks for
  * "Robot")
  */
 public class Robot extends TimedRobot {
-  Prototype_CAN crossbow;
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+  WPI_TalonSRX vacuumMotor = new WPI_TalonSRX(RobotMap.MOTOR_VACUUM);
 
   TankDrive drive = new TankDrive();
 
@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    crossbow = new Prototype_CAN(RobotMap.CAN_TEST_ATTACHMENT, RobotMap.SPEED_DEFAULT_TEST);
   }
 
   /**
@@ -76,16 +75,12 @@ public class Robot extends TimedRobot {
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
-    // The 0.25 and -0.25 are so that the joystick doesn't have to be perfectly
-    // centered to stop
-    if (yPos > 0.25) {
-      crossbow.forward();
-    } else if (yPos < -0.25) {
-      crossbow.reverse();
+    if ((yPos < 0.25) && (yPos > -0.25)) {
+      vacuumMotor.set(0.0);
     } else {
-      crossbow.stop();
+      vacuumMotor.set(yPos);
+      DriverStation.reportError("Set Vacuum Motor", false);
     }
-
   }
 
   /**
