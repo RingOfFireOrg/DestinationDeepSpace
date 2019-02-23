@@ -16,9 +16,9 @@ public final class RobotMap {
     // Drive Train Motors
 // Drive Train Motors
 public static final int CAN_MOTOR_FRONT_LEFT = 8;
-public static final int CAN_MOTOR_FRONT_RIGHT = 4;
-public static final int CAN_MOTOR_BACK_LEFT = 0;
-public static final int CAN_MOTOR_BACK_RIGHT = 1;
+public static final int CAN_MOTOR_FRONT_RIGHT = 3;
+public static final int CAN_MOTOR_BACK_LEFT = 11;
+public static final int CAN_MOTOR_BACK_RIGHT = 4;
 
 
     // Digital I/O
