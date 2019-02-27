@@ -90,13 +90,11 @@ public class Robot extends TimedRobot {
 	}
 
 	public void beakControl() {
-
 		if (manipulatorAButton.get() == true) {
 			beak.open();
 		} else if (manipulatorBButton.get() == true) {
 			beak.close();
 		}
-
 	}
 
 	public void cargoManipulatorControl() {
