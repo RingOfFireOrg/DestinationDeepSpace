@@ -14,7 +14,7 @@ public class CargoManipulator {
     enum wheelState {
         IN, OUT, OFF
     };
-    
+
     private intakePosition position;
     private wheelState wheels;
     public TalonSRX leftIntakeWheel;
@@ -31,6 +31,7 @@ public class CargoManipulator {
     final double LOWER_ROCKET_POSITION_DEGREES = 24;
     final double CARGO_SHIP_POSITION_DEGREES = 70;
     final double UP_POSITION_DEGREES = 90;
+    double customTargetAngle = 0;
 
     protected CargoManipulator() {
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
@@ -59,55 +60,59 @@ public class CargoManipulator {
     public void setToCustomPosition(double targetAngle) {
         this.position = intakePosition.ELSE;
         moveCargoArmToAngle(targetAngle);
+        this.customTargetAngle = targetAngle;
     }
 
     public void setToIntakePosition() {
+        // what is this even doing
         if (currentAngle() < 0) {
             cargoArmMotor.set(ControlMode.PercentOutput, 0);
             return;
-        }
-
+        } // else:
         moveCargoArmToAngle(INTAKE_POSITION_DEGREES);
-
-        if (atTargetAngle) {
-            this.position = intakePosition.INTAKE;
-        } else {
-            this.position = intakePosition.ELSE;
-        }
+        this.position = intakePosition.INTAKE;
     }
 
     public void setToLowerRocketPosition() {
         moveCargoArmToAngle(LOWER_ROCKET_POSITION_DEGREES);
-        if (atTargetAngle) {
-            this.position = intakePosition.LOWER_ROCKET;
-        } else {
-            this.position = intakePosition.ELSE;
-        }
+        this.position = intakePosition.LOWER_ROCKET;
     }
 
     public void setToCargoShipPosition() {
         moveCargoArmToAngle(CARGO_SHIP_POSITION_DEGREES);
-        if (atTargetAngle) {
-            this.position = intakePosition.CARGO_SHIP;
-        } else {
-            this.position = intakePosition.ELSE;
-        }
+        this.position = intakePosition.CARGO_SHIP;
     }
 
     public void setToUpPosition() {
         moveCargoArmToAngle(UP_POSITION_DEGREES);
-        if (atTargetAngle) {
-            this.position = intakePosition.UP;
-        } else {
-            this.position = intakePosition.ELSE;
+        this.position = intakePosition.UP;
+    }
+
+    public void setToCurrentPosition() {
+        switch (position) {
+        case INTAKE:
+            setToIntakePosition();
+            break;
+        case LOWER_ROCKET:
+            setToLowerRocketPosition();
+            break;
+        case CARGO_SHIP:
+            setToCargoShipPosition();
+            break;
+        case UP:
+            setToUpPosition();
+            break;
+        case ELSE:
+            setToCustomPosition(customTargetAngle);
+            break;
         }
     }
 
-    public void moveArmUp(double speed){
+    public void moveArmUp(double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, speed);
     }
 
-    public void moveArmDown(double speed){
+    public void moveArmDown(double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, -speed);
     }
 
@@ -143,6 +148,10 @@ public class CargoManipulator {
 
     intakePosition getPosition() {
         return position;
+    }
+
+    boolean getAtTargetAngle() {
+        return atTargetAngle;
     }
 
     wheelState getWheelState() {
