@@ -74,8 +74,8 @@ public class RobotMap {
 	public static final int ENCODER_FRONT_LEFT = 1;
 	public static final int ENCODER_BACK_LEFT = 2;
 	public static final int ENCODER_BACK_RIGHT = 3;
-	public static final int ENCODER_CARGO_ARM = 4;
-	
+	public static final int RIGHT_ENCODER_CARGO_ARM = 4;
+	public static final int LEFT_ENCODER_CARGO_ARM = 5;
 
 	//PWM ports
 	//Motors:
