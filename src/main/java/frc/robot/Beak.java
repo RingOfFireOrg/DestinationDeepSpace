@@ -25,12 +25,12 @@ public class Beak {
     }
 
     void open() {
-        beakActuator.setSpeed(1.0);
+        beakActuator.setSpeed(-1.0);
         isOpen = true;
     }
 
     void close(){
-        beakActuator.setSpeed(-1.0);
+        beakActuator.setSpeed(1.0);
         isOpen = false;
     }
 
