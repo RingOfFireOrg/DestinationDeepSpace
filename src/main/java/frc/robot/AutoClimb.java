@@ -7,6 +7,8 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Counter;
 
 public class AutoClimb {
     private int step = 0;
@@ -18,6 +20,11 @@ public class AutoClimb {
     private DigitalInput backLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_LEFT_WHEEL);
     private DigitalInput frontRightWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_RIGHT_WHEEL);
     private DigitalInput backRightWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_RIGHT_WHEEL);
+
+    private Counter counterFL = new Counter(frontLeftWheelLimitSwitch);
+    private Counter counterFR = new Counter(frontRightWheelLimitSwitch);
+    private Counter counterBL = new Counter(backLeftWheelLimitSwitch);
+    private Counter counterBR = new Counter(backRightWheelLimitSwitch);
 
     private PID robotPitchPID;
 
@@ -34,18 +41,11 @@ public class AutoClimb {
         robotPitchPID.setOutputRange(-1, 1);
     }
 
-    private void driveSwerve(double speed) {
-        swerveDrive.syncroDrive(speed, 0, 0, 0);
-    }
-
-    private void stopSwerve() {
-        swerveDrive.syncroDrive(0, 0, 0, 0);
-    }
-
     public void autoClimbRestart() {
         step = 0;
         timer.reset();
         climber.reset();
+        resetLimitSwitches();
         doingAutoClimb = true;
     }
 
@@ -58,6 +58,11 @@ public class AutoClimb {
     }
 
     public void autoClimb() {
+        if(!doingAutoClimb) {
+            return;
+        }
+
+        SmartDashboard.putNumber("AutoClimb step: ", step);
 
         switch(step) {
         
@@ -82,13 +87,14 @@ public class AutoClimb {
             climber.extend();
 
             if(climber.isFullyExtended()) {
+                resetLimitSwitches();
                 step++;
             }
             break;
 
         // drive forward until front of robot is on platform and front leg hits platform
         case 3:
-            if (frontLeftWheelLimitSwitch.get() || frontRightWheelLimitSwitch.get()) { 
+            if (isFrontLegTouching()) { 
                 climber.stopDriving();
                 step++;
                 timer.reset();
@@ -111,6 +117,7 @@ public class AutoClimb {
         // lift front leg up all the way
         case 5:    
             if(climber.isFullyRetracted(FRONT)) {
+                resetLimitSwitches();
                 step++;
             } else {
                 climber.retract(FRONT);
@@ -119,7 +126,7 @@ public class AutoClimb {
 
         // drive forward until robot is on platfrom and back leg hits platform AND MOVE CLIMBER BACK UP
         case 6: 
-            if (backLeftWheelLimitSwitch.get() || backRightWheelLimitSwitch.get()) { 
+            if (isBackLegTouching()) { 
                 climber.stopDriving(); 
                 step++;
                 timer.reset();
@@ -160,6 +167,29 @@ public class AutoClimb {
                 step++;
             }
         }   
+    }
+
+    private boolean isFrontLegTouching() {
+        return counterFL.get() > 0 || counterFR.get() > 0;
+    }
+
+    private boolean isBackLegTouching() {
+        return counterBL.get() > 0 || counterBR.get() > 0;
+    }
+
+    private void resetLimitSwitches() {
+        counterFL.reset();
+        counterBL.reset();
+        counterFR.reset();
+        counterBR.reset();
+    }
+    
+    private void driveSwerve(double speed) {
+        swerveDrive.syncroDrive(speed, 0, 0, 0);
+    }
+
+    private void stopSwerve() {
+        swerveDrive.syncroDrive(0, 0, 0, 0);
     }
 
 }

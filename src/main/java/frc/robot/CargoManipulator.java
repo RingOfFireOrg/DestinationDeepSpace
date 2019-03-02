@@ -19,7 +19,7 @@ public class CargoManipulator {
         LEFT, RIGHT, BOTH, NONE
     }
 
-    private intakePosition position;
+    private intakePosition position = intakePosition.INTAKE;
     private wheelState wheels;
     private encoderPresence currentEncoderPresence;
     public TalonSRX leftIntakeWheel;
