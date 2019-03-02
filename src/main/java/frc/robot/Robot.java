@@ -44,7 +44,10 @@ public class Robot extends TimedRobot {
 			RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
 	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,
 			RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
-  
+	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
+	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
+	
+	
 	AHRS ahrs;
 
 	boolean driveMode = false;
@@ -99,20 +102,24 @@ public class Robot extends TimedRobot {
 	}
 
 	public void cargoManipulatorControl() {
+		/*
 		if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) > 0.3) {
 			cargoManipulator.setToIntakePosition();
 		} else if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) > 0.3) {
 			cargoManipulator.setToUpPosition();
 		}
+		*/
 		// piece below is meant to make the arm go up or down unbounded
 		/*
 		 * else if (manipulatorGamepad.getPOV() == 0) {
 		 * cargoManipulator.overrideTarget(-1); } else if (manipulatorGamepad.getPOV()
 		 * == 180) { cargoManipulator.overrideTarget(1); }
 		 */
-		else {
+		/*
+		 else {
 			cargoManipulator.setWheelsOff();
 		}
+		*/
 		if (manipulatorLeftBumper.get() == true) {
 			cargoManipulator.setToUpPosition();
 		} else if (manipulatorRightBumber.get() == true) {
@@ -124,6 +131,14 @@ public class Robot extends TimedRobot {
 		} else {
 			cargoManipulator.setToCurrentPosition();
 			// essentially keeps it steady at wherever we are so that it doesn't droop down
+		}
+
+		if(manipulatorStartButton.get()){
+			cargoManipulator.setWheelsIn();
+		}else if(manipulatorBackButton.get()){
+			cargoManipulator.setWheelsOut();
+		} else {
+			cargoManipulator.setWheelsOff();
 		}
 	}
 

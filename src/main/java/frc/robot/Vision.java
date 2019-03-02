@@ -81,6 +81,25 @@ public class Vision {
         }
     }
 
+    void leftRightAlignmentTest(){
+        String leftRightStop;
+        if (Math.abs(tx) < 3) { // three is a random placeholder
+            double strafeRightLeft = tx * STEER_K * -1;
+            SmartDashboard.putNumber("translate x", strafeRightLeft);
+            
+            if (strafeRightLeft >= 0) {
+                leftRightStop = "left";
+            } else { // if(strafeRightLeft < 0)
+                leftRightStop = "right";
+            }
+
+        } else {
+            leftRightStop = "stop";
+        }
+
+        SmartDashboard.putString("Strafe direction left/right", leftRightStop);
+    }
+
     boolean hatchPickup() {
         // automation for getting hatch from feeder station
         ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
@@ -116,18 +135,39 @@ public class Vision {
             }
             break;
         case 2:// strafe right and left to line up with target
+            String leftRightStop;
             if (Math.abs(tx) < 3) { // three is a random placeholder
                 double strafeRightLeft = tx * STEER_K * -1;
-                if (strafeRightLeft < .2) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .2, 0);
-                } else if (strafeRightLeft > .7) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .6, 0);
-                } else {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
+                SmartDashboard.putNumber("translate x", strafeRightLeft);
+
+                if (strafeRightLeft >= 0) {
+                    if (Math.abs(strafeRightLeft) < .2) {
+                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .2, 0);
+                    } else if (Math.abs(strafeRightLeft) > .7) {
+                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .7, 0);
+                    } else {
+                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
+                    }
+                    // using this for testing
+                    leftRightStop = "left";
+
+                } else { // if(strafeRightLeft < 0)
+                    if (Math.abs(strafeRightLeft) < .2) {
+                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, -.2, 0);
+                    } else if (Math.abs(strafeRightLeft) > .7) {
+                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, -.7, 0);
+                    } else {
+                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
+                    }
+                    leftRightStop = "right";
                 }
+
             } else {
+                leftRightStop = "stop";
                 automationStep++;
             }
+
+            SmartDashboard.putString("Strafe direction left/right", leftRightStop);
             break;
         case 3: // drive forward to get into intake position
             if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) {
@@ -274,7 +314,7 @@ public class Vision {
         }
     }
 
-    boolean isAutomationRunning(){
+    boolean isAutomationRunning() {
         return automationRunning;
     }
 
