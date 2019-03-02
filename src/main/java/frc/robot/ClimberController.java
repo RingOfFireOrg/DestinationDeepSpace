@@ -1,10 +1,12 @@
 package frc.robot;
 
+import static frc.robot.Climber.Location.BACK;
+import static frc.robot.Climber.Location.FRONT;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-
-import static frc.robot.Climber.Location.FRONT;
-import static frc.robot.Climber.Location.BACK;
 
 public class ClimberController {
     private Joystick climberStick = new Joystick(RobotMap.CLIMBER_JOYSTICK);
@@ -18,8 +20,8 @@ public class ClimberController {
     private Climber climber = new Climber();
     private AutoClimb autoClimb;
 
-    public ClimberController(SwerveDrive swerveDrive) {
-        autoClimb = new AutoClimb(climber, swerveDrive);
+    public ClimberController(SwerveDrive swerveDrive, AHRS ahrs) {
+        autoClimb = new AutoClimb(climber, swerveDrive, ahrs);
     }
 
     public void run() {

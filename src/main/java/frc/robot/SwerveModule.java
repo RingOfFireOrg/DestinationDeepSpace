@@ -83,7 +83,7 @@ public class SwerveModule {
 			if (optimizedSpeed > MAX_DRIVE_POWER) optimizedSpeed = MAX_DRIVE_POWER;
 			if (optimizedSpeed < -MAX_DRIVE_POWER) optimizedSpeed = -MAX_DRIVE_POWER;
 			drive.set(optimizedSpeed);
-			SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
+			//SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
 			//SmartDashboard("encoder a", driveEncoder.());
 		} else { */ 
 			if (drivePower > MAX_DRIVE_POWER) {
@@ -95,12 +95,11 @@ public class SwerveModule {
 		//} 
 		//}
 		
-		/*
-		SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
-		SmartDashboard.putNumber("DP - " + moduleName, drivePower);
-		SmartDashboard.putNumber("SR - " + moduleName, speedRegulation.getOutput());
-		SmartDashboard.putNumber("GR - " + moduleName, accumulatedGR);
-		*/
+		//SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
+		//SmartDashboard.putNumber("DP - " + moduleName, drivePower);
+		//SmartDashboard.putNumber("SR - " + moduleName, speedRegulation.getOutput());
+		//SmartDashboard.putNumber("GR - " + moduleName, accumulatedGR);
+		
 	}
 
 	public void setSteerSpeed(double steerPower) {
@@ -115,7 +114,7 @@ public class SwerveModule {
 	}
 	
 	public void control(double driveSpeed, double wheelAngle) {
-		SmartDashboard.putNumber("DriveSpeed-" + moduleName, getRate());
+		SmartDashboard.putNumber("WheelSpeed:D/S-" + moduleName, getRate());
 		angleGoal = convertToWheelRelative(wheelAngle);
 		currentAngle = turnEncoder.getAngle();
 		double wheelTurnAngle0to360 = ((angleGoal - currentAngle) + 720) % 360;

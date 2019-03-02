@@ -67,7 +67,8 @@ public class Robot extends TimedRobot {
 		ahrs.reset();
 
 		swerveDrive = new GamepadSwerve(ahrs);
-		climberController = new ClimberController(swerveDrive);
+		climberController = new ClimberController(swerveDrive, ahrs);
+		SmartDashboard.putNumber("Version #", 5);
 	}
 
 	@Override

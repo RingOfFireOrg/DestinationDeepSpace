@@ -1,30 +1,37 @@
 package frc.robot;
 
+import static frc.robot.Climber.Location.BACK;
+import static frc.robot.Climber.Location.FRONT;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-
-import frc.robot.SwerveDrive;
-import static frc.robot.Climber.Location.FRONT;
-import static frc.robot.Climber.Location.BACK;
 
 public class AutoClimb {
     private int step = 0;
     private Climber climber;
     private SwerveDrive swerveDrive;
+    private AHRS ahrs;
 
     private DigitalInput frontLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_LEFT_WHEEL);
     private DigitalInput backLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_LEFT_WHEEL);
     private DigitalInput frontRightWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_RIGHT_WHEEL);
     private DigitalInput backRightWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_BACK_RIGHT_WHEEL);
 
+    private PID robotPitchPID;
+
     private Timer timer = new Timer();
 
     private boolean doingAutoClimb = false; //false means not done
 
-    public AutoClimb(Climber climber, SwerveDrive swerveDrive) {
+    public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs) {
         this.swerveDrive = swerveDrive;
         this.climber = climber;
+        this.ahrs = ahrs;
         timer.reset();
+        robotPitchPID = new PID(0, 0, 0);
+        robotPitchPID.setOutputRange(-1, 1);
     }
 
     private void driveSwerve(double speed) {
@@ -71,6 +78,7 @@ public class AutoClimb {
 
         // raise front and back legs all the way
         case 2:
+            robotPitchPID.setError(ahrs.getPitch());
             climber.extend();
 
             if(climber.isFullyExtended()) {

@@ -64,7 +64,7 @@ public class GamepadSwerve extends SwerveDrive {
 		}
 			  
         SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
-        SmartDashboard.putNumber("POV", driveController.getPOV());
+       // SmartDashboard.putNumber("POV", driveController.getPOV());
 		
 	}
 }
