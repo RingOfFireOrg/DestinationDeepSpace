@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 			RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
 	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,
 			RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
-
+  
 	AHRS ahrs;
 
 	boolean driveMode = false;
