@@ -14,10 +14,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 public class ClimberController {
     private XboxController manipulatorController = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
     private Joystick climberStick = new Joystick(RobotMap.CLIMBER_JOYSTICK);
-    private boolean extendFrontBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kRight);
-    private boolean extendBackBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kLeft);
-    private double retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
-    private double retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
     private JoystickButton startAutoClimbBtn = new JoystickButton(climberStick, RobotMap.START_AUTOCLIMB);
     private JoystickButton stopAutoClimbBtn = new JoystickButton(climberStick, RobotMap.STOP_AUTOCLIMB);
     private Climber climber = new Climber();
@@ -44,16 +40,16 @@ public class ClimberController {
     }
 
     private void climbManually() {
-        double climberDrive = manipulatorController.getRawAxis(1);
-        extendFrontBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kRight);
-        extendBackBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kLeft);
-        retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
-        retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
+        double climberDrive = manipulatorController.getRawAxis(RobotMap.RIGHT_STICK_Y_AXIS);
+        boolean extendFrontBtn = manipulatorController.getBumper(GenericHID.Hand.kRight);
+        boolean extendBackBtn = manipulatorController.getBumper(GenericHID.Hand.kLeft);
+        double retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
+        double retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
 
         if (climberDrive > 0.25) {
-            climber.driveForward();
-        } else if (climberDrive < -0.25) {
             climber.driveReverse();
+        } else if (climberDrive < -0.25) {
+            climber.driveForward();
         } else {
             climber.stopDriving();
         }
