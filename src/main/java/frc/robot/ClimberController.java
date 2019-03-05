@@ -7,14 +7,17 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID;
+
 
 public class ClimberController {
+    private XboxController manipulatorController = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
     private Joystick climberStick = new Joystick(RobotMap.CLIMBER_JOYSTICK);
-
-    private JoystickButton extendFrontBtn = new JoystickButton(climberStick, RobotMap.CLIMBER_EXTEND_FRONT);
-    private JoystickButton extendBackBtn = new JoystickButton(climberStick, RobotMap.CLIMBER_EXTEND_BACK);
-    private JoystickButton retractFrontBtn = new JoystickButton(climberStick, RobotMap.CLIMBER_RETRACT_FRONT);
-    private JoystickButton retractBackBtn = new JoystickButton(climberStick, RobotMap.CLIMBER_RETRACT_BACK);
+    private boolean extendFrontBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kRight);
+    private boolean extendBackBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kLeft);
+    private double retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
+    private double retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
     private JoystickButton startAutoClimbBtn = new JoystickButton(climberStick, RobotMap.START_AUTOCLIMB);
     private JoystickButton stopAutoClimbBtn = new JoystickButton(climberStick, RobotMap.STOP_AUTOCLIMB);
     private Climber climber = new Climber();
@@ -41,7 +44,7 @@ public class ClimberController {
     }
 
     private void climbManually() {
-        double climberDrive = climberStick.getY();
+        double climberDrive = manipulatorController.getRawAxis(1);
 
         if (climberDrive > 0.25) {
             climber.driveForward();
@@ -51,17 +54,17 @@ public class ClimberController {
             climber.stopDriving();
         }
 
-        if (extendFrontBtn.get()) {
+        if (extendFrontBtn) {
             climber.extendManual(FRONT);
-        } else if (retractFrontBtn.get()) {
+        } else if (retractFrontBtn > 0.5) {
             climber.retractManual(FRONT);
         } else {
             climber.stopClimbing(FRONT);
         }
 
-        if (extendBackBtn.get()) {
+        if (extendBackBtn) {
             climber.extendManual(BACK);
-        } else if (retractBackBtn.get()) {
+        } else if (retractBackBtn > 0.5) {
             climber.retractManual(BACK);
         } else {
             climber.stopClimbing(BACK);

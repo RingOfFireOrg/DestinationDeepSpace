@@ -12,7 +12,7 @@ public class Beak {
 
     protected Beak() {
         beakActuator = new Servo(RobotMap.BEAK_ACTUATOR_CHANNEL);
-        // AlanS - this needs setBounds or no good....
+        // Alan - this needs setBounds or no good....
         beakActuator.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
         isOpen = false;
     }

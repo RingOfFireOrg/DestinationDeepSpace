@@ -120,6 +120,8 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setWheelsOff();
 		}
 		*/
+
+		/*
 		if (manipulatorLeftBumper.get() == true) {
 			cargoManipulator.setToUpPosition();
 		} else if (manipulatorRightBumber.get() == true) {
@@ -132,10 +134,20 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setToCurrentPosition();
 			// essentially keeps it steady at wherever we are so that it doesn't droop down
 		}
+		*/
 
-		if(manipulatorStartButton.get()){
+		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
+		if(cargoArmSpeed > 0.2){
+			cargoManipulator.moveArmUp(cargoArmSpeed);
+		} else if (cargoArmSpeed < -0.2){
+			cargoManipulator.moveArmDown(-cargoArmSpeed);
+		} else {
+			cargoManipulator.stopArm();
+		}
+
+		if(manipulatorXButton.get()){
 			cargoManipulator.setWheelsIn();
-		}else if(manipulatorBackButton.get()){
+		}else if(manipulatorYButton.get()){
 			cargoManipulator.setWheelsOut();
 		} else {
 			cargoManipulator.setWheelsOff();

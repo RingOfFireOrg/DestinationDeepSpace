@@ -125,6 +125,10 @@ public class CargoManipulator {
         cargoArmMotor.set(ControlMode.PercentOutput, -speed);
     }
 
+    public void stopArm(){
+        cargoArmMotor.set(ControlMode.PercentOutput, 0);
+    }
+
 
     public void setWheelsOff() {
         this.wheels = wheelState.OFF;
