@@ -37,7 +37,6 @@ public class AutoClimb {
     public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs) {
         this.swerveDrive = swerveDrive;
         this.climber = climber;
-        this.cargoManipulator = cargoManipulator;
         this.ahrs = ahrs;
         timer.reset();
         robotPitchPID = new PID(0, 0, 0);
