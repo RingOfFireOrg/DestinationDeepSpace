@@ -27,6 +27,7 @@ public class AutoClimb {
     private Counter counterBR = new Counter(backRightWheelLimitSwitch);
 
     private PID robotPitchPID;
+    private double pitchOffset;
 
     private Timer timer = new Timer();
 
@@ -37,7 +38,7 @@ public class AutoClimb {
         this.climber = climber;
         this.ahrs = ahrs;
         timer.reset();
-        robotPitchPID = new PID(0, 0, 0);
+        robotPitchPID = new PID(0.02, 0.00005, 0);
         robotPitchPID.setOutputRange(-1, 1);
     }
 
@@ -77,13 +78,17 @@ public class AutoClimb {
                 driveSwerve(-0.5);
             } else {
                 stopSwerve();
+                pitchOffset = ahrs.getPitch();
                 step++;
+                robotPitchPID.reset();
             }
             break;
 
         // raise front and back legs all the way
         case 2:
-            robotPitchPID.setError(ahrs.getPitch());
+            robotPitchPID.setError(ahrs.getPitch() - pitchOffset);
+            robotPitchPID.update(); 
+            //climber.extendLevel(robotPitchPID.getOutput());
             climber.extend();
 
             if(climber.isFullyExtended()) {
