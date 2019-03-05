@@ -45,6 +45,10 @@ public class ClimberController {
 
     private void climbManually() {
         double climberDrive = manipulatorController.getRawAxis(1);
+        extendFrontBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kRight);
+        extendBackBtn = manipulatorController.getBumperPressed(GenericHID.Hand.kLeft);
+        retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
+        retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
 
         if (climberDrive > 0.25) {
             climber.driveForward();
