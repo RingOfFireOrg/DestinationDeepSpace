@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.CargoManipulator;
 import static frc.robot.Climber.Location.BACK;
 import static frc.robot.Climber.Location.FRONT;
 
@@ -14,6 +15,7 @@ public class AutoClimb {
     private int step = 0;
     private Climber climber;
     private SwerveDrive swerveDrive;
+    private CargoManipulator cargoManipulator;
     private AHRS ahrs;
 
     private DigitalInput frontLeftWheelLimitSwitch = new DigitalInput(RobotMap.INPUT_FRONT_LEFT_WHEEL);
@@ -67,9 +69,11 @@ public class AutoClimb {
 
         switch(step) {
         
+        //set cargo manipulator arm out of way of climber and get ready to climb
         case 0: 
+            cargoManipulator.setToCustomPosition(cargoManipulator.OUT_OF_CLIMBER_WAY_POSITION);
             timer.start();
-            step++;
+            step++;                
             break;
 
         // drive back a little 

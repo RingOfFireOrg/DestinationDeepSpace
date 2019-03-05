@@ -37,6 +37,7 @@ public class CargoManipulator {
     final double LOWER_ROCKET_POSITION_DEGREES = 24;
     final double CARGO_SHIP_POSITION_DEGREES = 70;
     final double UP_POSITION_DEGREES = 90;
+    final double OUT_OF_CLIMBER_WAY_POSITION = 80;
     double customTargetAngle = 0;
 
     protected CargoManipulator() {
@@ -123,6 +124,10 @@ public class CargoManipulator {
 
     public void moveArmDown(double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, -speed);
+    }
+
+    public void stopArm(){
+        cargoArmMotor.set(ControlMode.PercentOutput, 0);
     }
 
 
