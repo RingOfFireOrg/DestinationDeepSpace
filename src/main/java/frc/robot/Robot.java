@@ -96,9 +96,9 @@ public class Robot extends TimedRobot {
 	}
 
 	public void beakControl() {
-		if (manipulatorAButton.get() == true) {
+		if (manipulatorPanelOpenBeak.get()) {
 			beak.open();
-		} else if (manipulatorBButton.get() == true) {
+		} else if (manipulatorPanelCloseBeak.get()) {
 			beak.close();
 		}
 	}
@@ -135,6 +135,15 @@ public class Robot extends TimedRobot {
 		}else {
 			cargoManipulator.setToCurrentPosition();
 			// essentially keeps it steady at wherever we are so that it doesn't fall down
+		}
+		//Wheel control for manipulator panel
+		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if this is the right place to get the axis
+		if (cargoWheelsSpeed > 0.2){
+			cargoManipulator.setWheelsIn();
+		} else if (cargoWheelsSpeed < -0.2){
+			cargoManipulator.setWheelsOut();
+		} else {
+			cargoManipulator.setWheelsOff();
 		}
 	
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);

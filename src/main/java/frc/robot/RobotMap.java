@@ -26,7 +26,7 @@ public class RobotMap {
 	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 12;
 	public static final int CLIMBING_MODE_PROTECTED_SWITCH = 16;
 
-	public static final int INTAKE_DIRECTION_JOYSTICK_Y_AXIS = 1;
+	public static final int INTAKE_WHEELS_SPEED_JOYSTICK_AXIS = 1;
 
 	//Manipulator gamepad buttons and axis:
 	public static final int MANIPULATOR_LEFT_TRIGGER_AXIS = 2;
