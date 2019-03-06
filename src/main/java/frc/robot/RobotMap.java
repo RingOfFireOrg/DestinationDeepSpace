@@ -39,8 +39,9 @@ public class RobotMap {
 	public static final int MANIPULATOR_CARGO_LOWER_ROCKET_BUTTON_VALUE = 10;
 	public static final int MANIPULATOR_CARGO_CARGO_SHIP_BUTTON_VALUE = 11;
 	public static final int MANIPULATOR_CARGO_INTAKE_BUTTON_VALUE = 12;
+	public static final int MANIPULATOR_AUTO_CLIMB_BUTTON_VALUE = 16;
 
-	public static final int MANIPULATOR_CARGO_INTAKE_DIRECTION_AXIS = 0;
+	public static final int MANIPULATOR_CARGO_INTAKE_DIRECTION_AXIS = 1;
 
 
     //Driver Gamepad Buttons axes:
