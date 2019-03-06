@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,6 +28,7 @@ public class Robot extends TimedRobot {
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 
+	public Joystick manipulatorPanel = new Joystick(RobotMap.MANIPULATOR_PANEL);
 	public XboxController driverGamepad = new XboxController(RobotMap.DRIVER_GAMEPAD);
 	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
 
@@ -121,21 +124,20 @@ public class Robot extends TimedRobot {
 		}
 		*/
 
-		/*
-		if (manipulatorLeftBumper.get() == true) {
+		//eventually this needs a case for middle rocket
+		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON) == true) {
 			cargoManipulator.setToUpPosition();
-		} else if (manipulatorRightBumber.get() == true) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON) == true) {
 			cargoManipulator.setToIntakePosition();
-		} else if (manipulatorXButton.get() == true) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON) == true) {
 			cargoManipulator.setToCargoShipPosition();
-		} else if (manipulatorYButton.get() == true) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON) == true) {
 			cargoManipulator.setToLowerRocketPosition();
-		} else {
+		}else {
 			cargoManipulator.setToCurrentPosition();
 			// essentially keeps it steady at wherever we are so that it doesn't droop down
 		}
-		*/
-
+	
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
 		if(cargoArmSpeed > 0.2){
 			cargoManipulator.moveArmUp(cargoArmSpeed);
