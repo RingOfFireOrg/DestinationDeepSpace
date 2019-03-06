@@ -137,6 +137,15 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setToCurrentPosition();
 			// essentially keeps it steady at wherever we are so that it doesn't droop down
 		}
+
+		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if this is the right place to get the axis
+		if (cargoWheelsSpeed > 0.2){
+			cargoManipulator.setWheelsIn();
+		} else if (cargoWheelsSpeed < -0.2){
+			cargoManipulator.setWheelsOut();
+		} else {
+			cargoManipulator.setWheelsOff();
+		}
 	
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
 		if(cargoArmSpeed > 0.2){
