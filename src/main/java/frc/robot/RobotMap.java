@@ -22,13 +22,14 @@ public class RobotMap {
 	public static final int AUTO_MID_ROCKET_CARGO_SCORE_BUTTON = 5;
 	public static final int AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON = 6;
 	public static final int AUTO_CARGOSHIP_CARGO_SCORE_BUTTON = 7;
+	public static final int CARGO_ARM_UP_POSITION_BUTTON = 8;
+	public static final int CARGO_ARM_MID_ROCKET_POSITION_BUTTON = 9;
+	public static final int CARGO_ARM_LOW_ROCKET_POSITION_BUTTON = 10;
+	public static final int CARGO_ARM_CARGO_SHIP_POSITION_BUTTON = 11;
+	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 12;
+	public static final int CLIMBING_MODE_PROTECTED_SWITCH = 16;
+
 	public static final int INTAKE_WHEELS_SPEED_JOYSTICK_CHANNEL = 8;
-	public static final int CARGO_ARM_UP_POSITION_BUTTON = 9;
-	public static final int CARGO_ARM_MID_ROCKET_POSITION_BUTTON = 10;
-	public static final int CARGO_ARM_LOW_ROCKET_POSITION_BUTTON = 11;
-	public static final int CARGO_ARM_CARGO_SHIP_POSITION_BUTTON = 12;
-	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 13;
-	public static final int CLIMBING_MODE_PROTECTED_SWITCH = 14;
 
 	//Manipulator gamepad buttons and axis:
 	public static final int MANIPULATOR_LEFT_TRIGGER_AXIS = 2;
@@ -42,24 +43,6 @@ public class RobotMap {
 	public static final int MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE = 6;
 	public static final int MANIPULATOR_BACK_BUTTON_VALUE = 7;
 	public static final int MANIPULATOR_START_BUTTON_VALUE = 8;
-
-	//Manipulator Panel Buttons and Axes:
-	public static final int MANIPULATOR_BEAK_AUTO_INTAKE_BUTTON_VALUE = 1;
-	public static final int MANIPULATOR_BEAK_AUTO_SCORE_BUTTON_VALUE = 2;
-	public static final int MANIPULATOR_BEAK_OPEN_BUTTON_VALUE = 3;
-	public static final int MANIPULATOR_BEAK_CLOSE_BUTTON_VALUE = 4;
-	public static final int MANIPULATOR_CARGO_AUTO_MID_ROCKET_BUTTON_VALUE = 5;
-	public static final int MANIPULATOR_CARGO_AUTO_LOWER_ROCKET_BUTTON_VALUE = 6;
-	public static final int MANIPULATOR_CARGO_AUTO_CARGO_SHIP_BUTTON_VALUE = 7;
-	public static final int MANIPULATOR_CARGO_RETRACT_BUTTON_VALUE = 8;
-	public static final int MANIPULATOR_CARGO_MID_ROCKET_BUTTON_VALUE = 9;
-	public static final int MANIPULATOR_CARGO_LOWER_ROCKET_BUTTON_VALUE = 10;
-	public static final int MANIPULATOR_CARGO_CARGO_SHIP_BUTTON_VALUE = 11;
-	public static final int MANIPULATOR_CARGO_INTAKE_BUTTON_VALUE = 12;
-	public static final int MANIPULATOR_AUTO_CLIMB_BUTTON_VALUE = 16;
-
-	public static final int MANIPULATOR_CARGO_INTAKE_DIRECTION_AXIS = 1;
-
 
     //Driver Gamepad Buttons axes:
     public static final int RIGHT_STICK_X_AXIS = 0;
