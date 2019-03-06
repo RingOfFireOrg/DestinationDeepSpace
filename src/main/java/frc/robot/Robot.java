@@ -50,12 +50,12 @@ public class Robot extends TimedRobot {
 	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
 	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
 	
-	public JoystickButton manipulatorPanelAutoIntakeHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_INTAKE_HATCH_BUTTON_VALUE);
-	public JoystickButton manipulatorPanelAutoScoreHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_SCORE_HATCH_BUTTON_VALUE);
-	public JoystickButton manipulatorPanelOpenBeak = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON_VALUE);
-	public JoystickButton manipulatorPanelCloseBeak = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON_VALUE);
-	public JoystickButton manipulatorPanelAutoMidRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON__VALUE);
-	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON_VALUE); 
+	public JoystickButton manipulatorPanelAutoIntakeHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_INTAKE_HATCH_BUTTON);
+	public JoystickButton manipulatorPanelAutoScoreHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_SCORE_HATCH_BUTTON);
+	public JoystickButton manipulatorPanelOpenBeak = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
+	public JoystickButton manipulatorPanelCloseBeak = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON);
+	public JoystickButton manipulatorPanelAutoMidRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON); 
 
 	AHRS ahrs;
 
@@ -131,13 +131,13 @@ public class Robot extends TimedRobot {
 		*/
 
 		//eventually this needs a case for middle rocket
-		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON_VALUE)) {
+		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 			cargoManipulator.setToUpPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON_VALUE)) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
 			cargoManipulator.setToIntakePosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON_VALUE)) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
 			cargoManipulator.setToCargoShipPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON_VALUE)) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
 			cargoManipulator.setToLowerRocketPosition();
 		}else {
 			cargoManipulator.setToCurrentPosition();
