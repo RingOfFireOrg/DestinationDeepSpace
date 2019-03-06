@@ -3,16 +3,13 @@ package frc.robot;
 public class RobotMap { 
 	//Ports not on robot
 	//Joysticks
-	public static final int LEFT_JOYSTICK = 0;
-	public static final int RIGHT_JOYSTICK = 1;
-
-	public static final int LEFT_MANIPULATOR_STICK = 1;
-    public static final int RIGHT_MANIPULATOR_STICK = 2;
     
 	public static final int DRIVER_GAMEPAD = 0;
 	public static final int MANIPULATOR_GAMEPAD = 1;
 	public static final int CLIMBER_JOYSTICK = 2;
 	public static final int MANIPULATOR_PANEL = 3; //??
+	public static final int LEFT_DRIVE_JOYSTICK = 4;
+	public static final int RIGHT_DRIVE_JOYSTICK = 5;
 
 	//Manipulator panel buttons
 	public static final int AUTO_INTAKE_HATCH_BUTTON = 1;
