@@ -14,8 +14,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 public class ClimberController {
     private XboxController manipulatorController = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
     private Joystick climberStick = new Joystick(RobotMap.CLIMBER_JOYSTICK);
-    private JoystickButton startAutoClimbBtn = new JoystickButton(climberStick, RobotMap.START_AUTOCLIMB);
-    private JoystickButton stopAutoClimbBtn = new JoystickButton(climberStick, RobotMap.STOP_AUTOCLIMB);
+    public Joystick manipulatorPanel = new Joystick(RobotMap.MANIPULATOR_PANEL);
+    private JoystickButton startAutoClimbBtn = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
+    private JoystickButton climbModeToggle = new JoystickButton(manipulatorPanel, RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
     private Climber climber = new Climber();
     private AutoClimb autoClimb;
 
@@ -23,12 +24,13 @@ public class ClimberController {
         autoClimb = new AutoClimb(climber, swerveDrive, ahrs);
     }
 
+    boolean climbModeTrue = climbModeToggle.get();
     public void run() {
         climber.printHallEffectState();
 
         if (startAutoClimbBtn.get()) {
             autoClimb.autoClimbRestart();
-        } else if (stopAutoClimbBtn.get()) {
+        } else if (climbModeTrue == false) {
             autoClimb.stopAutoClimb();
         }
 
@@ -45,29 +47,30 @@ public class ClimberController {
         boolean extendBackBtn = manipulatorController.getBumper(GenericHID.Hand.kLeft);
         double retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
         double retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
-
-        if (climberDrive > 0.25) {
+        
+        
+        if (climberDrive > 0.25 && climbModeTrue) {
             climber.driveReverse();
-        } else if (climberDrive < -0.25) {
+        } else if (climberDrive < -0.25 && climbModeTrue) {
             climber.driveForward();
         } else {
             climber.stopDriving();
         }
 
-        if (extendFrontBtn) {
+        if (extendFrontBtn && climbModeTrue) {
             climber.extendManual(FRONT);
-        } else if (retractFrontBtn > 0.5) {
+        } else if (retractFrontBtn > 0.5 && climbModeTrue) {
             climber.retractManual(FRONT);
         } else {
             climber.stopClimbing(FRONT);
         }
 
-        if (extendBackBtn) {
+        if (extendBackBtn && climbModeTrue) {
             climber.extendManual(BACK);
-        } else if (retractBackBtn > 0.5) {
+        } else if (retractBackBtn > 0.5 && climbModeTrue) {
             climber.retractManual(BACK);
         } else {
             climber.stopClimbing(BACK);
         }
-    }
+    } 
 }

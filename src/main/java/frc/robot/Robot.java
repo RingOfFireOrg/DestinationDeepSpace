@@ -50,7 +50,13 @@ public class Robot extends TimedRobot {
 	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
 	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
 	
-	
+	public JoystickButton manipulatorPanelAutoIntakeHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_INTAKE_HATCH_BUTTON);
+	public JoystickButton manipulatorPanelAutoScoreHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_SCORE_HATCH_BUTTON);
+	public JoystickButton manipulatorPanelOpenBeak = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
+	public JoystickButton manipulatorPanelCloseBeak = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON);
+	public JoystickButton manipulatorPanelAutoMidRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON); 
+
 	AHRS ahrs;
 
 	boolean driveMode = false;
@@ -125,17 +131,26 @@ public class Robot extends TimedRobot {
 		*/
 
 		//eventually this needs a case for middle rocket
-		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON) == true) {
+		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 			cargoManipulator.setToUpPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON) == true) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
 			cargoManipulator.setToIntakePosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON) == true) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
 			cargoManipulator.setToCargoShipPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON) == true) {
+		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
 			cargoManipulator.setToLowerRocketPosition();
 		}else {
 			cargoManipulator.setToCurrentPosition();
-			// essentially keeps it steady at wherever we are so that it doesn't droop down
+			// essentially keeps it steady at wherever we are so that it doesn't fall down
+		}
+
+		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if this is the right place to get the axis
+		if (cargoWheelsSpeed > 0.2){
+			cargoManipulator.setWheelsIn();
+		} else if (cargoWheelsSpeed < -0.2){
+			cargoManipulator.setWheelsOut();
+		} else {
+			cargoManipulator.setWheelsOff();
 		}
 	
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
