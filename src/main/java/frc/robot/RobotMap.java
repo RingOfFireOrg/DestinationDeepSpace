@@ -15,6 +15,7 @@ public class RobotMap {
 	public static final int MANIPULATOR_PANEL = 3; //??
 
 	//Manipulator panel buttons
+<<<<<<< HEAD
 	public static final int AUTO_INTAKE_HATCH_BUTTON_VALUE = 1;
 	public static final int AUTO_SCORE_HATCH_BUTTON_VALUE = 2;
 	public static final int OPEN_BEAK_BUTTON_VALUE = 3;
@@ -31,6 +32,23 @@ public class RobotMap {
 	public static final int CLIMBING_MODE_PROTECTED_SWITCH_VALUE = 16;
 
 	public static final int CARGO_INTAKE_DIRECTION_AXIS = 1;
+=======
+	public static final int AUTO_INTAKE_HATCH_BUTTON = 1;
+	public static final int AUTO_SCORE_HATCH_BUTTON = 2;
+	public static final int OPEN_BEAK_BUTTON = 3;
+	public static final int CLOSE_BEAK_BUTTON = 4;
+	public static final int AUTO_MID_ROCKET_CARGO_SCORE_BUTTON = 5;
+	public static final int AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON = 6;
+	public static final int AUTO_CARGOSHIP_CARGO_SCORE_BUTTON = 7;
+	public static final int CARGO_ARM_UP_POSITION_BUTTON = 8;
+	public static final int CARGO_ARM_MID_ROCKET_POSITION_BUTTON = 9;
+	public static final int CARGO_ARM_LOW_ROCKET_POSITION_BUTTON = 10;
+	public static final int CARGO_ARM_CARGO_SHIP_POSITION_BUTTON = 11;
+	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 12;
+	public static final int CLIMBING_MODE_PROTECTED_SWITCH = 16;
+
+	public static final int INTAKE_WHEELS_SPEED_JOYSTICK_CHANNEL = 8;
+>>>>>>> d8b9bd78898e9e8a67079ed7ca4dbc3415438ad6
 
 	//Manipulator gamepad buttons and axis:
 	public static final int MANIPULATOR_LEFT_TRIGGER_AXIS = 2;
@@ -45,7 +63,10 @@ public class RobotMap {
 	public static final int MANIPULATOR_BACK_BUTTON_VALUE = 7;
 	public static final int MANIPULATOR_START_BUTTON_VALUE = 8;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d8b9bd78898e9e8a67079ed7ca4dbc3415438ad6
     //Driver Gamepad Buttons axes:
     public static final int RIGHT_STICK_X_AXIS = 0;
     public static final int RIGHT_STICK_Y_AXIS = 1;
