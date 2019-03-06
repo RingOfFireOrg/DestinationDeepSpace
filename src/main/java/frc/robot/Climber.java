@@ -16,9 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.Climber.Location.FRONT;
 import static frc.robot.Climber.Location.BACK;
 
-/**
- * Stuff for climber
- */
 public class Climber {
     /**
      * The default speed to make controlling easier
@@ -39,12 +36,15 @@ public class Climber {
         backState = MovementState.STOP_MAGNET_DOWN;
     }
 
+    //extends both bars
     public void extend() {
         updateLegState(Direction.EXTEND);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * getDriveSpeed(Direction.EXTEND, backState));
     }
 
+    //extends one bar depending on a passed in enum
+    //QUESTION - these enums are private.  Do we ever need to to pass it in from outside this class?
     public void extend(Location location) {
         updateLegState(Direction.EXTEND);
 
@@ -55,12 +55,14 @@ public class Climber {
         }
     }
 
+    //retracts both bars
     public void retract() {
         updateLegState(Direction.RETRACT);
         climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
         climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE*getDriveSpeed(Direction.RETRACT, backState));
     }
 
+    //retracts one bar 
     public void retract(Location location) {
         updateLegState(Direction.RETRACT);
 
@@ -71,6 +73,9 @@ public class Climber {
         }
     }
 
+    //currently not implemented anywhere
+    //what is difference referring to here?
+    //takes robot to the top, handles whether to stop cause of magnet and also regulating the two bars to keep them at the same height
     public void extendLevel(double difference) {
         updateLegState(Direction.EXTEND);
         //assuming that the gyro will be + when rotated forward
@@ -80,6 +85,7 @@ public class Climber {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         }
 
+        //why is it allowing it to be going the opposite direction? thats a little odd 
         if (getDriveSpeed(Direction.EXTEND, backState) == RobotMap.SPEED_DEFAULT_CLIMB || getDriveSpeed(Direction.EXTEND, backState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
             climberBack.set(RobotMap.SPEED_DEFAULT_CLIMB - difference);
         } else {
@@ -87,6 +93,9 @@ public class Climber {
         }
     }
 
+    
+    //not even really being used at the moment
+    //takes robot to the bottom
     public void retractLevel(double difference) {
         updateLegState(Direction.RETRACT);
         if (getDriveSpeed(Direction.RETRACT, frontState) == RobotMap.SPEED_DEFAULT_CLIMB || getDriveSpeed(Direction.RETRACT, frontState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
@@ -105,7 +114,7 @@ public class Climber {
     public void extendManual(Location location) {
         if (location == Location.FRONT) {
             climberFront.set(ControlMode.PercentOutput, RobotMap.SPEED_DEFAULT_CLIMB);
-        } else {
+        } else {  //if(location == Location.BACK)
             climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * RobotMap.SPEED_DEFAULT_CLIMB);
         }
     }
@@ -150,6 +159,8 @@ public class Climber {
         return current == MovementState.STOP_DOWN || current == MovementState.STOP_MAGNET_DOWN;
     }
 
+
+   //actually returning a goal NOT an actual speed - let's eventually change this method name
     public static double getDriveSpeed(Direction direction, MovementState current) {
         if (direction == Direction.EXTEND) {
             switch (current) {
@@ -162,7 +173,7 @@ public class Climber {
             default:
                 return RobotMap.SPEED_DEFAULT_CLIMB;
             }
-        } else {
+        } else { //if(direction == Direction.RETRACT)
             switch (current) {
             case STOP_DOWN:
             case STOP_MAGNET_DOWN:
