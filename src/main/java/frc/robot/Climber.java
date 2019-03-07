@@ -76,14 +76,14 @@ public class Climber {
     public void extendLevel(double difference) {
         updateLegState(Direction.EXTEND);
         //assuming that the gyro will be + when rotated forward
-        if (getDriveSpeed(Direction.EXTEND, frontState) == RobotMap.SPEED_DEFAULT_CLIMB || getDriveSpeed(Direction.EXTEND, frontState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
+        if (getDriveSpeed(Direction.EXTEND, frontState) == RobotMap.SPEED_DEFAULT_CLIMB) {
             climberFront.set(ControlMode.PercentOutput, RobotMap.SPEED_DEFAULT_CLIMB + difference);
         } else {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         }
 
         //why is it allowing it to be going the opposite direction? thats a little odd 
-        if (getDriveSpeed(Direction.EXTEND, backState) == RobotMap.SPEED_DEFAULT_CLIMB || getDriveSpeed(Direction.EXTEND, backState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
+        if (getDriveSpeed(Direction.EXTEND, backState) == RobotMap.SPEED_DEFAULT_CLIMB) {
             climberBack.set(RobotMap.SPEED_DEFAULT_CLIMB - difference);
         } else {
             climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
@@ -94,13 +94,13 @@ public class Climber {
     //takes robot to the bottom
     public void retractLevel(double difference) {
         updateLegState(Direction.RETRACT);
-        if (getDriveSpeed(Direction.RETRACT, frontState) == RobotMap.SPEED_DEFAULT_CLIMB || getDriveSpeed(Direction.RETRACT, frontState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
+        if (getDriveSpeed(Direction.RETRACT, frontState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
             climberFront.set(ControlMode.PercentOutput, -RobotMap.SPEED_DEFAULT_CLIMB - difference);
         } else {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
         }
 
-        if (getDriveSpeed(Direction.RETRACT, backState) == RobotMap.SPEED_DEFAULT_CLIMB || getDriveSpeed(Direction.RETRACT, backState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
+        if (getDriveSpeed(Direction.RETRACT, backState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
             climberBack.set(-RobotMap.SPEED_DEFAULT_CLIMB + difference);
         } else {
             climberBack.set(getDriveSpeed(Direction.RETRACT, backState));

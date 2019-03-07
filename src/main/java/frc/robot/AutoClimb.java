@@ -95,7 +95,6 @@ public class AutoClimb {
             robotPitchPID.setError(ahrs.getPitch() - pitchOffset);
             robotPitchPID.update(); 
             climber.extendLevel(robotPitchPID.getOutput());
-            climber.extend();
 
             if(climber.isFullyExtended()) {
                 resetLimitSwitches();
