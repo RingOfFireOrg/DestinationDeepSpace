@@ -134,7 +134,7 @@ public class AutoClimb {
                 resetLimitSwitches();
                 step++;
             } else {
-                climber.retractLevel(robotPitchPID.getOutput());
+                climber.retract(FRONT);
             }
            break;
 
@@ -167,7 +167,7 @@ public class AutoClimb {
                 timer.start();
                 step++;
             } else {
-                climber.retractLevel(robotPitchPID.getOutput());
+                climber.retract(BACK);
             }
             break;
 

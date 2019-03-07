@@ -90,6 +90,7 @@ public class Climber {
         }
     }
 
+    //not used, not needed
     //takes robot to the bottom
     public void retractLevel(double difference) {
         updateLegState(Direction.RETRACT);
