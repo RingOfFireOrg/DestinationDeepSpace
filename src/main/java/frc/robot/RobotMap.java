@@ -138,10 +138,10 @@ public class RobotMap {
 	public static final int STEER_BACK_RIGHT_MOTOR = 2;
 
 	//encoder zero values
-	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 99;
-	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 300;
-	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 208;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 324;
+	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 29;
+	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 320;
+	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 43;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 198;
 
 	// Motor Speeds
 	public static final double SPEED_DEFAULT_TEST = 0.75;
