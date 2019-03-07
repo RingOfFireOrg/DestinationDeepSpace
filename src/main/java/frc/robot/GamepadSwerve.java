@@ -65,6 +65,7 @@ public class GamepadSwerve extends SwerveDrive {
 			fieldTranslateY = joystickFieldTranslateY;
 			absoluteDirection = joystickAbsoluteDirection;
 			unregulatedTurning = joystickUnregTurning;
+			SmartDashboard.putBoolean("JoystickDriveEnabled", true);
 		} else {
 			robotTranslateX = gamepadRobotTranslateX;
 			robotTranslateY = gamepadRobotTranslateY;
@@ -72,6 +73,7 @@ public class GamepadSwerve extends SwerveDrive {
 			fieldTranslateY = gamepadFieldTranslateY;
 			absoluteDirection = gamepadAbsoluteDirection;
 			unregulatedTurning = gamepadUnregTurning;
+			SmartDashboard.putBoolean("JoystickDriveEnabled", false);
 		}
 
 		if(driveController.getYButton() || joystickRobotFrontCargoButton.get()) {
