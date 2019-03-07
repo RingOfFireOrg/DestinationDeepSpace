@@ -44,7 +44,6 @@ public class Climber {
     }
 
     //extends one bar depending on a passed in enum
-    //QUESTION - these enums are private.  Do we ever need to to pass it in from outside this class?
     public void extend(Location location) {
         updateLegState(Direction.EXTEND);
 
@@ -73,8 +72,6 @@ public class Climber {
         }
     }
 
-    //currently not implemented anywhere
-    //what is difference referring to here?
     //takes robot to the top, handles whether to stop cause of magnet and also regulating the two bars to keep them at the same height
     public void extendLevel(double difference) {
         updateLegState(Direction.EXTEND);
@@ -93,8 +90,6 @@ public class Climber {
         }
     }
 
-    
-    //not even really being used at the moment
     //takes robot to the bottom
     public void retractLevel(double difference) {
         updateLegState(Direction.RETRACT);
