@@ -29,24 +29,17 @@ public class Robot extends TimedRobot {
 	SendableChooser<String> chooser = new SendableChooser<>();
 
 	public Joystick manipulatorPanel = new Joystick(RobotMap.MANIPULATOR_PANEL);
+	public Joystick leftDriveJoystick = new Joystick(RobotMap.LEFT_DRIVE_JOYSTICK);
+	public Joystick rightDriveJoystick = new Joystick(RobotMap.RIGHT_DRIVE_JOYSTICK);
 	public XboxController driverGamepad = new XboxController(RobotMap.DRIVER_GAMEPAD);
 	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
 
-	public JoystickButton driverGamepadStartButton = new JoystickButton(driverGamepad, RobotMap.START_BUTTON_VALUE);
-	public JoystickButton driverGamepadBackButton = new JoystickButton(driverGamepad, RobotMap.BACK_BUTTON_VALUE);
-
-	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad,
-			RobotMap.MANIPULATOR_A_BUTTON_VALUE);
-	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad,
-			RobotMap.MANIPULATOR_B_BUTTON_VALUE);
-	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad,
-			RobotMap.MANIPULATOR_X_BUTTON_VALUE);
-	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad,
-			RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
-	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad,
-			RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
-	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,
-			RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
+	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_A_BUTTON_VALUE);
+	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_B_BUTTON_VALUE);
+	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_X_BUTTON_VALUE);
+	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
+	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad,RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
+	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
 	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
 	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
 	
@@ -78,7 +71,7 @@ public class Robot extends TimedRobot {
 		ahrs = new AHRS(SerialPort.Port.kUSB);
 		ahrs.reset();
 
-		swerveDrive = new GamepadSwerve(ahrs);
+		swerveDrive = new GamepadSwerve(ahrs, driverGamepad, leftDriveJoystick, rightDriveJoystick);
 		climberController = new ClimberController(swerveDrive, ahrs);
 		SmartDashboard.putNumber("Version #", 5);
 	}
@@ -88,7 +81,7 @@ public class Robot extends TimedRobot {
 		// if (/*limelight.isAutomationRunning() || autoClimbMode*/ false) {
 
 		// } else {
-		swerveDrive.runSwerve(driverGamepad, driverGamepadStartButton, driverGamepadBackButton);
+		swerveDrive.runSwerve();
 		beakControl();
 		cargoManipulatorControl();
 		climberController.run();
@@ -103,9 +96,9 @@ public class Robot extends TimedRobot {
 	}
 
 	public void beakControl() {
-		if (manipulatorAButton.get() == true) {
+		if (manipulatorPanelOpenBeak.get()) {
 			beak.open();
-		} else if (manipulatorBButton.get() == true) {
+		} else if (manipulatorPanelCloseBeak.get()) {
 			beak.close();
 		}
 	}
@@ -143,7 +136,7 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setToCurrentPosition();
 			// essentially keeps it steady at wherever we are so that it doesn't fall down
 		}
-
+		//Wheel control for manipulator panel
 		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if this is the right place to get the axis
 		if (cargoWheelsSpeed > 0.2){
 			cargoManipulator.setWheelsIn();
