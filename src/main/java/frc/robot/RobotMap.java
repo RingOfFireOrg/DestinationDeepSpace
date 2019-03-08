@@ -6,17 +6,10 @@ public class RobotMap {
 
 	public static final int DRIVER_GAMEPAD = 0;
 	public static final int MANIPULATOR_GAMEPAD = 1;
-<<<<<<< HEAD
-	public static final int MANIPULATOR_PANEL = 2; //??
-	public static final int LEFT_DRIVE_JOYSTICK = 3;
-	public static final int RIGHT_DRIVE_JOYSTICK = 4;
-	public static final int CLIMBER_JOYSTICK = 5;
-=======
 	// public static final int CLIMBER_JOYSTICK = 2;
 	public static final int MANIPULATOR_PANEL = 3; // ??
 	public static final int LEFT_DRIVE_JOYSTICK = 4;
 	public static final int RIGHT_DRIVE_JOYSTICK = 5;
->>>>>>> 52e5921757472219efe2678c809e53aa5ab13b66
 
 	// Manipulator panel buttons
 	public static final int AUTO_INTAKE_HATCH_BUTTON = 1;
