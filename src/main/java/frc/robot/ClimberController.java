@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 public class ClimberController {
     private XboxController manipulatorController = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
     public Joystick manipulatorPanel = new Joystick(RobotMap.MANIPULATOR_PANEL);
+    public Joystick leftDriveJoystick = new Joystick(RobotMap.LEFT_DRIVE_JOYSTICK);
     private JoystickButton startAutoClimbGamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
     private JoystickButton stopAutoClimbGamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
     private JoystickButton startAutoClimbBtn = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
     private JoystickButton startAutoClimbBtn2 = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON); //should find better names for these 2 buttons
     private JoystickButton climbModeToggle = new JoystickButton(manipulatorPanel, RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
+    private JoystickButton enableClimbButton = new JoystickButton(leftDriveJoystick, RobotMap.CLIMBER_ENABLE_BUTTON);
     private Climber climber = new Climber();
     private AutoClimb autoClimb;
 
@@ -43,7 +45,7 @@ public class ClimberController {
     public void run() {
         climber.printHallEffectState();
 
-        climbModeTrue = climbModeToggle.get();
+        climbModeTrue = climbModeToggle.get() || enableClimbButton.get();
 
         if (startAutoClimbTrue()) {
             autoClimb.autoClimbRestart();

@@ -6,10 +6,9 @@ public class RobotMap {
 
 	public static final int DRIVER_GAMEPAD = 0;
 	public static final int MANIPULATOR_GAMEPAD = 1;
-	// public static final int CLIMBER_JOYSTICK = 2;
-	public static final int MANIPULATOR_PANEL = 3; // ??
-	public static final int LEFT_DRIVE_JOYSTICK = 4;
-	public static final int RIGHT_DRIVE_JOYSTICK = 5;
+	public static final int MANIPULATOR_PANEL = 2; 
+	public static final int LEFT_DRIVE_JOYSTICK = 3;
+	public static final int RIGHT_DRIVE_JOYSTICK = 4;
 
 	// Manipulator panel buttons
 	public static final int AUTO_INTAKE_HATCH_BUTTON = 1;
@@ -25,6 +24,7 @@ public class RobotMap {
 	public static final int CARGO_ARM_CARGO_SHIP_POSITION_BUTTON = 11;
 	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 12;
 	public static final int CLIMBING_MODE_PROTECTED_SWITCH = 16;
+	public static final int CLIMBER_ENABLE_BUTTON = 7;
 
 	public static final int INTAKE_WHEELS_SPEED_JOYSTICK_AXIS = 1;
 
