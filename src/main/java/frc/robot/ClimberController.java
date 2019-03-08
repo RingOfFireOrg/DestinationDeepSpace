@@ -14,32 +14,40 @@ import edu.wpi.first.wpilibj.GenericHID;
 public class ClimberController {
     private XboxController manipulatorController = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
     public Joystick manipulatorPanel = new Joystick(RobotMap.MANIPULATOR_PANEL);
+    private JoystickButton startAutoClimbGamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
+    private JoystickButton stopAutoClimbGamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
     private JoystickButton startAutoClimbBtn = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
     private JoystickButton startAutoClimbBtn2 = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON); //should find better names for these 2 buttons
     private JoystickButton climbModeToggle = new JoystickButton(manipulatorPanel, RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
     private Climber climber = new Climber();
     private AutoClimb autoClimb;
 
+    private boolean climbModeTrue;
+
+
     public ClimberController(SwerveDrive swerveDrive, AHRS ahrs) {
         autoClimb = new AutoClimb(climber, swerveDrive, ahrs);
     }
 
     private boolean startAutoClimbTrue(){ //should find a better name
-        if (startAutoClimbBtn.get() && startAutoClimbBtn2.get()){
-            return false;
+        if (climbModeTrue && startAutoClimbBtn.get() && startAutoClimbBtn2.get()){
+            return true;
+        } else if (climbModeTrue && startAutoClimbGamepadBtn.get()) {
+            return true;
         } else {
             return false;
         }
         
     }
 
-    boolean climbModeTrue = climbModeToggle.get();
     public void run() {
         climber.printHallEffectState();
 
-        if (startAutoClimbTrue() && climbModeTrue) {
+        climbModeTrue = climbModeToggle.get();
+
+        if (startAutoClimbTrue()) {
             autoClimb.autoClimbRestart();
-        } else if (climbModeTrue == false) {
+        } else if (!climbModeTrue || stopAutoClimbGamepadBtn.get()) {
             autoClimb.stopAutoClimb();
         }
 
@@ -57,26 +65,29 @@ public class ClimberController {
         double retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
         double retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
         
+        if (!climbModeTrue){
+            return;
+        }
         
-        if (climberDrive > 0.25 && climbModeTrue) {
+        if (climberDrive > 0.25) {
             climber.driveReverse();
-        } else if (climberDrive < -0.25 && climbModeTrue) {
+        } else if (climberDrive < -0.25) {
             climber.driveForward();
         } else {
             climber.stopDriving();
         }
 
-        if (extendFrontBtn && climbModeTrue) {
+        if (extendFrontBtn) {
             climber.extendManual(FRONT);
-        } else if (retractFrontBtn > 0.5 && climbModeTrue) {
+        } else if (retractFrontBtn > 0.5) {
             climber.retractManual(FRONT);
         } else {
             climber.stopClimbing(FRONT);
         }
 
-        if (extendBackBtn && climbModeTrue) {
+        if (extendBackBtn) {
             climber.extendManual(BACK);
-        } else if (retractBackBtn > 0.5 && climbModeTrue) {
+        } else if (retractBackBtn > 0.5) {
             climber.retractManual(BACK);
         } else {
             climber.stopClimbing(BACK);

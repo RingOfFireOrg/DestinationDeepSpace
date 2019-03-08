@@ -71,13 +71,14 @@ public class AutoClimb {
         
         //set cargo manipulator arm out of way of climber and get ready to climb
         case 0: 
-            cargoManipulator.setToCustomPosition(cargoManipulator.OUT_OF_CLIMBER_WAY_POSITION);
+            cargoManipulator.setToCustomPosition(cargoManipulator.OUT_OF_CLIMBER_WAY_DEGREES);
             timer.start();
             step++;                
             break;
 
         // drive back a little 
         case 1:
+            cargoManipulator.setToCurrentPosition();
             if (timer.get() < 0.05) {
                 driveSwerve(-0.5);
             } else {
@@ -88,12 +89,12 @@ public class AutoClimb {
             }
             break;
 
-        // raise front and back legs all the way
+        // extend front and back legs all the way
         case 2:
+            cargoManipulator.setToCurrentPosition();
             robotPitchPID.setError(ahrs.getPitch() - pitchOffset);
             robotPitchPID.update(); 
-            //climber.extendLevel(robotPitchPID.getOutput());
-            climber.extend();
+            climber.extendLevel(robotPitchPID.getOutput());
 
             if(climber.isFullyExtended()) {
                 resetLimitSwitches();
@@ -103,6 +104,7 @@ public class AutoClimb {
 
         // drive forward until front of robot is on platform and front leg hits platform
         case 3:
+            cargoManipulator.setToCurrentPosition();
             if (isFrontLegTouching()) { 
                 climber.stopDriving();
                 step++;
@@ -115,6 +117,7 @@ public class AutoClimb {
 
         //back up for 1/2 a second
         case 4:
+            cargoManipulator.setToCurrentPosition();
             if (timer.get() < 0.05) {
                 climber.driveReverse();
             } else {
@@ -123,8 +126,9 @@ public class AutoClimb {
             }
             break;
 
-        // lift front leg up all the way
-        case 5:    
+        // retract front leg all the way
+        case 5:  
+            cargoManipulator.setToCurrentPosition();
             if(climber.isFullyRetracted(FRONT)) {
                 resetLimitSwitches();
                 step++;
@@ -155,7 +159,7 @@ public class AutoClimb {
             }
             break;
 
-        // lift back leg all the way up
+        // retract back leg all the way up
         case 8:   
             if(climber.isFullyRetracted(BACK)) {
                 timer.reset();
