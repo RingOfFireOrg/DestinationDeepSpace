@@ -176,6 +176,7 @@ public class CargoManipulator {
     }
 
     double getEncoderInDegrees() {
+<<<<<<< HEAD
         return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
 
         /*
@@ -200,6 +201,35 @@ public class CargoManipulator {
         // this number is to convert voltage which comes back 0 to 5 to a number from 0
         // to 270 which is what the potentiometer returns. It is subtrated from 180 so
         // that zero is the intake arm being flat
+=======
+       // return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
+        switch (currentEncoderPresence) {
+            case BOTH:
+                if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15 && -leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15) {
+                    return (rightCargoEncoder.getAngle() - leftCargoEncoder.getAngle()) / 2;
+                } else if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15) {
+                    return rightCargoEncoder.getAngle();
+                } else if (leftCargoEncoder.getAngle() < 105 && leftCargoEncoder.getAngle() > -15) {
+                    return -leftCargoEncoder.getAngle();
+                } else {
+                    return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+                }
+            case LEFT:
+                if (-leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15) {
+                    return -leftCargoEncoder.getAngle();
+                }
+                return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+            case RIGHT:
+                if (rightCargoEncoder.getAngle() > 105 && rightCargoEncoder.getAngle() > -15) {
+                    return rightCargoEncoder.getAngle();
+                }
+                return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+            case NONE:
+            return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+            default:
+                return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+        }
+>>>>>>> 1906cff666e927aca2076d9ce339dbe9858ccdfe
     }
 
     public double currentAngle() {
