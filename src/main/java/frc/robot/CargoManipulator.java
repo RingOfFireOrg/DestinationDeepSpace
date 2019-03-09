@@ -201,10 +201,10 @@ public class CargoManipulator {
         // to 270 which is what the potentiometer returns. It is subtrated from 180 so
         // that zero is the intake arm being flat
     }
-    
-     SmartDashboard.putNumber("Cargo Voltage", rightCargoEncoder
-    return(getEncoderInDegrees());
 
-    
+    public double currentAngle() {
+        SmartDashboard.putNumber("CargoEncoder", getEncoderInDegrees());
+        SmartDashboard.putNumber("Cargo Voltage", rightCargoEncoder.getVoltage());
+        return (getEncoderInDegrees());
     }
-} 
+}
