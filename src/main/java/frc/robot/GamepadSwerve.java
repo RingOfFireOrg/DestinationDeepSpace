@@ -90,19 +90,16 @@ public class GamepadSwerve extends SwerveDrive {
 		}
 
 		switch (driveMode) {
-		case 0:
-			// the 0s are temporary replacements for the robot relative joysticks. remember
-			// to find the opposite of the y value
-			translateAndRotate(robotTranslateX, robotTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset,
-					absoluteDirection, fieldTranslateX, fieldTranslateY);
-			break;
+			case 0:
+				//the 0s are temporary replacements for the robot relative joysticks. remember to find the opposite of the y value
+				translateAndRotate(fieldTranslateX, fieldTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset, absoluteDirection, robotTranslateX, robotTranslateY);
+				break;
 
-		case 1:
-			tuningMode();
-			break;
+			case 1:
+				tuningMode();
+				break;
 
-		case 2:
-
+			case 2:
 			break;
 
 		default:

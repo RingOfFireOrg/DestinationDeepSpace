@@ -29,6 +29,7 @@ public class RobotMap {
 	public static final int INTAKE_WHEELS_SPEED_JOYSTICK_AXIS = 1;
 
 	// Manipulator gamepad buttons and axis:
+	public static final int MANIPULATOR_LEFT_STICK_Y_AXIS = 1;
 	public static final int MANIPULATOR_LEFT_TRIGGER_AXIS = 2;
 	public static final int MANIPULATOR_RIGHT_TRIGGER_AXIS = 3;
 
@@ -42,12 +43,13 @@ public class RobotMap {
 	public static final int MANIPULATOR_START_BUTTON_VALUE = 8;
 
 	// Driver Gamepad Buttons axes:
-	public static final int RIGHT_STICK_X_AXIS = 0;
-	public static final int RIGHT_STICK_Y_AXIS = 1;
+	public static final int LEFT_STICK_X_AXIS = 0;
+	public static final int LEFT_STICK_Y_AXIS = 1;
 	public static final int LEFT_TRIGGER_AXIS = 2;
 	public static final int RIGHT_TRIGGER_AXIS = 3;
-	public static final int LEFT_STICK_X_AXIS = 4;
-	public static final int LEFT_STICK_Y_AXIS = 5;
+    public static final int RIGHT_STICK_X_AXIS = 4;
+	public static final int RIGHT_STICK_Y_AXIS = 5;
+
 
 	public static final int TEST_FRONT_LEFT_BUTTON = 0;
 	public static final int TEST_FRONT_RIGHT_BUTTON = 1;

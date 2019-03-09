@@ -61,7 +61,7 @@ public class ClimberController {
     }
 
     private void climbManually() {
-        double climberDrive = manipulatorController.getRawAxis(RobotMap.RIGHT_STICK_Y_AXIS);
+        double climberDrive = manipulatorController.getRawAxis(RobotMap.MANIPULATOR_LEFT_STICK_Y_AXIS);
         boolean extendFrontBtn = manipulatorController.getBumper(GenericHID.Hand.kRight);
         boolean extendBackBtn = manipulatorController.getBumper(GenericHID.Hand.kLeft);
         double retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
