@@ -40,8 +40,7 @@ public class GamepadSwerve extends SwerveDrive {
 		double gamepadFieldTranslateX = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_STICK_X_AXIS));
 		double gamepadFieldTranslateY = squareWithSignReturn(-driveController.getRawAxis(RobotMap.RIGHT_STICK_Y_AXIS));
 		double gamepadAbsoluteDirection = driveController.getPOV();
-		double gamepadUnregTurning = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS)
-				- driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
+		double gamepadUnregTurning = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS) - driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
 
 		double joystickRobotTranslateX = 0;
 		double joystickRobotTranslateY = 0;
@@ -108,7 +107,7 @@ public class GamepadSwerve extends SwerveDrive {
 			break;
 		}
 
-		if (driverGamepadGyroResetButton.get() || joystickGyroResetButton.get()) {
+		if (driverGamepadGyroResetButton.get()/* || joystickGyroResetButton.get()*/) {
 			super.ahrsOffset = ahrs.getAngle();
 			super.driveStraight = false;
 			super.pidDrivingStraight.reset();
