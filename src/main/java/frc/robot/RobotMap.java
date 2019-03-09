@@ -24,7 +24,6 @@ public class RobotMap {
 	public static final int CARGO_ARM_CARGO_SHIP_POSITION_BUTTON = 11;
 	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 12;
 	public static final int CLIMBING_MODE_PROTECTED_SWITCH = 16;
-	public static final int CLIMBER_ENABLE_BUTTON = 7;
 
 	public static final int INTAKE_WHEELS_SPEED_JOYSTICK_AXIS = 1;
 
@@ -58,6 +57,14 @@ public class RobotMap {
 	public static final int BACK_BUTTON_VALUE = 7;
 	public static final int START_BUTTON_VALUE = 8;
 
+	//Left Drive Stick Buttons:
+
+	//Right Drive Stick Buttons:
+	public static final int CLIMBER_ENABLE_BUTTON = 7;
+
+
+
+	/*
 	// Left Stick Buttons:
 	public static final int LEFT_TRIGGER = 1;
 	public static final int LEFT_SWERVE_TUNING_BUTTON = 7;
@@ -84,7 +91,7 @@ public class RobotMap {
 	public static final int CLIMBER_RETRACT_BACK = 12;
 	public static final int START_AUTOCLIMB = 1;
 	public static final int STOP_AUTOCLIMB = 2;
-
+*/
 	// Analog Ports
 	// Robot Ports
 	public static final int ENCODER_FRONT_RIGHT = 0;

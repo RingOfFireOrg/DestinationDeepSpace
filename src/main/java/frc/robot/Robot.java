@@ -61,6 +61,14 @@ public class Robot extends TimedRobot {
 			RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
 	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel,
 			RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelAutoCargoShip = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_CARGOSHIP_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelCargoUp = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_UP_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoMidRocket = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoLowRocket = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoCargoShip = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoIntakePosition = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelClimbingSwitch = new JoystickButton(manipulatorPanel, RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
 
 	AHRS ahrs;
 
