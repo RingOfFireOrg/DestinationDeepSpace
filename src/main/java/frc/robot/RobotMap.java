@@ -2,8 +2,8 @@ package frc.robot;
 
 public class RobotMap {
 	// Ports not on robot
-	// Joysticks
 
+	// Joysticks
 	public static final int DRIVER_GAMEPAD = 0;
 	public static final int MANIPULATOR_GAMEPAD = 1;
 	public static final int MANIPULATOR_PANEL = 2; 
@@ -64,34 +64,7 @@ public class RobotMap {
 
 
 
-	/*
-	// Left Stick Buttons:
-	public static final int LEFT_TRIGGER = 1;
-	public static final int LEFT_SWERVE_TUNING_BUTTON = 7;
-	public static final int FRONT_RIGHT_BUTTON = 6;
-	public static final int FRONT_LEFT_BUTTON = 5;
-	public static final int BACK_RIGHT_BUTTON = 4;
-	public static final int BACK_LEFT_BUTTON = 3;
 
-	// Right Stick Buttons:
-	public static final int RIGHT_TRIGGER = 1;
-
-	// Left Manipulator Stick Buttons:
-	public static final int LEFT_MANIPULATOR_TRIGGER = 1;
-	public static final int LEFT_MANIPULATOR_THUMB_BUTTON = 2;
-
-	// Right Manipulator Stick Buttons:
-	public static final int RIGHT_MANIPULATOR_TRIGGER = 1;
-	public static final int RIGHT_MANIPULATOR_THUMB_BUTTON = 2;
-
-	// Climber Joystick Buttons:
-	public static final int CLIMBER_EXTEND_FRONT = 9;
-	public static final int CLIMBER_EXTEND_BACK = 10;
-	public static final int CLIMBER_RETRACT_FRONT = 11;
-	public static final int CLIMBER_RETRACT_BACK = 12;
-	public static final int START_AUTOCLIMB = 1;
-	public static final int STOP_AUTOCLIMB = 2;
-*/
 	// Analog Ports
 	// Robot Ports
 	public static final int ENCODER_FRONT_RIGHT = 0;
@@ -146,11 +119,13 @@ public class RobotMap {
 	public static final int STEER_BACK_LEFT_MOTOR = 4;
 	public static final int STEER_BACK_RIGHT_MOTOR = 2;
 
+
+
 	// encoder zero values
-	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 29;
+	public static final int ENCODER_ZERO_VALUE_FRONT_RIGHT = 209;
 	public static final int ENCODER_ZERO_VALUE_FRONT_LEFT = 320;
 	public static final int ENCODER_ZERO_VALUE_BACK_LEFT = 43;
-	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 198;
+	public static final int ENCODER_ZERO_VALUE_BACK_RIGHT = 18;
 
 	// Motor Speeds
 	public static final double SPEED_DEFAULT_TEST = 0.75;
