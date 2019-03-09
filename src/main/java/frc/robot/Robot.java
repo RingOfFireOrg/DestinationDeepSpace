@@ -105,6 +105,7 @@ public class Robot extends TimedRobot {
 		beakControl();
 		cargoManipulatorControl();
 		climberController.run();
+		joystickSwerve();
 		// }
 	}
 
