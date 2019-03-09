@@ -107,12 +107,15 @@ public class Robot extends TimedRobot {
 		// if (/*limelight.isAutomationRunning() || autoClimbMode*/ false) {
 
 		// } else {
-		swerveDrive.runSwerve();
-		beakControl();
-		cargoManipulatorControl();
-		climberController.run();
-		swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
+		
+		// swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
 		// }
+		drivePeriodic();
+	}
+
+	@Override
+	public void autonomousPeriodic() {
+		drivePeriodic();
 	}
 
 	@Override
@@ -170,18 +173,24 @@ public class Robot extends TimedRobot {
 			}
 		}
 
-	// Wheel control for manipulator panel
-	double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
-															// this is the right place to get the axis
-	if(cargoWheelsSpeed>0.2||manipulatorXButton.get())
-	{
-		cargoManipulator.setWheelsIn();
-	}else if(cargoWheelsSpeed<-0.2||manipulatorYButton.get())
-	{
-		cargoManipulator.setWheelsOut();
-	}else
-	{
-		cargoManipulator.setWheelsOff();
+		// Wheel control for manipulator panel
+		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
+																	// this is the right place to get the axis
+		if (cargoWheelsSpeed > 0.2 || manipulatorXButton.get()) {
+			cargoManipulator.setWheelsIn();
+		} else if (cargoWheelsSpeed < -0.2 || manipulatorYButton.get()) {
+			cargoManipulator.setWheelsOut();
+		} else {
+			cargoManipulator.setWheelsOff();
+		}
+
 	}
 
-}}
+	public void drivePeriodic(){
+		swerveDrive.runSwerve();
+		beakControl();
+		cargoManipulatorControl();
+		climberController.run();
+	}
+
+}

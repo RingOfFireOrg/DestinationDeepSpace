@@ -111,6 +111,9 @@ public class CargoManipulator {
         case LOWER_ROCKET:
             setToLowerRocketPosition();
             break;
+        case MID_ROCKET:
+            setToMidRocketPosition();
+            break;
         case CARGO_SHIP:
             setToCargoShipPosition();
             break;
