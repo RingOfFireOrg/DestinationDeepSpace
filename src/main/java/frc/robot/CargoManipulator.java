@@ -188,22 +188,22 @@ public class CargoManipulator {
                 } else if (leftCargoEncoder.getAngle() < 105 && leftCargoEncoder.getAngle() > -15) {
                     return -leftCargoEncoder.getAngle();
                 } else {
-                    return -6;
+                    return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
                 }
             case LEFT:
                 if (-leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15) {
                     return -leftCargoEncoder.getAngle();
                 }
-                return -6;
+                return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
             case RIGHT:
                 if (rightCargoEncoder.getAngle() > 105 && rightCargoEncoder.getAngle() > -15) {
                     return rightCargoEncoder.getAngle();
                 }
-                return -6;
+                return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
             case NONE:
-            return -6;
+            return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
             default:
-                return -6;
+                return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
         }
         // this number is to convert voltage which comes back 0 to 5 to a number from 0
         // to 270 which is what the potentiometer returns. It is subtrated from 180 so

@@ -162,4 +162,7 @@ public class RobotMap {
 
 	// arm speed on cargo manipulator
 	public static final double ARM_RAW_SPEED = 0.4;
+
+	//null value return in cargo manipulator for dual encoder failure
+	public static final double FAILURE_RETURN_ENCODER_VALUE = -6;
 }
