@@ -18,7 +18,7 @@ public class GamepadSwerve extends SwerveDrive {
 	private JoystickButton joystickRobotFrontHatchButton;
 	private JoystickButton joystickGyroResetButton;
 
-    public GamepadSwerve(AHRS ahrs, XboxController driveController, Joystick leftDriveStick, Joystick rightDriveStick) {
+	public GamepadSwerve(AHRS ahrs, XboxController driveController, Joystick leftDriveStick, Joystick rightDriveStick) {
 		super(ahrs);
 		this.driveController = driveController;
 		this.leftDriveStick = leftDriveStick;
@@ -27,11 +27,11 @@ public class GamepadSwerve extends SwerveDrive {
 		driverGamepadTuningActivation = new JoystickButton(driveController, RobotMap.BACK_BUTTON_VALUE);
 		joystickRobotFrontCargoButton = new JoystickButton(leftDriveStick, 6);
 		joystickRobotFrontHatchButton = new JoystickButton(leftDriveStick, 4);
-		joystickGyroResetButton = new JoystickButton(rightDriveStick, 7);
-    }
+		joystickGyroResetButton = new JoystickButton(rightDriveStick, 12);
+	}
 
-    public void runSwerve() {
-		//this MUST be the first step so automation overrides everything else
+	public void runSwerve() {
+		// this MUST be the first step so automation overrides everything else
 
 		int driveMode = 0;
 
@@ -40,16 +40,18 @@ public class GamepadSwerve extends SwerveDrive {
 		double gamepadFieldTranslateX = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_STICK_X_AXIS));
 		double gamepadFieldTranslateY = squareWithSignReturn(-driveController.getRawAxis(RobotMap.RIGHT_STICK_Y_AXIS));
 		double gamepadAbsoluteDirection = driveController.getPOV();
-		double gamepadUnregTurning = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS) - driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
+		double gamepadUnregTurning = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS)
+				- driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
 
-		double joystickRobotTranslateX = squareWithSignReturn(0);
-		double joystickRobotTranslateY = squareWithSignReturn(0);
+		double joystickRobotTranslateX = 0;
+		double joystickRobotTranslateY = 0;
 		double joystickFieldTranslateX = squareWithSignReturn(leftDriveStick.getX());
 		double joystickFieldTranslateY = squareWithSignReturn(-leftDriveStick.getY());
-		double joystickAbsoluteDirection = rightDriveStick.getDirectionDegrees();
+		double joystickAbsoluteDirection = -1/* rightDriveStick.getDirectionDegrees() */;
 		double joystickUnregTurning = squareWithSignReturn(rightDriveStick.getTwist());
 
-		if (joystickAbsoluteDirection < 0) joystickAbsoluteDirection += 360;
+		if (joystickAbsoluteDirection < 0)
+			joystickAbsoluteDirection += 360;
 
 		double robotTranslateX;
 		double robotTranslateY;
@@ -59,7 +61,7 @@ public class GamepadSwerve extends SwerveDrive {
 		double unregulatedTurning;
 
 		if (rightDriveStick.getRawAxis(3) > 0) {
-		    robotTranslateX = joystickRobotTranslateX;
+			robotTranslateX = joystickRobotTranslateX;
 			robotTranslateY = joystickRobotTranslateY;
 			fieldTranslateX = joystickFieldTranslateX;
 			fieldTranslateY = joystickFieldTranslateY;
@@ -76,43 +78,45 @@ public class GamepadSwerve extends SwerveDrive {
 			SmartDashboard.putBoolean("JoystickDriveEnabled", false);
 		}
 
-		if(driveController.getYButton() || joystickRobotFrontCargoButton.get()) {
+		if (driveController.getYButton() || joystickRobotFrontCargoButton.get()) {
 			setRobotFrontToCargo();
-		} else if(driveController.getBButton() || joystickRobotFrontHatchButton.get()) {
+		} else if (driveController.getBButton() || joystickRobotFrontHatchButton.get()) {
 			setRobotFrontToHatch();
 		}
 		if (driverGamepadTuningActivation.get() == true) {
 			driveMode = 1;
 		} else {
 			driveMode = 0;
-		} 
+		}
 
 		switch (driveMode) {
-			case 0:
-				//the 0s are temporary replacements for the robot relative joysticks. remember to find the opposite of the y value
-				translateAndRotate(robotTranslateX, robotTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset, absoluteDirection, fieldTranslateX, fieldTranslateY);
-				break;
+		case 0:
+			// the 0s are temporary replacements for the robot relative joysticks. remember
+			// to find the opposite of the y value
+			translateAndRotate(robotTranslateX, robotTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset,
+					absoluteDirection, fieldTranslateX, fieldTranslateY);
+			break;
 
-			case 1:
-				tuningMode();
-				break;
+		case 1:
+			tuningMode();
+			break;
 
-			case 2:
+		case 2:
 
-				break;
-		
-			default:
-				break;
+			break;
+
+		default:
+			break;
 		}
-		
+
 		if (driverGamepadGyroResetButton.get() || joystickGyroResetButton.get()) {
 			super.ahrsOffset = ahrs.getAngle();
 			super.driveStraight = false;
 			super.pidDrivingStraight.reset();
 		}
-			  
-        SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
-       // SmartDashboard.putNumber("POV", driveController.getPOV());
-		
+
+		SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
+		// SmartDashboard.putNumber("POV", driveController.getPOV());
+
 	}
 }
