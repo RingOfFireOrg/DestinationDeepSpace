@@ -205,9 +205,6 @@ public class CargoManipulator {
             default:
                 return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
         }
-        // this number is to convert voltage which comes back 0 to 5 to a number from 0
-        // to 270 which is what the potentiometer returns. It is subtrated from 180 so
-        // that zero is the intake arm being flat
     }
 
     public double currentAngle() {
