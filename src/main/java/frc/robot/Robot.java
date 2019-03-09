@@ -34,21 +34,33 @@ public class Robot extends TimedRobot {
 	public XboxController driverGamepad = new XboxController(RobotMap.DRIVER_GAMEPAD);
 	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
 
-	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_A_BUTTON_VALUE);
-	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_B_BUTTON_VALUE);
-	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_X_BUTTON_VALUE);
-	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
-	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad,RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
-	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
-	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
-	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
-	
-	public JoystickButton manipulatorPanelAutoIntakeHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_INTAKE_HATCH_BUTTON);
-	public JoystickButton manipulatorPanelAutoScoreHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_SCORE_HATCH_BUTTON);
+	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_A_BUTTON_VALUE);
+	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_B_BUTTON_VALUE);
+	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_X_BUTTON_VALUE);
+	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
+	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
+	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
+	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_START_BUTTON_VALUE);
+	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
+
+	public JoystickButton manipulatorPanelAutoIntakeHatch = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_INTAKE_HATCH_BUTTON);
+	public JoystickButton manipulatorPanelAutoScoreHatch = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_SCORE_HATCH_BUTTON);
 	public JoystickButton manipulatorPanelOpenBeak = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
 	public JoystickButton manipulatorPanelCloseBeak = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON);
-	public JoystickButton manipulatorPanelAutoMidRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
-	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON); 
+	public JoystickButton manipulatorPanelAutoMidRocket = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON);
 
 	AHRS ahrs;
 
@@ -96,21 +108,20 @@ public class Robot extends TimedRobot {
 	}
 
 	public void beakControl() {
-		if (manipulatorPanelOpenBeak.get()) {
+		if (manipulatorPanelOpenBeak.get() || manipulatorAButton.get()) {
 			beak.open();
-		} else if (manipulatorPanelCloseBeak.get()) {
+		} else if (manipulatorPanelCloseBeak.get() || manipulatorBButton.get()) {
 			beak.close();
 		}
 	}
 
 	public void cargoManipulatorControl() {
 		/*
-		if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) > 0.3) {
-			cargoManipulator.setToIntakePosition();
-		} else if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) > 0.3) {
-			cargoManipulator.setToUpPosition();
-		}
-		*/
+		 * if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) >
+		 * 0.3) { cargoManipulator.setToIntakePosition(); } else if
+		 * (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) >
+		 * 0.3) { cargoManipulator.setToUpPosition(); }
+		 */
 		// piece below is meant to make the arm go up or down unbounded
 		/*
 		 * else if (manipulatorGamepad.getPOV() == 0) {
@@ -118,12 +129,10 @@ public class Robot extends TimedRobot {
 		 * == 180) { cargoManipulator.overrideTarget(1); }
 		 */
 		/*
-		 else {
-			cargoManipulator.setWheelsOff();
-		}
-		*/
+		 * else { cargoManipulator.setWheelsOff(); }
+		 */
 
-		//eventually this needs a case for middle rocket
+		// eventually this needs a case for middle rocket
 		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 			cargoManipulator.setToUpPosition();
 		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
@@ -132,32 +141,33 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setToCargoShipPosition();
 		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
 			cargoManipulator.setToLowerRocketPosition();
-		}else {
+		} else {
 			cargoManipulator.setToCurrentPosition();
 			// essentially keeps it steady at wherever we are so that it doesn't fall down
 		}
-		//Wheel control for manipulator panel
-		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if this is the right place to get the axis
-		if (cargoWheelsSpeed > 0.2){
+		// Wheel control for manipulator panel
+		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
+																	// this is the right place to get the axis
+		if (cargoWheelsSpeed > 0.2) {
 			cargoManipulator.setWheelsIn();
-		} else if (cargoWheelsSpeed < -0.2){
+		} else if (cargoWheelsSpeed < -0.2) {
 			cargoManipulator.setWheelsOut();
 		} else {
 			cargoManipulator.setWheelsOff();
 		}
-	
+
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
-		if(cargoArmSpeed > 0.2){
+		if (cargoArmSpeed > 0.2) {
 			cargoManipulator.moveArmUp(cargoArmSpeed);
-		} else if (cargoArmSpeed < -0.2){
+		} else if (cargoArmSpeed < -0.2) {
 			cargoManipulator.moveArmDown(-cargoArmSpeed);
 		} else {
 			cargoManipulator.stopArm();
 		}
 
-		if(manipulatorXButton.get()){
+		if (manipulatorXButton.get()) {
 			cargoManipulator.setWheelsIn();
-		}else if(manipulatorYButton.get()){
+		} else if (manipulatorYButton.get()) {
 			cargoManipulator.setWheelsOut();
 		} else {
 			cargoManipulator.setWheelsOff();
