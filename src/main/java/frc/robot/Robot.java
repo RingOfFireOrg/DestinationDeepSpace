@@ -34,28 +34,47 @@ public class Robot extends TimedRobot {
 	public XboxController driverGamepad = new XboxController(RobotMap.DRIVER_GAMEPAD);
 	public XboxController manipulatorGamepad = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
 
-	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_A_BUTTON_VALUE);
-	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_B_BUTTON_VALUE);
-	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_X_BUTTON_VALUE);
-	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
-	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
-	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
-	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
-	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
+	public JoystickButton manipulatorAButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_A_BUTTON_VALUE);
+	public JoystickButton manipulatorBButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_B_BUTTON_VALUE);
+	public JoystickButton manipulatorXButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_X_BUTTON_VALUE);
+	public JoystickButton manipulatorYButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_Y_BUTTON_VALUE);
+	public JoystickButton manipulatorLeftBumper = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE);
+	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
+	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_START_BUTTON_VALUE);
+	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad,
+			RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
 
-	public JoystickButton manipulatorPanelAutoIntakeHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_INTAKE_HATCH_BUTTON);
-	public JoystickButton manipulatorPanelAutoScoreHatch = new JoystickButton(manipulatorPanel, RobotMap.AUTO_SCORE_HATCH_BUTTON);
+	public JoystickButton manipulatorPanelAutoIntakeHatch = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_INTAKE_HATCH_BUTTON);
+	public JoystickButton manipulatorPanelAutoScoreHatch = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_SCORE_HATCH_BUTTON);
 	public JoystickButton manipulatorPanelOpenBeak = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
 	public JoystickButton manipulatorPanelCloseBeak = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON);
-	public JoystickButton manipulatorPanelAutoMidRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
-	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel, RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON);
-	public JoystickButton manipulatorPanelAutoCargoShip = new JoystickButton(manipulatorPanel, RobotMap.AUTO_CARGOSHIP_CARGO_SCORE_BUTTON);
-	public JoystickButton manipulatorPanelCargoUp = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_UP_POSITION_BUTTON);
-	public JoystickButton manipulatorPanelCargoMidRocket = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON);
-	public JoystickButton manipulatorPanelCargoLowRocket = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON);
-	public JoystickButton manipulatorPanelCargoCargoShip = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON);
-	public JoystickButton manipulatorPanelCargoIntakePosition = new JoystickButton(manipulatorPanel, RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON);
-	public JoystickButton manipulatorPanelClimbingSwitch = new JoystickButton(manipulatorPanel, RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
+	public JoystickButton manipulatorPanelAutoMidRocket = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelAutoCargoShip = new JoystickButton(manipulatorPanel,
+			RobotMap.AUTO_CARGOSHIP_CARGO_SCORE_BUTTON);
+	public JoystickButton manipulatorPanelCargoUp = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_ARM_UP_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoMidRocket = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoLowRocket = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoCargoShip = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelCargoIntakePosition = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON);
+	public JoystickButton manipulatorPanelClimbingSwitch = new JoystickButton(manipulatorPanel,
+			RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
 
 	AHRS ahrs;
 
@@ -92,7 +111,7 @@ public class Robot extends TimedRobot {
 		beakControl();
 		cargoManipulatorControl();
 		climberController.run();
-		joystickSwerve();
+		swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
 		// }
 	}
 
@@ -171,8 +190,4 @@ public class Robot extends TimedRobot {
 	}
 
 	SwerveDrive swerve = SwerveDrive.getInstance(ahrs);
-
-	public void joystickSwerve(){
-		swerve.translateAndRotate(rightDriveJoystick.getX(), rightDriveJoystick.getY(), leftDriveJoystick.getTwist(), 0, 0, 0, 0);
-	}
 }

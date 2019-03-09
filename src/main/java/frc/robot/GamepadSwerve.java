@@ -40,7 +40,8 @@ public class GamepadSwerve extends SwerveDrive {
 		double gamepadFieldTranslateX = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_STICK_X_AXIS));
 		double gamepadFieldTranslateY = squareWithSignReturn(-driveController.getRawAxis(RobotMap.RIGHT_STICK_Y_AXIS));
 		double gamepadAbsoluteDirection = driveController.getPOV();
-		double gamepadUnregTurning = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS) - driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
+		double gamepadUnregTurning = squareWithSignReturn(driveController.getRawAxis(RobotMap.RIGHT_TRIGGER_AXIS)
+				- driveController.getRawAxis(RobotMap.LEFT_TRIGGER_AXIS));
 
 		double joystickRobotTranslateX = 0;
 		double joystickRobotTranslateY = 0;
@@ -49,7 +50,9 @@ public class GamepadSwerve extends SwerveDrive {
 		double joystickAbsoluteDirection = rightDriveStick.getDirectionDegrees();
 		double joystickUnregTurning = squareWithSignReturn(rightDriveStick.getTwist());
 
-		if (joystickAbsoluteDirection < 0) {joystickAbsoluteDirection += 360;}
+		if (joystickAbsoluteDirection < 0) {
+			joystickAbsoluteDirection += 360;
+		}
 		if (leftDriveStick.getMagnitude() < RobotMap.ABSOLUTE_ROTATION_DEADZONE) {
 			joystickAbsoluteDirection = -1;
 		}
@@ -91,23 +94,25 @@ public class GamepadSwerve extends SwerveDrive {
 		}
 
 		switch (driveMode) {
-			case 0:
-				//the 0s are temporary replacements for the robot relative joysticks. remember to find the opposite of the y value
-				translateAndRotate(fieldTranslateX, fieldTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset, absoluteDirection, robotTranslateX, robotTranslateY);
-				break;
+		case 0:
+			// the 0s are temporary replacements for the robot relative joysticks. remember
+			// to find the opposite of the y value
+			translateAndRotate(fieldTranslateX, fieldTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset,
+					absoluteDirection, robotTranslateX, robotTranslateY);
+			break;
 
-			case 1:
-				tuningMode();
-				break;
+		case 1:
+			tuningMode();
+			break;
 
-			case 2:
+		case 2:
 			break;
 
 		default:
 			break;
 		}
 
-		if (driverGamepadGyroResetButton.get()/* || joystickGyroResetButton.get()*/) {
+		if (driverGamepadGyroResetButton.get()/* || joystickGyroResetButton.get() */) {
 			super.ahrsOffset = ahrs.getAngle();
 			super.driveStraight = false;
 			super.pidDrivingStraight.reset();
@@ -116,5 +121,10 @@ public class GamepadSwerve extends SwerveDrive {
 		SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
 		// SmartDashboard.putNumber("POV", driveController.getPOV());
 
+	}
+
+	public void joystickSwerve(Joystick rightDriveJoystick, Joystick leftDriveJoystick) {
+		translateAndRotate(rightDriveJoystick.getX(), rightDriveJoystick.getY(), leftDriveJoystick.getTwist(),
+				ahrs.getAngle() - ahrsOffset, 0, 0, 0);
 	}
 }

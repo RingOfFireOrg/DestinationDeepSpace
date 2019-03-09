@@ -146,8 +146,8 @@ public class SwerveDrive {
 			pidDrivingStraight.setError(gyroValueUnprocessed - translationAngle);
 			pidDrivingStraight.update();
 			rotationMagnitude = -pidDrivingStraight.getOutput();
-			//SmartDashboard.putNumber("translationAngle", translationAngle);
-			//SmartDashboard.putNumber("DSEC - ", -pidDrivingStraight.getOutput());
+			// SmartDashboard.putNumber("translationAngle", translationAngle);
+			// SmartDashboard.putNumber("DSEC - ", -pidDrivingStraight.getOutput());
 		} else {
 			rotationMagnitude = 0;
 		}
@@ -156,7 +156,7 @@ public class SwerveDrive {
 		if (rotationMagnitude < -1)
 			rotationMagnitude = -1;
 
-		//SmartDashboard.putNumber("gyroRate", ahrs.getRate());
+		// SmartDashboard.putNumber("gyroRate", ahrs.getRate());
 
 		// Vector math to combine the translation and the rotation values
 		// adding the various cartesian points for the end of the vectors
@@ -252,15 +252,15 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 
-		//SmartDashboard.putNumber("FR Speed", wheelSpeed[0]);
-		//SmartDashboard.putNumber("FL Speed", wheelSpeed[1]);
-		//SmartDashboard.putNumber("BL Speed", wheelSpeed[2]);
-		//SmartDashboard.putNumber("BR Speed", wheelSpeed[3]);
+		// SmartDashboard.putNumber("FR Speed", wheelSpeed[0]);
+		// SmartDashboard.putNumber("FL Speed", wheelSpeed[1]);
+		// SmartDashboard.putNumber("BL Speed", wheelSpeed[2]);
+		// SmartDashboard.putNumber("BR Speed", wheelSpeed[3]);
 
-		//SmartDashboard.putNumber("FR Angle", wheelAngle[0]);
-		//SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
-		//SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
-		//SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
+		// SmartDashboard.putNumber("FR Angle", wheelAngle[0]);
+		// SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
+		// SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
+		// SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
 
 		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
 	}
@@ -299,10 +299,14 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 
-		//SmartDashboard.putNumber("Corrected angle FR", frontRight.convertToRobotRelative(frontRight.getAngle()));
-		//SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
-		//SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
-		//SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle FR",
+		// frontRight.convertToRobotRelative(frontRight.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle FL",
+		// frontLeft.convertToRobotRelative(frontLeft.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle BR",
+		// backRight.convertToRobotRelative(backRight.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle BL",
+		// backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
 	void tuningMode() {
@@ -392,10 +396,14 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 
-		//SmartDashboard.putNumber("Corrected angle FR", frontRight.convertToRobotRelative(frontRight.getAngle()));
-		//SmartDashboard.putNumber("Corrected angle FL", frontLeft.convertToRobotRelative(frontLeft.getAngle()));
-		//SmartDashboard.putNumber("Corrected angle BR", backRight.convertToRobotRelative(backRight.getAngle()));
-		//SmartDashboard.putNumber("Corrected angle BL", backLeft.convertToRobotRelative(backLeft.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle FR",
+		// frontRight.convertToRobotRelative(frontRight.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle FL",
+		// frontLeft.convertToRobotRelative(frontLeft.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle BR",
+		// backRight.convertToRobotRelative(backRight.getAngle()));
+		// SmartDashboard.putNumber("Corrected angle BL",
+		// backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
 	void testSwerveModule(boolean isFront, boolean isLeft, double driveSpeed, double steerSpeed) {
