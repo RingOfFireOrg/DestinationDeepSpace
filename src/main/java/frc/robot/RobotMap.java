@@ -58,9 +58,12 @@ public class RobotMap {
 	public static final int START_BUTTON_VALUE = 8;
 
 	//Left Drive Stick Buttons:
+	public static final int JOYSTICK_ROBOT_FRONT_SET_CARGO = 6;
+	public static final int JOYSTICK_ROBOT_FRONT_SET_HATCH = 4;
 
 	//Right Drive Stick Buttons:
 	public static final int CLIMBER_ENABLE_BUTTON = 7;
+	public static final int JOYSTICK_RESET_GYRO_BUTTON = 12;
 
 
 
