@@ -182,4 +182,9 @@ public class Robot extends TimedRobot {
 		}
 	}
 
+	SwerveDrive swerve = SwerveDrive.getInstance(ahrs);
+
+	public void joystickSwerve(){
+		swerve.translateAndRotate(rightDriveJoystick.getX(), rightDriveJoystick.getY(), leftDriveJoystick.getTwist(), 0, 0, 0, 0);
+	}
 }
