@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
 		ahrs.reset();
 
 		swerveDrive = new GamepadSwerve(ahrs, driverGamepad, leftDriveJoystick, rightDriveJoystick);
-		climberController = new ClimberController(swerveDrive, ahrs);
+		climberController = new ClimberController(swerveDrive, ahrs, cargoManipulator);
 		SmartDashboard.putNumber("Version #", 5);
 	}
 
@@ -147,47 +147,41 @@ public class Robot extends TimedRobot {
 		 * else { cargoManipulator.setWheelsOff(); }
 		 */
 
-		// eventually this needs a case for middle rocket
-		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
-			cargoManipulator.setToUpPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
-			cargoManipulator.setToIntakePosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
-			cargoManipulator.setToCargoShipPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
-			cargoManipulator.setToLowerRocketPosition();
-		} else {
-			cargoManipulator.setToCurrentPosition();
-			// essentially keeps it steady at wherever we are so that it doesn't fall down
-		}
-		// Wheel control for manipulator panel
-		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
-																	// this is the right place to get the axis
-		if (cargoWheelsSpeed > 0.2) {
-			cargoManipulator.setWheelsIn();
-		} else if (cargoWheelsSpeed < -0.2) {
-			cargoManipulator.setWheelsOut();
-		} else {
-			cargoManipulator.setWheelsOff();
-		}
-
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
 		if (cargoArmSpeed > 0.2) {
 			cargoManipulator.moveArmUp(cargoArmSpeed);
 		} else if (cargoArmSpeed < -0.2) {
 			cargoManipulator.moveArmDown(-cargoArmSpeed);
 		} else {
-			cargoManipulator.stopArm();
+			// eventually this needs a case for middle rocket
+			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
+				cargoManipulator.setToUpPosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
+				cargoManipulator.setToIntakePosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
+				cargoManipulator.setToCargoShipPosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
+				cargoManipulator.setToLowerRocketPosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON)) {
+				cargoManipulator.setToMidRocketPosition();
+			} else {
+				cargoManipulator.setToCurrentPosition();
+				// essentially keeps it steady at wherever we are so that it doesn't fall down
+			}
 		}
 
-		if (manipulatorXButton.get()) {
-			cargoManipulator.setWheelsIn();
-		} else if (manipulatorYButton.get()) {
-			cargoManipulator.setWheelsOut();
-		} else {
-			cargoManipulator.setWheelsOff();
-		}
+	// Wheel control for manipulator panel
+	double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
+															// this is the right place to get the axis
+	if(cargoWheelsSpeed>0.2||manipulatorXButton.get())
+	{
+		cargoManipulator.setWheelsIn();
+	}else if(cargoWheelsSpeed<-0.2||manipulatorYButton.get())
+	{
+		cargoManipulator.setWheelsOut();
+	}else
+	{
+		cargoManipulator.setWheelsOff();
 	}
 
-	SwerveDrive swerve = SwerveDrive.getInstance(ahrs);
-}
+}}

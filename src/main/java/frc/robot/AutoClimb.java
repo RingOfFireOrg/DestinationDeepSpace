@@ -35,10 +35,11 @@ public class AutoClimb {
 
     private boolean doingAutoClimb = false; //false means not done
 
-    public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs) {
+    public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
         this.swerveDrive = swerveDrive;
         this.climber = climber;
         this.ahrs = ahrs;
+        this.cargoManipulator = cargoManipulator;
         timer.reset();
         robotPitchPID = new PID(0.02, 0.00005, 0);
         robotPitchPID.setOutputRange(-1, 1);
@@ -71,7 +72,7 @@ public class AutoClimb {
         
         //set cargo manipulator arm out of way of climber and get ready to climb
         case 0: 
-            cargoManipulator.setToCustomPosition(cargoManipulator.OUT_OF_CLIMBER_WAY_DEGREES);
+            cargoManipulator.setToCargoShipPosition();
             timer.start();
             step++;                
             break;

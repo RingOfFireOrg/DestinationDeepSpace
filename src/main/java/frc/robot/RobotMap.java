@@ -65,9 +65,6 @@ public class RobotMap {
 	public static final int CLIMBER_ENABLE_BUTTON = 7;
 	public static final int JOYSTICK_RESET_GYRO_BUTTON = 12;
 
-
-
-
 	// Analog Ports
 	// Robot Ports
 	public static final int ENCODER_FRONT_RIGHT = 0;

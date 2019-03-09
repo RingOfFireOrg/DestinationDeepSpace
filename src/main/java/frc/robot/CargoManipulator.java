@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoManipulator {
     enum intakePosition {
-        INTAKE, LOWER_ROCKET, CARGO_SHIP, UP, ELSE
+        INTAKE, LOWER_ROCKET, MID_ROCKET, CARGO_SHIP, UP, ELSE
     };
 
     enum wheelState {
@@ -33,11 +33,12 @@ public class CargoManipulator {
 
     private static CargoManipulator cargoManipulator;
 
-    final double INTAKE_POSITION_DEGREES = -6;
-    final double LOWER_ROCKET_POSITION_DEGREES = 24;
-    final double CARGO_SHIP_POSITION_DEGREES = 70;
-    final double UP_POSITION_DEGREES = 90;
-    final double OUT_OF_CLIMBER_WAY_DEGREES = 80;
+    final double INTAKE_POSITION_DEGREES = 15;
+    final double LOWER_ROCKET_POSITION_DEGREES = 45;
+    final double MID_ROCKET_POSITION_DEGREES = 55;
+    final double CARGO_SHIP_POSITION_DEGREES = 91;
+    final double UP_POSITION_DEGREES = 111;
+    final double OUT_OF_CLIMBER_WAY_DEGREES = 101;
     double customTargetAngle = 0;
 
     protected CargoManipulator() {
@@ -85,6 +86,11 @@ public class CargoManipulator {
     public void setToLowerRocketPosition() {
         moveCargoArmToAngle(LOWER_ROCKET_POSITION_DEGREES);
         this.position = intakePosition.LOWER_ROCKET;
+    }
+
+    public void setToMidRocketPosition() {
+        moveCargoArmToAngle(MID_ROCKET_POSITION_DEGREES);
+        this.position = intakePosition.MID_ROCKET;
     }
 
     public void setToCargoShipPosition() {
@@ -155,7 +161,7 @@ public class CargoManipulator {
         }
         armAngleControl.setError(error);
         armAngleControl.update();
-        cargoArmMotor.set(ControlMode.PercentOutput, armAngleControl.getOutput());
+        cargoArmMotor.set(ControlMode.PercentOutput, armAngleControl.getOutput() + 0.2);
         if (Math.abs(error) < 5) {
             atTargetAngle = true;
         } else {

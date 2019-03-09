@@ -27,8 +27,8 @@ public class ClimberController {
     private boolean climbModeTrue;
 
 
-    public ClimberController(SwerveDrive swerveDrive, AHRS ahrs) {
-        autoClimb = new AutoClimb(climber, swerveDrive, ahrs);
+    public ClimberController(SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
+        autoClimb = new AutoClimb(climber, swerveDrive, ahrs, cargoManipulator);
     }
 
     private boolean startAutoClimbTrue(){ //should find a better name
