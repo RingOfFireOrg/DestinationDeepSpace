@@ -80,7 +80,8 @@ public class Climber {
         if (getDriveSpeed(Direction.EXTEND, frontState) == RobotMap.SPEED_DEFAULT_CLIMB) {
             climberFront.set(ControlMode.PercentOutput, RobotMap.SPEED_DEFAULT_CLIMB + difference);
         } else {
-            climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
+            climberFront.set(ControlMode.Percen
+            tOutput, getDriveSpeed(Direction.EXTEND, frontState));
         }
  
         if (getDriveSpeed(Direction.EXTEND, backState) == RobotMap.SPEED_DEFAULT_CLIMB) {
