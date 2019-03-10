@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoManipulator {
     enum intakePosition {
-        INTAKE, LOWER_ROCKET, MID_ROCKET, CARGO_SHIP, UP, ELSE
+        INTAKE, LOWER_ROCKET, MID_ROCKET, CARGO_SHIP, UP, ELSE, MANUAL_MODE
     };
 
     enum wheelState {
@@ -33,12 +33,11 @@ public class CargoManipulator {
 
     private static CargoManipulator cargoManipulator;
 
-    final double INTAKE_POSITION_DEGREES = 15;
-    final double LOWER_ROCKET_POSITION_DEGREES = 45;
-    final double MID_ROCKET_POSITION_DEGREES = 55;
-    final double CARGO_SHIP_POSITION_DEGREES = 91;
-    final double UP_POSITION_DEGREES = 111;
-    final double OUT_OF_CLIMBER_WAY_DEGREES = 101;
+    final double INTAKE_POSITION_DEGREES = -19;
+    final double LOWER_ROCKET_POSITION_DEGREES = 11;
+    final double MID_ROCKET_POSITION_DEGREES = 21;
+    final double CARGO_SHIP_POSITION_DEGREES = 26;
+    final double UP_POSITION_DEGREES = 81;
     double customTargetAngle = 0;
 
     protected CargoManipulator() {
@@ -120,6 +119,9 @@ public class CargoManipulator {
         case UP:
             setToUpPosition();
             break;
+        case MANUAL_MODE:
+            stopArm();
+            break;
         case ELSE:
             setToCustomPosition(customTargetAngle);
             break;
@@ -128,10 +130,12 @@ public class CargoManipulator {
 
     public void moveArmUp(double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, speed);
+        this.position = intakePosition.MANUAL_MODE;
     }
 
     public void moveArmDown(double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, -speed);
+        this.position = intakePosition.MANUAL_MODE;
     }
 
     public void stopArm() {
@@ -187,33 +191,39 @@ public class CargoManipulator {
     double getEncoderInDegrees() {
         return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
 
-        /*
-         * switch (currentEncoderPresence) { case BOTH: if (rightCargoEncoder.getAngle()
-         * < 105 && rightCargoEncoder.getAngle() > -15 && -leftCargoEncoder.getAngle() <
-         * 105 && -leftCargoEncoder.getAngle() > -15) { return
-         * (rightCargoEncoder.getAngle() - leftCargoEncoder.getAngle()) / 2; } else if
-         * (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15) {
-         * return rightCargoEncoder.getAngle(); } else if (leftCargoEncoder.getAngle() <
-         * 105 && leftCargoEncoder.getAngle() > -15) { return
-         * -leftCargoEncoder.getAngle(); } else { return
-         * RobotMap.FAILURE_RETURN_ENCODER_VALUE; } case LEFT: if
-         * (-leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15) {
-         * return -leftCargoEncoder.getAngle(); } return
-         * RobotMap.FAILURE_RETURN_ENCODER_VALUE; case RIGHT: if
-         * (rightCargoEncoder.getAngle() > 105 && rightCargoEncoder.getAngle() > -15) {
-         * return rightCargoEncoder.getAngle(); } return
-         * RobotMap.FAILURE_RETURN_ENCODER_VALUE; case NONE: return
-         * RobotMap.FAILURE_RETURN_ENCODER_VALUE; default: return
-         * RobotMap.FAILURE_RETURN_ENCODER_VALUE; }
-         */
-        // this number is to convert voltage which comes back 0 to 5 to a number from 0
-        // to 270 which is what the potentiometer returns. It is subtrated from 180 so
-        // that zero is the intake arm being flat
+        // switch (currentEncoderPresence) {
+        // case BOTH:
+        //     if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15
+        //             && -leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15) {
+        //         return (rightCargoEncoder.getAngle() - leftCargoEncoder.getAngle()) / 2;
+        //     } else if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15) {
+        //         return rightCargoEncoder.getAngle();
+        //     } else if (leftCargoEncoder.getAngle() < 105 && leftCargoEncoder.getAngle() > -15) {
+        //         return -leftCargoEncoder.getAngle();
+        //     } else {
+        //         return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+        //     }
+        // case LEFT:
+        //     if (-leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15) {
+        //         return -leftCargoEncoder.getAngle();
+        //     }
+        //     return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+        // case RIGHT:
+        //     if (rightCargoEncoder.getAngle() > 105 && rightCargoEncoder.getAngle() > -15) {
+        //         return rightCargoEncoder.getAngle();
+        //     }
+        //     return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+        // case NONE:
+        //     return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+        // default:
+        //     return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+        // }
     }
 
     public double currentAngle() {
         SmartDashboard.putNumber("CargoEncoder", getEncoderInDegrees());
-        SmartDashboard.putNumber("Cargo Voltage", rightCargoEncoder.getVoltage());
+        SmartDashboard.putNumber("Cargo Voltage Right: ", rightCargoEncoder.getVoltage());
+        SmartDashboard.putNumber("Cargo Voltage Left: ", leftCargoEncoder.getVoltage());
         return (getEncoderInDegrees());
     }
 }

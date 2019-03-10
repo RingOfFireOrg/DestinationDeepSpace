@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
 
 		swerveDrive = new GamepadSwerve(ahrs, driverGamepad, leftDriveJoystick, rightDriveJoystick);
 		climberController = new ClimberController(swerveDrive, ahrs, cargoManipulator);
-		SmartDashboard.putNumber("Version #", 5);
+		SmartDashboard.putNumber("Version #", 6);
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class Robot extends TimedRobot {
 		// if (/*limelight.isAutomationRunning() || autoClimbMode*/ false) {
 
 		// } else {
-		
+
 		// swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
 		// }
 		drivePeriodic();
@@ -152,11 +152,11 @@ public class Robot extends TimedRobot {
 
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
 		if (cargoArmSpeed > 0.2) {
-			cargoManipulator.moveArmUp(cargoArmSpeed);
+			cargoManipulator.moveArmUp(0.45 * cargoArmSpeed);
 		} else if (cargoArmSpeed < -0.2) {
-			cargoManipulator.moveArmDown(-cargoArmSpeed);
+			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
 		} else {
-			// eventually this needs a case for middle rocket
+
 			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 				cargoManipulator.setToUpPosition();
 			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
@@ -171,6 +171,7 @@ public class Robot extends TimedRobot {
 				cargoManipulator.setToCurrentPosition();
 				// essentially keeps it steady at wherever we are so that it doesn't fall down
 			}
+
 		}
 
 		// Wheel control for manipulator panel
@@ -186,7 +187,7 @@ public class Robot extends TimedRobot {
 
 	}
 
-	public void drivePeriodic(){
+	public void drivePeriodic() {
 		swerveDrive.runSwerve();
 		beakControl();
 		cargoManipulatorControl();
