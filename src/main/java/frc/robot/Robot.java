@@ -123,6 +123,8 @@ public class Robot extends TimedRobot {
 		// robotTest.runTest();
 		cargoManipulator.currentAngle();
 		beak.close();
+		SmartDashboard.putNumber("RobotPitch", ahrs.getPitch());
+		SmartDashboard.putNumber("RobotYaw", ahrs.getYaw());
 	}
 
 	public void beakControl() {
@@ -156,7 +158,6 @@ public class Robot extends TimedRobot {
 		} else if (cargoArmSpeed < -0.2) {
 			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
 		} else {
-
 			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 				cargoManipulator.setToUpPosition();
 			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
@@ -170,7 +171,7 @@ public class Robot extends TimedRobot {
 			} else {
 				cargoManipulator.setToCurrentPosition();
 				// essentially keeps it steady at wherever we are so that it doesn't fall down
-			}
+			} 
 
 		}
 

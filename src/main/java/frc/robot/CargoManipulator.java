@@ -34,9 +34,9 @@ public class CargoManipulator {
     private static CargoManipulator cargoManipulator;
 
     final double INTAKE_POSITION_DEGREES = -19;
-    final double LOWER_ROCKET_POSITION_DEGREES = 11;
-    final double MID_ROCKET_POSITION_DEGREES = 21;
-    final double CARGO_SHIP_POSITION_DEGREES = 26;
+    final double LOWER_ROCKET_POSITION_DEGREES = 11; //26
+    final double MID_ROCKET_POSITION_DEGREES = 38; //78
+    final double CARGO_SHIP_POSITION_DEGREES = 31; //65
     final double UP_POSITION_DEGREES = 81;
     double customTargetAngle = 0;
 

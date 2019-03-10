@@ -35,6 +35,8 @@ public class AutoClimb {
 
     private boolean doingAutoClimb = false; //false means not done
 
+    private double climbAngle = -5;
+
     public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
         this.swerveDrive = swerveDrive;
         this.climber = climber;
@@ -80,11 +82,11 @@ public class AutoClimb {
         // drive back a little 
         case 1:
             cargoManipulator.setToCurrentPosition();
-            if (timer.get() < 0.05) {
+            if (timer.get() < 0.05) { 
                 driveSwerve(-0.5);
             } else {
                 stopSwerve();
-                pitchOffset = ahrs.getPitch();
+                pitchOffset = ahrs.getPitch() + climbAngle;
                 step++;
                 robotPitchPID.reset();
             }
@@ -93,8 +95,8 @@ public class AutoClimb {
         // extend front and back legs all the way
         case 2:
             cargoManipulator.setToCurrentPosition();
-            robotPitchPID.setError(ahrs.getPitch() - pitchOffset);
-            robotPitchPID.update(); 
+            robotPitchPID.setError(pitchOffset - ahrs.getPitch());
+            robotPitchPID.update();
             climber.extendLevel(robotPitchPID.getOutput());
 
             if(climber.isFullyExtended()) {
