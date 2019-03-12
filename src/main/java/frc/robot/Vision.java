@@ -152,6 +152,7 @@ public class Vision {
                     leftRightStop = "left";
 
                 } else { // if(strafeRightLeft < 0)
+                    //should these be accounting for negatives, working with +'s
                     if (Math.abs(strafeRightLeft) < .2) {
                         swerveDrive.translateAndRotate(0, 0, 0, 0, 0, -.2, 0);
                     } else if (Math.abs(strafeRightLeft) > .7) {
@@ -171,11 +172,13 @@ public class Vision {
             break;
         case 3: // drive forward to get into intake position
             if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) {
+                //this would speed up or slow down and go drive_K for the perfect setup
+                // change the / to subtraction
                 double driveForward = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
                 if (driveForward < .2) {
                     swerveDrive.translateAndRotate(0, 0, 0, 0, .2, 0, 0);
                 } else if (driveForward > .7) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, .6, 0, 0);
+                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0.7, 0, 0);
                 } else {
                     swerveDrive.translateAndRotate(0, 0, 0, 0, driveForward, 0, 0);
                 }
@@ -202,6 +205,7 @@ public class Vision {
         }
 
         if (automationStep == 6) {
+            //should the step be set back to 0 for next time???
             automationRunning = false;
             return true;
         } else {
@@ -246,11 +250,15 @@ public class Vision {
         case 2:// strafe right and left to line up with target
             if (Math.abs(tx) < 3) { // three is a random placeholder
                 double strafeRightLeft = tx * STEER_K * -1;
+                //this would only strafe right?
                 if (strafeRightLeft < .2) {
+                    //swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.2, 0);
                     swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .2, 0);
                 } else if (strafeRightLeft > .7) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .6, 0);
+                    //swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.7, 0);
+                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0.7, 0);
                 } else {
+                    //swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, strafeLeftRight, 0);
                     swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
                 }
             } else {
@@ -263,7 +271,7 @@ public class Vision {
                 if (driveForward < .2) {
                     swerveDrive.translateAndRotate(0, 0, 0, 0, .2, 0, 0);
                 } else if (driveForward > .7) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, .6, 0, 0);
+                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0.7, 0, 0);
                 } else {
                     swerveDrive.translateAndRotate(0, 0, 0, 0, driveForward, 0, 0);
                 }
