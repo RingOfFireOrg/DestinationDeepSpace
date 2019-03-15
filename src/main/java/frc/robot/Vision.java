@@ -81,12 +81,12 @@ public class Vision {
         }
     }
 
-    void leftRightAlignmentTest(){
+    void leftRightAlignmentTest() {
         String leftRightStop;
         if (Math.abs(tx) < 3) { // three is a random placeholder
             double strafeRightLeft = tx * STEER_K * -1;
             SmartDashboard.putNumber("translate x", strafeRightLeft);
-            
+
             if (strafeRightLeft >= 0) {
                 leftRightStop = "left";
             } else { // if(strafeRightLeft < 0)
@@ -98,6 +98,60 @@ public class Vision {
         }
 
         SmartDashboard.putString("Strafe direction left/right", leftRightStop);
+    }
+
+    boolean alignment() {
+
+        String leftRightStop;
+        double strafeRightLeft = tx * STEER_K * -1;
+        double strafeForwardBack = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
+        final double MAX_SPEED = 0.4;
+        final double MIN_SPEED = 0.1;
+        boolean rightLeftAligned = false;
+        boolean frontBackAligned = false;
+        SmartDashboard.putNumber("translate x", strafeRightLeft);
+
+        if (Math.abs(tx) < 3) { // three is a random placeholder
+
+            // deal with min and max speeds for right left
+            if (strafeRightLeft < MIN_SPEED && strafeRightLeft >= 0) {
+                strafeRightLeft = MIN_SPEED;
+            } else if (strafeRightLeft > -MIN_SPEED) {
+                strafeRightLeft = -MIN_SPEED;
+            } else if (Math.abs(strafeRightLeft) > MAX_SPEED && strafeRightLeft <= 0) {
+                if (strafeRightLeft > 0) {
+                    strafeRightLeft = MAX_SPEED;
+                } else {
+                    strafeRightLeft = -MAX_SPEED;
+                }
+            }
+        } else {
+            strafeRightLeft = 0;
+            rightLeftAligned = true;
+        }
+
+        if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) {
+            // this would speed up or slow down and go drive_K for the perfect setup
+            // change the division to subtraction
+            if (strafeForwardBack < MIN_SPEED) {
+                // won't ever go backward
+                strafeForwardBack = MIN_SPEED;
+            } else if (strafeForwardBack > MAX_SPEED) {
+                strafeForwardBack = MAX_SPEED;
+            }
+        } else {
+            strafeForwardBack = 0;
+            frontBackAligned = true;
+        }
+
+        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, strafeForwardBack);
+
+        if (frontBackAligned && rightLeftAligned) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     boolean hatchPickup() {
@@ -152,7 +206,7 @@ public class Vision {
                     leftRightStop = "left";
 
                 } else { // if(strafeRightLeft < 0)
-                    //should these be accounting for negatives, working with +'s
+                    // should these be accounting for negatives, working with +'s
                     if (Math.abs(strafeRightLeft) < .2) {
                         swerveDrive.translateAndRotate(0, 0, 0, 0, 0, -.2, 0);
                     } else if (Math.abs(strafeRightLeft) > .7) {
@@ -172,8 +226,8 @@ public class Vision {
             break;
         case 3: // drive forward to get into intake position
             if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) {
-                //this would speed up or slow down and go drive_K for the perfect setup
-                // change the / to subtraction
+                // this would speed up or slow down and go drive_K for the perfect setup
+                // change the division to subtraction
                 double driveForward = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
                 if (driveForward < .2) {
                     swerveDrive.translateAndRotate(0, 0, 0, 0, .2, 0, 0);
@@ -205,7 +259,7 @@ public class Vision {
         }
 
         if (automationStep == 6) {
-            //should the step be set back to 0 for next time???
+            // should the step be set back to 0 for next time???
             automationRunning = false;
             return true;
         } else {
@@ -250,15 +304,16 @@ public class Vision {
         case 2:// strafe right and left to line up with target
             if (Math.abs(tx) < 3) { // three is a random placeholder
                 double strafeRightLeft = tx * STEER_K * -1;
-                //this would only strafe right?
+                // this would only strafe right?
                 if (strafeRightLeft < .2) {
-                    //swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.2, 0);
+                    // swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.2, 0);
                     swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .2, 0);
                 } else if (strafeRightLeft > .7) {
-                    //swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.7, 0);
+                    // swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.7, 0);
                     swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0.7, 0);
                 } else {
-                    //swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, strafeLeftRight, 0);
+                    // swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset,
+                    // strafeLeftRight, 0);
                     swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
                 }
             } else {
@@ -299,8 +354,10 @@ public class Vision {
 
         if (automationStep == 6) {
             automationRunning = false;
+            automationStep = 0;
             return true;
         } else {
+            automationRunning = true;
             return false;
         }
     }
@@ -308,8 +365,11 @@ public class Vision {
     boolean cargoScoreCargoShip() {
         // automation for scoring cargo in a cargoShip
         if (automationStep == 6) {
+            automationRunning = false;
+            automationStep = 0;
             return true;
         } else {
+            automationRunning = true;
             return false;
         }
     }
