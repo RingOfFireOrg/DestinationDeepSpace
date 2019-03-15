@@ -118,7 +118,7 @@ public class AutoClimb {
         case 4:
             cargoManipulator.setToCurrentPosition();
             robotPitchPID.setError((pitchOffset - ahrs.getPitch()) - climbAngle);
-            robotPitchPID.update();
+            robotPitchPID.update(); 
             climber.extendLevel(robotPitchPID.getOutput());
 
             if(climber.isFullyExtended()) {

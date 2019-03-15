@@ -26,9 +26,20 @@ public class ClimberController {
 
     private boolean climbModeTrue;
 
+    private AHRS ahrs;
+
+    private PID robotPitchPID;
+    private double pitchOffset;
+
+    private double climbAngle = -5;
 
     public ClimberController(SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
         autoClimb = new AutoClimb(climber, swerveDrive, ahrs, cargoManipulator);
+        this.ahrs = ahrs;
+        robotPitchPID = new PID(0.02, 0.00005, 0);
+        robotPitchPID.setOutputRange(-1, 1);
+        pitchOffset = ahrs.getPitch();
+        robotPitchPID.reset();
     }
 
     private boolean startAutoClimbTrue(){ //should find a better name
@@ -71,6 +82,16 @@ public class ClimberController {
             return;
         }
         
+        if (climber.isClimberDown()) {
+            robotPitchPID.reset();
+        }
+
+        if (extendFrontBtn && extendBackBtn) {
+            robotPitchPID.setError((pitchOffset - ahrs.getPitch()) - climbAngle);
+            robotPitchPID.update(); 
+            climber.extendLevel(robotPitchPID.getOutput());
+        }
+
         if (climberDrive > 0.25) {
             climber.driveReverse();
         } else if (climberDrive < -0.25) {
