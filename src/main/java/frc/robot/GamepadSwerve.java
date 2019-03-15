@@ -82,6 +82,19 @@ public class GamepadSwerve extends SwerveDrive {
 			SmartDashboard.putBoolean("JoystickDriveEnabled", false);
 		}
 
+		if (Math.sqrt(Math.pow(fieldTranslateX, 2) + Math.pow(fieldTranslateY, 2)) < 0.2) {
+			fieldTranslateX = 0;
+			fieldTranslateY = 0;
+		} else {
+			robotTranslateX = 0;
+			robotTranslateY = 0;
+		}
+
+		if (Math.sqrt(Math.pow(robotTranslateX, 2) + Math.pow(robotTranslateY, 2)) < 0.2) {
+			robotTranslateX = 0;
+			robotTranslateY = 0;
+		}
+
 		if (driveController.getYButton() || joystickRobotFrontCargoButton.get()) {
 			setRobotFrontToCargo();
 		} else if (driveController.getBButton() || joystickRobotFrontHatchButton.get()) {
@@ -95,17 +108,12 @@ public class GamepadSwerve extends SwerveDrive {
 
 		switch (driveMode) {
 		case 0:
-			// the 0s are temporary replacements for the robot relative joysticks. remember
-			// to find the opposite of the y value
 			translateAndRotate(fieldTranslateX, fieldTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset,
 					absoluteDirection, robotTranslateX, robotTranslateY);
 			break;
 
 		case 1:
 			tuningMode();
-			break;
-
-		case 2:
 			break;
 
 		default:
