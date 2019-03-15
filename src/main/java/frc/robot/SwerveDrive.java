@@ -7,6 +7,11 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
+
+	enum selectiveSwerveDriveModes{
+		ROBOT_UNREGULATED, ROBOT_ABSOLUTE, FIELD_UNREGULATED, FIELD_ABSOLUTE
+	}
+
 	AHRS ahrs;
 	double ahrsOffset;
 	PID pidDrivingStraight;
@@ -14,6 +19,7 @@ public class SwerveDrive {
 	boolean driveStraight = false;
 	double translationAngle;
 	boolean isCargoFront = true;
+	private selectiveSwerveDriveModes selectiveSwerveDriveMode; 
 
 	private static SwerveDrive swerveDrive;
 
@@ -57,9 +63,7 @@ public class SwerveDrive {
 		return swerveDrive;
 	}
 
-	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning,
-			double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX,
-			double driveRobotTranslationY) {
+	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
 		// turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
 		double gyroValueProcessed = (Math.abs(((int) (gyroReading)) * 360) + gyroReading) % 360;
@@ -75,7 +79,7 @@ public class SwerveDrive {
 			robotRelativeY = driveRobotTranslationY;
 		} else {
 			robotRelativeX = -driveRobotTranslationY;
-			robotRelativeY = -driveRobotTranslationX;
+			robotRelativeY = driveRobotTranslationX;
 		}
 
 		double unregulatedRotationValue = unregulatedTurning;
@@ -265,8 +269,22 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
 	}
 
-	void translateAndRotate(double unregulatedTurning, double gyroReading, double robotTranslationX, double robotTranslationY) {
-		translateAndRotate(0, 0, unregulatedTurning, gyroReading, -1, robotTranslationX, robotTranslationY);
+	void selectiveTranslateAndRotate(selectiveSwerveDriveModes selectiveSwerveDriveMode, double turnInput, double translateXInput, double translateYInput, double gyroReading) {
+		this.selectiveSwerveDriveMode = selectiveSwerveDriveMode;
+		switch (this.selectiveSwerveDriveMode) {
+			case ROBOT_UNREGULATED:
+				translateAndRotate(0, 0, turnInput, gyroReading, -1, translateXInput, translateYInput);
+				break;
+			case ROBOT_ABSOLUTE:
+				translateAndRotate(0, 0, 0, gyroReading, turnInput, translateXInput, translateYInput);
+				break;
+			case FIELD_UNREGULATED:
+				translateAndRotate(translateXInput, translateYInput, turnInput, gyroReading, -1, 0, 0);
+				break;
+			case FIELD_ABSOLUTE:
+				translateAndRotate(translateXInput, translateYInput, 0, gyroReading, turnInput, 0, 0);
+				break;
+		}
 	}
 
 	void parkPosition() {
@@ -302,15 +320,6 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
 		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
-
-		// SmartDashboard.putNumber("Corrected angle FR",
-		// frontRight.convertToRobotRelative(frontRight.getAngle()));
-		// SmartDashboard.putNumber("Corrected angle FL",
-		// frontLeft.convertToRobotRelative(frontLeft.getAngle()));
-		// SmartDashboard.putNumber("Corrected angle BR",
-		// backRight.convertToRobotRelative(backRight.getAngle()));
-		// SmartDashboard.putNumber("Corrected angle BL",
-		// backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
 	void tuningMode() {
