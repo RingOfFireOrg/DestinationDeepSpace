@@ -142,7 +142,7 @@ public class Vision {
             frontBackAligned = true;
         }
 
-        //connor fix this one \/
+        // connor fix this one \/
         swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, strafeForwardBack);
 
         if (frontBackAligned && rightLeftAligned) {
@@ -153,7 +153,7 @@ public class Vision {
 
     }
 
-    boolean snapTo90DegreeAngle() { //connor - fix everything in here
+    boolean snapTo90DegreeAngle() { // connor - fix everything in here
         if (ahrs.getCompassHeading() % 90 > 2) {
             if (ahrs.getCompassHeading() < 10 && ahrs.getCompassHeading() > 350) {
                 // snap to 0 degrees
@@ -170,15 +170,82 @@ public class Vision {
             } else { // if you aren't within the 20 degree window for each 90 degree angle, you are
                      // likely trying to deliver to the rocket OR a lost cause
                 automationStep++;
-                //question: should we be returning true??? or something else?  maybe it should break the automation?
+                // question: should we be returning true??? or something else? maybe it should
+                // break the automation?
             }
             return false;
         } else {
-           return true;
+            return true;
         }
     }
 
     boolean hatchPickup() {
+        return true;
+        //this will do things in the future
+    }
+
+    boolean hatchScore() {
+        //this will do things in the future
+        return true;
+    }
+
+    boolean cargoScoreCargoShip() {
+        // automation for getting hatch from feeder station
+        ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+
+        automationRunning = true;
+
+        switch (automationStep) {
+        case 0: // set up step -> eventually this will set the pipeline
+            swerveDrive.setRobotFrontToCargo();
+            automationStep++;
+            break;
+        case 1: // angle correction
+            if (snapTo90DegreeAngle() == false) {
+                // nothing happens - keep turning
+            } else {
+                automationStep++;
+            }
+            break;
+        case 2:// line up with target
+            if (alignment() == false) {
+                // nothing so running alignment
+            } else {
+                automationStep++;
+            }
+            break;
+        case 3: // score
+            if (!(cargoManipulator.getPosition() == intakePosition.CARGO_SHIP)
+                    || cargoManipulator.getAtTargetAngle() == false) {
+                cargoManipulator.setToCargoShipPosition();
+            } else {
+                automationStep++;
+            }
+            break;
+        case 4: // back up slightly
+            if (DESIRED_TARGET_AREA / ta > 0.8) {
+                //connor fix \/
+                swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, -2);
+            } else {
+                automationStep++;
+            }
+            break;
+        case 5:
+            break;
+        }
+
+        if (automationStep == 5) {
+            automationRunning = false;
+            automationStep = 0;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    boolean cargoScoreRocket() {
         // automation for getting hatch from feeder station
         ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
         ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
@@ -192,8 +259,8 @@ public class Vision {
             automationStep++;
             break;
         case 1: // angle correction
-            if(snapTo90DegreeAngle() == false){
-
+            if (snapTo90DegreeAngle() == false) {
+                // nothing happens - keep snapping
             } else {
                 automationStep++;
             }
@@ -205,109 +272,19 @@ public class Vision {
                 automationStep++;
             }
             break;
-        case 3: // score
-            if (!beak.isOpen()) {
-                beak.open();
+        case 3: // raise cargo
+            if (!(cargoManipulator.getPosition() == intakePosition.LOWER_ROCKET)
+                    || cargoManipulator.getAtTargetAngle() == false) {
+                cargoManipulator.setToLowerRocketPosition();
             } else {
                 automationStep++;
             }
             break;
-        case 4: // back up slightly
-            if (DESIRED_TARGET_AREA / ta > 0.8) {
-                swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, -2);
-            } else {
-                automationStep++;
-            }
-            break;
-        case 5:
-            break;
-        }
-
-        if (automationStep == 6) {
-            // should the step be set back to 0 for next time???
-            automationRunning = false;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    boolean hatchScore() {
-        // automation for getting hatch from feeder station
-        ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-
-        automationRunning = true;
-
-        switch (automationStep) {
-        case 0:
-            swerveDrive.setRobotFrontToHatch();
-            automationStep++;
-            break;
-        case 1: // angle correction
-            if (!(ahrs.getCompassHeading() % 90 < 2)) {
-                if (ahrs.getCompassHeading() < 10 && ahrs.getCompassHeading() > 350) {
-                    // snap to 0 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, 0);
-                } else if (ahrs.getCompassHeading() > 80 && ahrs.getCompassHeading() < 100) {
-                    // snap to 90 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 90, 0, 0);
-                } else if (ahrs.getCompassHeading() > 170 && ahrs.getCompassHeading() < 190) {
-                    // snap to 180 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 180, 0, 0);
-                } else if (ahrs.getCompassHeading() > 260 && ahrs.getCompassHeading() < 280) {
-                    // snap to 270 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 270, 0, 0);
-                } else {
-                    automationStep++;
-                }
-            } else {
-                automationStep++;
-            }
-            break;
-        case 2:// strafe right and left to line up with target
-            if (Math.abs(tx) < 3) { // three is a random placeholder
-                double strafeRightLeft = tx * STEER_K * -1;
-                // this would only strafe right?
-                if (strafeRightLeft < .2) {
-                    // swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.2, 0);
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .2, 0);
-                } else if (strafeRightLeft > .7) {
-                    // swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset, 0.7, 0);
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0.7, 0);
-                } else {
-                    // swerveDrive.translateAndRotate(0, ahrs.getAngle() - ahrsOffset,
-                    // strafeLeftRight, 0);
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
-                }
-            } else {
-                automationStep++;
-            }
-            break;
-        case 3: // drive forward to get into intake position
-            if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) {
-                double driveForward = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
-                if (driveForward < .2) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, .2, 0, 0);
-                } else if (driveForward > .7) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0.7, 0, 0);
-                } else {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, driveForward, 0, 0);
-                }
-            } else {
-                automationStep++;
-            }
-            break;
-        case 4: // score
-            if (beak.isOpen()) {
-                beak.close();
-            } else {
-                automationStep++;
-            }
+        case 4:
             break;
         case 5: // back up slightly
             if (DESIRED_TARGET_AREA / ta > 0.8) {
+                //connor fix \/
                 swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, -2);
             } else {
                 automationStep++;
@@ -320,27 +297,6 @@ public class Vision {
         if (automationStep == 6) {
             automationRunning = false;
             automationStep = 0;
-            return true;
-        } else {
-            automationRunning = true;
-            return false;
-        }
-    }
-
-    boolean cargoScoreCargoShip() {
-        // automation for scoring cargo in a cargoShip
-        if (automationStep == 6) {
-            automationRunning = false;
-            automationStep = 0;
-            return true;
-        } else {
-            automationRunning = true;
-            return false;
-        }
-    }
-
-    boolean cargoScoreRocket() {
-        if (automationStep == 6) {
             return true;
         } else {
             return false;
