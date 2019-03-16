@@ -74,7 +74,7 @@ public class Vision {
 
     boolean cargoScoreReady() {
         if (validTarget() && cargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak
-                && cargoManipulator.getPosition() == intakePosition.INTAKE) {
+                && cargoManipulator.getPosition() == intakePosition.INTAKE && ahrs.getCompassHeading() % 90 > 10) {
             return true;
         } else {
             return false;
@@ -101,8 +101,6 @@ public class Vision {
     }
 
     boolean alignment() {
-
-        String leftRightStop;
         double strafeRightLeft = tx * STEER_K * -1;
         double strafeForwardBack = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
         final double MAX_SPEED = 0.4;
@@ -144,6 +142,7 @@ public class Vision {
             frontBackAligned = true;
         }
 
+        //connor fix this one \/
         swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, strafeForwardBack);
 
         if (frontBackAligned && rightLeftAligned) {
@@ -152,6 +151,31 @@ public class Vision {
             return false;
         }
 
+    }
+
+    boolean snapTo90DegreeAngle() { //connor - fix everything in here
+        if (ahrs.getCompassHeading() % 90 > 2) {
+            if (ahrs.getCompassHeading() < 10 && ahrs.getCompassHeading() > 350) {
+                // snap to 0 degrees
+                swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, 0);
+            } else if (ahrs.getCompassHeading() > 80 && ahrs.getCompassHeading() < 100) {
+                // snap to 90 degrees
+                swerveDrive.translateAndRotate(0, 0, 0, 0, 90, 0, 0);
+            } else if (ahrs.getCompassHeading() > 170 && ahrs.getCompassHeading() < 190) {
+                // snap to 180 degrees
+                swerveDrive.translateAndRotate(0, 0, 0, 0, 180, 0, 0);
+            } else if (ahrs.getCompassHeading() > 260 && ahrs.getCompassHeading() < 280) {
+                // snap to 270 degrees
+                swerveDrive.translateAndRotate(0, 0, 0, 0, 270, 0, 0);
+            } else { // if you aren't within the 20 degree window for each 90 degree angle, you are
+                     // likely trying to deliver to the rocket OR a lost cause
+                automationStep++;
+                //question: should we be returning true??? or something else?  maybe it should break the automation?
+            }
+            return false;
+        } else {
+           return true;
+        }
     }
 
     boolean hatchPickup() {
@@ -163,98 +187,39 @@ public class Vision {
         automationRunning = true;
 
         switch (automationStep) {
-        case 0:
+        case 0: // set up step -> eventually this will set the pipeline
             swerveDrive.setRobotFrontToHatch();
             automationStep++;
             break;
         case 1: // angle correction
-            if (!(ahrs.getCompassHeading() % 90 < 2)) {
-                if (ahrs.getCompassHeading() < 10 && ahrs.getCompassHeading() > 350) {
-                    // snap to 0 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, 0);
-                } else if (ahrs.getCompassHeading() > 80 && ahrs.getCompassHeading() < 100) {
-                    // snap to 90 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 90, 0, 0);
-                } else if (ahrs.getCompassHeading() > 170 && ahrs.getCompassHeading() < 190) {
-                    // snap to 180 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 180, 0, 0);
-                } else if (ahrs.getCompassHeading() > 260 && ahrs.getCompassHeading() < 280) {
-                    // snap to 270 degrees
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 270, 0, 0);
-                } else {
-                    automationStep++;
-                }
+            if(snapTo90DegreeAngle() == false){
+
             } else {
                 automationStep++;
             }
             break;
-        case 2:// strafe right and left to line up with target
-            String leftRightStop;
-            if (Math.abs(tx) < 3) { // three is a random placeholder
-                double strafeRightLeft = tx * STEER_K * -1;
-                SmartDashboard.putNumber("translate x", strafeRightLeft);
-
-                if (strafeRightLeft >= 0) {
-                    if (Math.abs(strafeRightLeft) < .2) {
-                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .2, 0);
-                    } else if (Math.abs(strafeRightLeft) > .7) {
-                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, .7, 0);
-                    } else {
-                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
-                    }
-                    // using this for testing
-                    leftRightStop = "left";
-
-                } else { // if(strafeRightLeft < 0)
-                    // should these be accounting for negatives, working with +'s
-                    if (Math.abs(strafeRightLeft) < .2) {
-                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, -.2, 0);
-                    } else if (Math.abs(strafeRightLeft) > .7) {
-                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, -.7, 0);
-                    } else {
-                        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, 0);
-                    }
-                    leftRightStop = "right";
-                }
-
-            } else {
-                leftRightStop = "stop";
-                automationStep++;
-            }
-
-            SmartDashboard.putString("Strafe direction left/right", leftRightStop);
-            break;
-        case 3: // drive forward to get into intake position
-            if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) {
-                // this would speed up or slow down and go drive_K for the perfect setup
-                // change the division to subtraction
-                double driveForward = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
-                if (driveForward < .2) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, .2, 0, 0);
-                } else if (driveForward > .7) {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, 0.7, 0, 0);
-                } else {
-                    swerveDrive.translateAndRotate(0, 0, 0, 0, driveForward, 0, 0);
-                }
+        case 2:// line up with target
+            if (alignment() == false) {
+                // nothing so running alignment
             } else {
                 automationStep++;
             }
             break;
-        case 4: // score
+        case 3: // score
             if (!beak.isOpen()) {
                 beak.open();
             } else {
                 automationStep++;
             }
             break;
-        case 5: // back up slightly
+        case 4: // back up slightly
             if (DESIRED_TARGET_AREA / ta > 0.8) {
                 swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, -2);
             } else {
                 automationStep++;
             }
             break;
-        case 6:
+        case 5:
             break;
         }
 
