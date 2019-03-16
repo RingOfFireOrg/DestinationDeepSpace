@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
 
-	enum selectiveSwerveDriveModes{
+	enum selectiveSwerveDriveModes {
 		ROBOT_UNREGULATED, ROBOT_ABSOLUTE, FIELD_UNREGULATED, FIELD_ABSOLUTE
 	}
 
@@ -19,7 +19,7 @@ public class SwerveDrive {
 	boolean driveStraight = false;
 	double translationAngle;
 	boolean isCargoFront = true;
-	private selectiveSwerveDriveModes selectiveSwerveDriveMode; 
+	private selectiveSwerveDriveModes selectiveSwerveDriveMode;
 
 	private static SwerveDrive swerveDrive;
 
@@ -63,7 +63,9 @@ public class SwerveDrive {
 		return swerveDrive;
 	}
 
-	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
+	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning,
+			double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX,
+			double driveRobotTranslationY) {
 		// turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = gyroReading;
 		double gyroValueProcessed = (Math.abs(((int) (gyroReading)) * 360) + gyroReading) % 360;
@@ -86,16 +88,22 @@ public class SwerveDrive {
 		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
 
 		// Translation Modes -- field relative or robot relative
-		double jsMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
-		if (jsMag < RobotMap.TRANSLATION_DEADZONE)
-			jsMag = 0;
-		if (jsMag != 0) {
+		double fieldTransMag = Math.sqrt(Math.pow(fieldRelativeX, 2) + Math.pow(fieldRelativeY, 2));
+
+		// if (fieldTransMag < RobotMap.TRANSLATION_DEADZONE) {
+		// 	fieldTransMag = 0;
+		// }
+			
+		if (fieldTransMag != 0) {
 			double initialAngle;
 
+			//converting the field translations to an angle
 			if (fieldRelativeX == 0) {
 				if (fieldRelativeY > 0) {
+					//eliminates tan asymptotes
 					initialAngle = 90;
 				} else {
+					//eliminates tan asymptotes
 					initialAngle = -90;
 				}
 			} else {
@@ -111,15 +119,14 @@ public class SwerveDrive {
 			}
 
 			double processedAngle = initialAngle + gyroValueProcessed;
-			robotRelativeX = jsMag * Math.cos(Math.toRadians(processedAngle));
-			robotRelativeY = jsMag * Math.sin(Math.toRadians(processedAngle));
-		} else if (Math
-				.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) < RobotMap.TRANSLATION_DEADZONE) {
-			// if the field relative code didn't run, robot rel will still be set from its
-			// declaration, this rules out deadzones
-			robotRelativeX = 0;
-			robotRelativeY = 0;
-		}
+			robotRelativeX = fieldTransMag * Math.cos(Math.toRadians(processedAngle));
+			robotRelativeY = fieldTransMag * Math.sin(Math.toRadians(processedAngle));
+		} //else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) < RobotMap.TRANSLATION_DEADZONE) {
+		// 	// if the field relative code didn't run, robot rel will still be set from its
+		// 	// declaration, this rules out deadzones
+		// 	robotRelativeX = 0;
+		// 	robotRelativeY = 0;
+		// }
 
 		// Rotation Modes -- absolute, unregulated, and none
 		// gyro rate buffer updating
@@ -269,21 +276,22 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
 	}
 
-	void selectiveTranslateAndRotate(selectiveSwerveDriveModes selectiveSwerveDriveMode, double turnInput, double translateXInput, double translateYInput, double gyroReading) {
+	void selectiveTranslateAndRotate(selectiveSwerveDriveModes selectiveSwerveDriveMode, double turnInput,
+			double translateXInput, double translateYInput, double gyroReading) {
 		this.selectiveSwerveDriveMode = selectiveSwerveDriveMode;
 		switch (this.selectiveSwerveDriveMode) {
-			case ROBOT_UNREGULATED:
-				translateAndRotate(0, 0, turnInput, gyroReading, -1, translateXInput, translateYInput);
-				break;
-			case ROBOT_ABSOLUTE:
-				translateAndRotate(0, 0, 0, gyroReading, turnInput, translateXInput, translateYInput);
-				break;
-			case FIELD_UNREGULATED:
-				translateAndRotate(translateXInput, translateYInput, turnInput, gyroReading, -1, 0, 0);
-				break;
-			case FIELD_ABSOLUTE:
-				translateAndRotate(translateXInput, translateYInput, 0, gyroReading, turnInput, 0, 0);
-				break;
+		case ROBOT_UNREGULATED:
+			translateAndRotate(0, 0, turnInput, gyroReading, -1, translateXInput, translateYInput);
+			break;
+		case ROBOT_ABSOLUTE:
+			translateAndRotate(0, 0, 0, gyroReading, turnInput, translateXInput, translateYInput);
+			break;
+		case FIELD_UNREGULATED:
+			translateAndRotate(translateXInput, translateYInput, turnInput, gyroReading, -1, 0, 0);
+			break;
+		case FIELD_ABSOLUTE:
+			translateAndRotate(translateXInput, translateYInput, 0, gyroReading, turnInput, 0, 0);
+			break;
 		}
 	}
 

@@ -82,7 +82,7 @@ public class GamepadSwerve extends SwerveDrive {
 			SmartDashboard.putBoolean("JoystickDriveEnabled", false);
 		}
 
-		if (Math.sqrt(Math.pow(fieldTranslateX, 2) + Math.pow(fieldTranslateY, 2)) < 0.2) {
+		if (Math.sqrt(Math.pow(fieldTranslateX, 2) + Math.pow(fieldTranslateY, 2)) < RobotMap.TRANSLATION_DEADZONE) {
 			fieldTranslateX = 0;
 			fieldTranslateY = 0;
 		} else {
@@ -90,7 +90,7 @@ public class GamepadSwerve extends SwerveDrive {
 			robotTranslateY = 0;
 		}
 
-		if (Math.sqrt(Math.pow(robotTranslateX, 2) + Math.pow(robotTranslateY, 2)) < 0.2) {
+		if (Math.sqrt(Math.pow(robotTranslateX, 2) + Math.pow(robotTranslateY, 2)) < RobotMap.TRANSLATION_DEADZONE) {
 			robotTranslateX = 0;
 			robotTranslateY = 0;
 		}
