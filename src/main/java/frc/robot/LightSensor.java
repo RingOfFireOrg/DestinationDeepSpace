@@ -17,8 +17,8 @@ public class LightSensor extends Object {
     }
 
     Boolean get() {
-        //SmartDashboard.putBoolean("Light_" + name + "_LA", sensorA.get());
-        //SmartDashboard.putBoolean("Light_" + name + "_LB", sensorB.get());
+        SmartDashboard.putBoolean("Light_" + name + "_LA", sensorA.get());
+        SmartDashboard.putBoolean("Light_" + name + "_LB", sensorB.get());
 
         return sensorA.get();
     }
