@@ -144,6 +144,7 @@ public class Vision {
 
         // connor fix this one \/
         swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, strafeForwardBack);
+        //swerveDrive.selectiveTranslateAndRotate(ROBO, 0, strafeRightLeft, strafeForwardBack, 0);
 
         if (frontBackAligned && rightLeftAligned) {
             return true;

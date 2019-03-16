@@ -127,6 +127,14 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("RobotYaw", ahrs.getYaw());
 	}
 
+	
+	public void drivePeriodic() {
+		swerveDrive.runSwerve();
+		beakControl();
+		cargoManipulatorControl();
+		climberController.run();
+	}
+
 	public void beakControl() {
 		if (manipulatorPanelOpenBeak.get() || manipulatorAButton.get()) {
 			beak.open();
@@ -186,13 +194,6 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setWheelsOff();
 		}
 
-	}
-
-	public void drivePeriodic() {
-		swerveDrive.runSwerve();
-		beakControl();
-		cargoManipulatorControl();
-		climberController.run();
 	}
 
 }

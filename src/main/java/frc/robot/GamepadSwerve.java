@@ -108,7 +108,7 @@ public class GamepadSwerve extends SwerveDrive {
 
 		switch (driveMode) {
 		case 0:
-			translateAndRotate(fieldTranslateX, fieldTranslateY, unregulatedTurning, ahrs.getAngle() - ahrsOffset,
+			translateAndRotate(fieldTranslateX, fieldTranslateY, unregulatedTurning,
 					absoluteDirection, robotTranslateX, robotTranslateY);
 			break;
 
@@ -129,12 +129,5 @@ public class GamepadSwerve extends SwerveDrive {
 		SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
 		// SmartDashboard.putNumber("POV", driveController.getPOV());
 
-	}
-
-	public void joystickSwerve(Joystick rightDriveJoystick, Joystick leftDriveJoystick) {
-		if(leftDriveJoystick.getX() >= 0.1 || leftDriveJoystick.getY() >= 0.1 || rightDriveJoystick.getTwist() >= 0.1){
-			translateAndRotate(leftDriveJoystick.getX(), leftDriveJoystick.getY(), rightDriveJoystick.getTwist(),
-				ahrs.getAngle() - ahrsOffset, 0, 0, 0);
-		}
 	}
 }
