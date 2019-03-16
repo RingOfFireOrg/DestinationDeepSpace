@@ -19,6 +19,7 @@ public class Vision {
     AHRS ahrs;
 
     private boolean automationRunning = false;
+    final int ALLOWED_OFFSET = 20;
 
     // These numbers must be tuned for your Robot! Be careful!
     final double STEER_K = 0.03; // how hard to drive sideways to center on the target
@@ -74,7 +75,8 @@ public class Vision {
 
     boolean cargoScoreReady() {
         if (validTarget() && cargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak
-                && cargoManipulator.getPosition() == intakePosition.INTAKE && Math.abs(90 - (ahrs.getCompassHeading() % 90)) < 10) {
+                && cargoManipulator.getPosition() == intakePosition.INTAKE
+                && Math.abs(90 - (ahrs.getCompassHeading() % 90)) < 10) {
             return true;
         } else {
             return false;
@@ -104,19 +106,21 @@ public class Vision {
         double strafeRightLeft = tx * STEER_K * -1;
         double strafeForwardBack = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
         final double MAX_SPEED = 0.4;
-        final double MIN_SPEED = 0.1;
+        final double MIN_SPEED = 0.1; // stall speed??
         boolean rightLeftAligned = false;
         boolean frontBackAligned = false;
         SmartDashboard.putNumber("translate x", strafeRightLeft);
 
-        if (Math.abs(tx) < 3) { // three is a random placeholder
+        if (Math.abs(tx) > 3) { // three is a random placeholder
 
             // deal with min and max speeds for right left
-            if (strafeRightLeft < MIN_SPEED && strafeRightLeft >= 0) {
-                strafeRightLeft = MIN_SPEED;
-            } else if (strafeRightLeft > -MIN_SPEED) {
-                strafeRightLeft = -MIN_SPEED;
-            } else if (Math.abs(strafeRightLeft) > MAX_SPEED && strafeRightLeft <= 0) {
+            if(Math.abs(strafeRightLeft) < MIN_SPEED){
+                if (strafeRightLeft >= 0) {
+                    strafeRightLeft = MIN_SPEED;
+                } else if (strafeRightLeft <= 0) {
+                    strafeRightLeft = -MIN_SPEED;
+                }
+            } else if (Math.abs(strafeRightLeft) > MAX_SPEED) {
                 if (strafeRightLeft > 0) {
                     strafeRightLeft = MAX_SPEED;
                 } else {
@@ -128,7 +132,7 @@ public class Vision {
             rightLeftAligned = true;
         }
 
-        if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) {
+        if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) { // is 0.9 close enough??
             // this would speed up or slow down and go drive_K for the perfect setup
             // change the division to subtraction
             if (strafeForwardBack < MIN_SPEED) {
@@ -141,7 +145,8 @@ public class Vision {
             strafeForwardBack = 0;
             frontBackAligned = true;
         }
-        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, strafeRightLeft, strafeForwardBack);
+        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, strafeRightLeft,
+                strafeForwardBack);
 
         if (frontBackAligned && rightLeftAligned) {
             return true;
@@ -151,23 +156,27 @@ public class Vision {
 
     }
 
+  
+
     boolean snapTo90DegreeAngle() {
-        if (ahrs.getCompassHeading() % 90 > 2) {
-            if (ahrs.getCompassHeading() < 10 && ahrs.getCompassHeading() > 350) {
+        if (ahrs.getCompassHeading() % 90 > 2 && ahrs.getCompassHeading() % 90 < 88) {
+            if (ahrs.getCompassHeading() < ALLOWED_OFFSET && ahrs.getCompassHeading() > (360 - ALLOWED_OFFSET)) {
                 // snap to 0 degrees
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 0, 0, 0);
-            } else if (ahrs.getCompassHeading() > 80 && ahrs.getCompassHeading() < 100) {
+            } else if (ahrs.getCompassHeading() > (90 - ALLOWED_OFFSET)
+                    && ahrs.getCompassHeading() < (90 + ALLOWED_OFFSET)) {
                 // snap to 90 degrees
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 90, 0, 0);
-            } else if (ahrs.getCompassHeading() > 170 && ahrs.getCompassHeading() < 190) {
+            } else if (ahrs.getCompassHeading() > (180 - ALLOWED_OFFSET)
+                    && ahrs.getCompassHeading() < (180 + ALLOWED_OFFSET)) {
                 // snap to 180 degrees
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 180, 0, 0);
-            } else if (ahrs.getCompassHeading() > 260 && ahrs.getCompassHeading() < 280) {
+            } else if (ahrs.getCompassHeading() > (270 - ALLOWED_OFFSET)
+                    && ahrs.getCompassHeading() < (270 + ALLOWED_OFFSET)) {
                 // snap to 270 degrees
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 270, 0, 0);
             } else { // if you aren't within the 20 degree window for each 90 degree angle, you are
                      // likely trying to deliver to the rocket OR a lost cause
-                automationStep++;
                 // question: should we be returning true??? or something else? maybe it should
                 // break the automation?
             }
@@ -179,16 +188,15 @@ public class Vision {
 
     boolean hatchPickup() {
         return true;
-        //this will do things in the future
+        // this will do things in the future
     }
 
     boolean hatchScore() {
-        //this will do things in the future
+        // this will do things in the future
         return true;
     }
 
-    boolean cargoScoreCargoShip() {
-        // automation for getting hatch from feeder station
+    boolean cargoScore(intakePosition position) {
         ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
         ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
         tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
@@ -215,15 +223,18 @@ public class Vision {
             }
             break;
         case 3: // score
-            if (!(cargoManipulator.getPosition() == intakePosition.CARGO_SHIP)
-                    || cargoManipulator.getAtTargetAngle() == false) {
-                cargoManipulator.setToCargoShipPosition();
+            if (cargoManipulator.getPosition() != position || !cargoManipulator.getAtTargetAngle()) {
+                if (position == intakePosition.CARGO_SHIP) {
+                    cargoManipulator.setToCargoShipPosition();
+                } else if (position == intakePosition.LOWER_ROCKET) {
+                    cargoManipulator.setToLowerRocketPosition();
+                }
             } else {
                 automationStep++;
             }
             break;
         case 4: // back up slightly
-            if (DESIRED_TARGET_AREA / ta > 0.8) {
+            if (DESIRED_TARGET_AREA / ta > 0.8) { // NEED TEST!!
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, 0, -0.2);
             } else {
                 automationStep++;
@@ -234,63 +245,6 @@ public class Vision {
         }
 
         if (automationStep == 5) {
-            automationRunning = false;
-            automationStep = 0;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    boolean cargoScoreRocket() {
-        // automation for getting hatch from feeder station
-        ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-
-        automationRunning = true;
-
-        switch (automationStep) {
-        case 0: // set up step -> eventually this will set the pipeline
-            swerveDrive.setRobotFrontToHatch();
-            automationStep++;
-            break;
-        case 1: // angle correction
-            if (snapTo90DegreeAngle() == false) {
-                // nothing happens - keep snapping
-            } else {
-                automationStep++;
-            }
-            break;
-        case 2:// line up with target
-            if (alignment() == false) {
-                // nothing so running alignment
-            } else {
-                automationStep++;
-            }
-            break;
-        case 3: // raise cargo
-            if (!(cargoManipulator.getPosition() == intakePosition.LOWER_ROCKET)
-                    || cargoManipulator.getAtTargetAngle() == false) {
-                cargoManipulator.setToLowerRocketPosition();
-            } else {
-                automationStep++;
-            }
-            break;
-        case 4:
-            break;
-        case 5: // back up slightly
-            if (DESIRED_TARGET_AREA / ta > 0.8) {
-                swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, 0, -0.2);
-            } else {
-                automationStep++;
-            }
-            break;
-        case 6:
-            break;
-        }
-
-        if (automationStep == 6) {
             automationRunning = false;
             automationStep = 0;
             return true;
