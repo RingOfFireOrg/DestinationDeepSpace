@@ -188,6 +188,4 @@ public class Robot extends TimedRobot {
 			cargoManipulator.setWheelsOff();
 		}
 	}
-
-	SwerveDrive swerve = SwerveDrive.getInstance(ahrs);
 }
