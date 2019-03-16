@@ -112,12 +112,15 @@ public class Vision {
         SmartDashboard.putNumber("translate x", strafeRightLeft);
 
         if (Math.abs(tx) > 3) { // three is a random placeholder
+            // RJC is it imprtant that the 3 placeholder here and the 3 placeholder above
+            // have the same value? If so maybe move to a constant and use that? if not this
+            // is fine.
 
             // deal with min and max speeds for right left
-            if(Math.abs(strafeRightLeft) < MIN_SPEED){
+            if (Math.abs(strafeRightLeft) < MIN_SPEED) {
                 if (strafeRightLeft >= 0) {
                     strafeRightLeft = MIN_SPEED;
-                } else if (strafeRightLeft <= 0) {
+                } else { // if (strafeRightLeft <= 0
                     strafeRightLeft = -MIN_SPEED;
                 }
             } else if (Math.abs(strafeRightLeft) > MAX_SPEED) {
@@ -156,8 +159,6 @@ public class Vision {
 
     }
 
-  
-
     boolean snapTo90DegreeAngle() {
         if (ahrs.getCompassHeading() % 90 > 2 && ahrs.getCompassHeading() % 90 < 88) {
             if (ahrs.getCompassHeading() < ALLOWED_OFFSET && ahrs.getCompassHeading() > (360 - ALLOWED_OFFSET)) {
@@ -165,7 +166,7 @@ public class Vision {
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 0, 0, 0);
             } else if (ahrs.getCompassHeading() > (90 - ALLOWED_OFFSET)
                     && ahrs.getCompassHeading() < (90 + ALLOWED_OFFSET)) {
-                // snap to 90 degrees
+                // snap to 90 degree-s
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 90, 0, 0);
             } else if (ahrs.getCompassHeading() > (180 - ALLOWED_OFFSET)
                     && ahrs.getCompassHeading() < (180 + ALLOWED_OFFSET)) {
@@ -208,17 +209,14 @@ public class Vision {
             swerveDrive.setRobotFrontToCargo();
             automationStep++;
             break;
+
         case 1: // angle correction
-            if (snapTo90DegreeAngle() == false) {
-                // nothing happens - keep turning
-            } else {
+            if (snapTo90DegreeAngle()) {
                 automationStep++;
             }
             break;
         case 2:// line up with target
-            if (alignment() == false) {
-                // nothing so running alignment
-            } else {
+            if (alignment()) {
                 automationStep++;
             }
             break;
@@ -241,16 +239,12 @@ public class Vision {
             }
             break;
         case 5:
-            break;
-        }
-
-        if (automationStep == 5) {
             automationRunning = false;
             automationStep = 0;
             return true;
-        } else {
-            return false;
+            // break;
         }
+        return false;
     }
 
     boolean isAutomationRunning() {
