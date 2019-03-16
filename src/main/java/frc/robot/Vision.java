@@ -1,12 +1,12 @@
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CargoManipulator.intakePosition;
 import frc.robot.CargoManipulator.wheelState;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import com.kauailabs.navx.frc.AHRS;
+import frc.robot.SwerveDrive.selectiveSwerveDriveModes;
 
 public class Vision {
     private double ts;
@@ -141,10 +141,7 @@ public class Vision {
             strafeForwardBack = 0;
             frontBackAligned = true;
         }
-
-        // connor fix this one \/
-        swerveDrive.translateAndRotate(0, 0, 0, 0, 0, strafeRightLeft, strafeForwardBack);
-        //swerveDrive.selectiveTranslateAndRotate(ROBO, 0, strafeRightLeft, strafeForwardBack, 0);
+        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, strafeRightLeft, strafeForwardBack);
 
         if (frontBackAligned && rightLeftAligned) {
             return true;
@@ -154,20 +151,20 @@ public class Vision {
 
     }
 
-    boolean snapTo90DegreeAngle() { // connor - fix everything in here
+    boolean snapTo90DegreeAngle() {
         if (ahrs.getCompassHeading() % 90 > 2) {
             if (ahrs.getCompassHeading() < 10 && ahrs.getCompassHeading() > 350) {
                 // snap to 0 degrees
-                swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, 0);
+                swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 0, 0, 0);
             } else if (ahrs.getCompassHeading() > 80 && ahrs.getCompassHeading() < 100) {
                 // snap to 90 degrees
-                swerveDrive.translateAndRotate(0, 0, 0, 0, 90, 0, 0);
+                swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 90, 0, 0);
             } else if (ahrs.getCompassHeading() > 170 && ahrs.getCompassHeading() < 190) {
                 // snap to 180 degrees
-                swerveDrive.translateAndRotate(0, 0, 0, 0, 180, 0, 0);
+                swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 180, 0, 0);
             } else if (ahrs.getCompassHeading() > 260 && ahrs.getCompassHeading() < 280) {
                 // snap to 270 degrees
-                swerveDrive.translateAndRotate(0, 0, 0, 0, 270, 0, 0);
+                swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 270, 0, 0);
             } else { // if you aren't within the 20 degree window for each 90 degree angle, you are
                      // likely trying to deliver to the rocket OR a lost cause
                 automationStep++;
@@ -227,8 +224,7 @@ public class Vision {
             break;
         case 4: // back up slightly
             if (DESIRED_TARGET_AREA / ta > 0.8) {
-                //connor fix \/
-                swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, -2);
+                swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, 0, -0.2);
             } else {
                 automationStep++;
             }
@@ -285,8 +281,7 @@ public class Vision {
             break;
         case 5: // back up slightly
             if (DESIRED_TARGET_AREA / ta > 0.8) {
-                //connor fix \/
-                swerveDrive.translateAndRotate(0, 0, 0, 0, 0, 0, -2);
+                swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, 0, -0.2);
             } else {
                 automationStep++;
             }
