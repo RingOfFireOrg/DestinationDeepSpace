@@ -14,6 +14,10 @@ public class PID {
     double lastTarget = 0;
     double target = 0;
     double targetMargin = 1;
+
+    double integralMinimumLimit = 0;
+    double integralMaximumLimit = 0;
+    boolean integralLimitEnabled = false;
      
     PID (double P, double I, double D) {
         kP = P;
@@ -63,6 +67,16 @@ public class PID {
         }
     }
 
+    void disableIntegralLimit() {
+        integralLimitEnabled = false;
+    }
+
+    void setIntegralLimits(double integralMinimumLimit, double integralMaximumLimit) {
+        integralLimitEnabled = true;
+        this.integralMinimumLimit = integralMinimumLimit;
+        this.integralMaximumLimit = integralMaximumLimit;
+    }
+
     void reset() {
         pidOutput = 0;
         integral = 0;
@@ -71,7 +85,13 @@ public class PID {
 
     void update() {
         integral += (error);
-        pidOutput = (error * kP) + (integral * kI) + ((error - lastError) * kD);
+        if (integralLimitEnabled && integral < integralMinimumLimit) {
+            pidOutput = (error * kP) + (integralMinimumLimit * kI) + ((error - lastError) * kD);
+        } else if (integralLimitEnabled && integral > integralMaximumLimit) {
+            pidOutput = (error * kP) + (integralMaximumLimit * kI) + ((error - lastError) * kD);
+        } else {
+            pidOutput = (error * kP) + (integral * kI) + ((error - lastError) * kD);
+        }
         lastError = error;
     }
 
