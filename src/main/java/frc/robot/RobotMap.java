@@ -39,7 +39,8 @@ public class RobotMap {
 	public static final int MANIPULATOR_LEFT_BUMPER_BUTTON_VALUE = 5;
 	public static final int MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE = 6;
 	public static final int MANIPULATOR_BACK_BUTTON_VALUE = 7;
-	public static final int MANIPULATOR_START_BUTTON_VALUE = 8;
+	public static final int MANIPULATOR_START_L3_BUTTON_VALUE = 8;
+	public static final int MANIPULATOR_START_L2_BUTTON_VALUE = 9; //find which button to map this to
 
 	// Driver Gamepad Buttons axes:
 	public static final int LEFT_STICK_X_AXIS = 0;

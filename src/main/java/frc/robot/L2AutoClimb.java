@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Counter;
 
-public class AutoClimb {
+public class L2AutoClimb {
     private int step = 0;
-    private int stepDown = 0;
     private Climber climber;
     private SwerveDrive swerveDrive;
     private CargoManipulator cargoManipulator;
@@ -34,12 +33,11 @@ public class AutoClimb {
 
     private Timer timer = new Timer();
 
-    private boolean doingAutoClimb = false; //false means not done
-    private boolean gettingDownL2 = false; //false means not done
+    private boolean doingL2AutoClimb = false; //false means not done
 
     private double climbAngle = -5;
 
-    public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
+    public L2AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
         this.swerveDrive = swerveDrive;
         this.climber = climber;
         this.ahrs = ahrs;
@@ -49,24 +47,24 @@ public class AutoClimb {
         robotPitchPID.setOutputRange(-1, 1);
     }
 
-    public void autoClimbRestart() {
+    public void autoClimbL2Restart() {
         step = 0;
         timer.reset();
         climber.reset();
         resetLimitSwitches();
-        doingAutoClimb = true;
+        doingL2AutoClimb = true;
     }
 
-    public boolean autoClimbEnabled() {
-        return doingAutoClimb;
+    public boolean autoClimbL2Enabled() {
+        return doingL2AutoClimb;
     }
 
-    public void stopAutoClimb() {
-        doingAutoClimb = false;
+    public void stopAutoClimbL2() {
+        doingL2AutoClimb = false;
     }
 
-    public void autoClimb() {
-        if(!doingAutoClimb) {
+    public void autoClimbL2() {
+        if(!doingL2AutoClimb) {
             return;
         }
 
@@ -123,7 +121,7 @@ public class AutoClimb {
             robotPitchPID.update();
             climber.extendLevel(robotPitchPID.getOutput());
 
-            if(climber.isFullyExtendedL3()) {
+            if(climber.isFullyExtendedL2()) {
                 resetLimitSwitches();
                 step++;
             }
@@ -164,7 +162,7 @@ public class AutoClimb {
             }
            break;
 
-        // drive forward until robot is on platfrom and back leg hits platform AND MOVE CLIMBER BACK UP
+        // drive forward until robot is on platfrom and back leg hits platform
         case 8: 
             if (isBackLegTouching()) { 
                 climber.stopDriving(); 
@@ -203,95 +201,10 @@ public class AutoClimb {
                 driveSwerve(0.5);
             } else {
                 stopSwerve();
-                doingAutoClimb = false;
+                doingL2AutoClimb = false;
                 step++;
             }
         }   
-    }
-
-    public void getDownL2() {
-        if(!gettingDownL2) {
-            return;
-        }
-
-        switch(stepDown) {
-            //starting everything
-            case 0:
-                cargoManipulator.setToCargoShipPosition();
-                timer.start();
-                step++;                
-                break;
-            
-            //drive forward 2ish inches
-            case 1:
-                cargoManipulator.setToCurrentPosition();
-                if (timer.get() < 0.05) { 
-                    driveSwerve(0.5);
-                } else {
-                    stopSwerve();
-                    pitchOffset = ahrs.getPitch();
-                    step++;
-                    robotPitchPID.reset();
-                }
-                break;
-
-            //extend front leg till it hits the ground
-            case 2: 
-                cargoManipulator.setToCurrentPosition();
-                if(climber.isFullyExtendedL2(FRONT)) {
-                    resetLimitSwitches();
-                    timer.reset();
-                    timer.start();
-                    step++;
-                } else {
-                    climber.extend(FRONT);
-                }
-                break;
-
-            //drive forward till back wheels off the platform
-            case 3: 
-                cargoManipulator.setToCurrentPosition();
-                if(timer.get() < 1) { //FIND ACTUAL NUMBER NECESSARY TO DO THIS!!!!!!!!
-                    driveSwerve(0.5);
-                } else {
-                    stopSwerve();
-                }
-
-            //extend back legs until they touch the ground
-            case 4:
-                cargoManipulator.setToCurrentPosition();
-                if(climber.isFullyExtendedL2(BACK)) {
-                    resetLimitSwitches();
-                    timer.reset();
-                    timer.start();
-                    step++;
-                } else {
-                    climber.extend(BACK);
-                }
-                break;
-
-            //drive forward 2ish inches
-            case 5:
-                cargoManipulator.setToCurrentPosition();
-                if(timer.get() < 0.05) {
-                    driveSwerve(0.5);
-                } else {
-                    stopSwerve();
-                }
-                break;
-
-            //retract both legs all the way
-            case 6: 
-                cargoManipulator.setToCurrentPosition();
-                robotPitchPID.setError((pitchOffset - ahrs.getPitch()) - climbAngle);
-                robotPitchPID.update();
-                climber.retractLevel(robotPitchPID.getOutput());
-    
-                if(climber.isFullyRetracted()) {
-                    resetLimitSwitches();
-                    step++;
-                }
-        }
     }
 
     private boolean isFrontLegTouching() {
@@ -316,5 +229,4 @@ public class AutoClimb {
     private void stopSwerve() {
         swerveDrive.syncroDrive(0, 0, 0, 0);
     }
-
 }

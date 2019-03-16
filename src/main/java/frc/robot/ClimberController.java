@@ -15,7 +15,8 @@ public class ClimberController {
     private XboxController manipulatorController = new XboxController(RobotMap.MANIPULATOR_GAMEPAD);
     public Joystick manipulatorPanel = new Joystick(RobotMap.MANIPULATOR_PANEL);
     public Joystick leftDriveJoystick = new Joystick(RobotMap.LEFT_DRIVE_JOYSTICK);
-    private JoystickButton startAutoClimbGamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_START_BUTTON_VALUE);
+    private JoystickButton startAutoClimbL3GamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_START_L3_BUTTON_VALUE);
+    private JoystickButton startAutoClimbL2GamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_START_L2_BUTTON_VALUE);
     private JoystickButton stopAutoClimbGamepadBtn = new JoystickButton(manipulatorController, RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
     private JoystickButton startAutoClimbBtn = new JoystickButton(manipulatorPanel, RobotMap.OPEN_BEAK_BUTTON);
     private JoystickButton startAutoClimbBtn2 = new JoystickButton(manipulatorPanel, RobotMap.CLOSE_BEAK_BUTTON); //should find better names for these 2 buttons
@@ -23,23 +24,32 @@ public class ClimberController {
     private JoystickButton enableClimbButton = new JoystickButton(leftDriveJoystick, RobotMap.CLIMBER_ENABLE_BUTTON);
     private Climber climber = new Climber();
     private AutoClimb autoClimb;
+    private L2AutoClimb autoClimbL2;
 
     private boolean climbModeTrue;
 
-
     public ClimberController(SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
         autoClimb = new AutoClimb(climber, swerveDrive, ahrs, cargoManipulator);
+        autoClimbL2 = new L2AutoClimb(climber, swerveDrive, ahrs, cargoManipulator);
     }
 
     private boolean startAutoClimbTrue(){ //should find a better name
         if (climbModeTrue && startAutoClimbBtn.get() && startAutoClimbBtn2.get()){
             return true;
-        } else if (climbModeTrue && startAutoClimbGamepadBtn.get()) {
+        } else if (climbModeTrue && startAutoClimbL3GamepadBtn.get()) {
             return true;
         } else {
             return false;
         }
         
+    }
+
+    private boolean startL2AutoClimbTrue() {
+        if (climbModeTrue && startAutoClimbL2GamepadBtn.get()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void run() {
@@ -57,6 +67,18 @@ public class ClimberController {
             autoClimb.autoClimb();
         } else {
             climbManually();            
+        }
+
+        if (startL2AutoClimbTrue()) {
+            autoClimbL2.autoClimbL2Restart();
+        } else if (!climbModeTrue || stopAutoClimbGamepadBtn.get()) {
+            autoClimbL2.stopAutoClimbL2();
+        }
+
+        if(autoClimbL2.autoClimbL2Enabled()) {
+            autoClimbL2.autoClimbL2();
+        } else {
+            climbManually();
         }
     }
 

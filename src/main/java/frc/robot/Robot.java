@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
 	public JoystickButton manipulatorRightBumber = new JoystickButton(manipulatorGamepad,
 			RobotMap.MANIPULATOR_RIGHT_BUMPER_BUTTON_VALUE);
 	public JoystickButton manipulatorStartButton = new JoystickButton(manipulatorGamepad,
-			RobotMap.MANIPULATOR_START_BUTTON_VALUE);
+			RobotMap.MANIPULATOR_START_L3_BUTTON_VALUE);
 	public JoystickButton manipulatorBackButton = new JoystickButton(manipulatorGamepad,
 			RobotMap.MANIPULATOR_BACK_BUTTON_VALUE);
 
