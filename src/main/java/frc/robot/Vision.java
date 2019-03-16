@@ -74,7 +74,7 @@ public class Vision {
 
     boolean cargoScoreReady() {
         if (validTarget() && cargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak
-                && cargoManipulator.getPosition() == intakePosition.INTAKE && ahrs.getCompassHeading() % 90 > 10) {
+                && cargoManipulator.getPosition() == intakePosition.INTAKE && Math.abs(90 - (ahrs.getCompassHeading() % 90)) < 10) {
             return true;
         } else {
             return false;
