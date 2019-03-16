@@ -63,12 +63,11 @@ public class SwerveDrive {
 		return swerveDrive;
 	}
 
-	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning,
-			double gyroReading, double fieldRelativeRobotDirection, double driveRobotTranslationX,
+	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
 			double driveRobotTranslationY) {
 		// turns the gyro into a 0-360 range -- easier to work with
-		double gyroValueUnprocessed = gyroReading;
-		double gyroValueProcessed = (Math.abs(((int) (gyroReading)) * 360) + gyroReading) % 360;
+		double gyroValueUnprocessed = ahrs.getAngle() - this.ahrsOffset;
+		double gyroValueProcessed = (Math.abs(((int) (gyroValueUnprocessed)) * 360) + gyroValueUnprocessed) % 360;
 
 		// initializing the main variables
 		double fieldRelativeX = driveFieldTranslationX;
@@ -277,22 +276,26 @@ public class SwerveDrive {
 	}
 
 	void selectiveTranslateAndRotate(selectiveSwerveDriveModes selectiveSwerveDriveMode, double turnInput,
-			double translateXInput, double translateYInput, double gyroReading) {
+			double translateXInput, double translateYInput) {
 		this.selectiveSwerveDriveMode = selectiveSwerveDriveMode;
 		switch (this.selectiveSwerveDriveMode) {
 		case ROBOT_UNREGULATED:
-			translateAndRotate(0, 0, turnInput, gyroReading, -1, translateXInput, translateYInput);
+			translateAndRotate(0, 0, turnInput, -1, translateXInput, translateYInput);
 			break;
 		case ROBOT_ABSOLUTE:
-			translateAndRotate(0, 0, 0, gyroReading, turnInput, translateXInput, translateYInput);
+			translateAndRotate(0, 0, 0, turnInput, translateXInput, translateYInput);
 			break;
 		case FIELD_UNREGULATED:
-			translateAndRotate(translateXInput, translateYInput, turnInput, gyroReading, -1, 0, 0);
+			translateAndRotate(translateXInput, translateYInput, turnInput, -1, 0, 0);
 			break;
 		case FIELD_ABSOLUTE:
-			translateAndRotate(translateXInput, translateYInput, 0, gyroReading, turnInput, 0, 0);
+			translateAndRotate(translateXInput, translateYInput, 0, turnInput, 0, 0);
 			break;
 		}
+	}
+
+	void setAHRSOffset(double ahrsOffset) {
+		this.ahrsOffset = ahrsOffset;
 	}
 
 	void parkPosition() {
