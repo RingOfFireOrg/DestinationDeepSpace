@@ -74,6 +74,7 @@ public class Climber {
 
     //takes robot to the top, handles whether to stop cause of magnet and also regulating the two bars to keep them at the same height
     public void extendLevel(double difference) {
+        SmartDashboard.putNumber("difference", difference);
         updateLegState(Direction.EXTEND);
         //assuming that the gyro will be + when rotated forward
         if (getDriveSpeed(Direction.EXTEND, frontState) == RobotMap.SPEED_DEFAULT_CLIMB) {
@@ -81,10 +82,9 @@ public class Climber {
         } else {
             climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.EXTEND, frontState));
         }
-
-        //why is it allowing it to be going the opposite direction? thats a little odd 
+ 
         if (getDriveSpeed(Direction.EXTEND, backState) == RobotMap.SPEED_DEFAULT_CLIMB) {
-            climberBack.set(RobotMap.SPEED_DEFAULT_CLIMB - difference);
+            climberBack.set(0.7 * (RobotMap.SPEED_DEFAULT_CLIMB - difference));
         } else {
             climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
         }
@@ -298,7 +298,10 @@ public class Climber {
     public void printHallEffectState(){
         SmartDashboard.putBoolean("Front HE Sensor", !frontHallEffect.get());
         SmartDashboard.putBoolean("Back HE sensor", !backHallEffect.get());
+    }
 
+    public boolean isClimberDown() {
+        return !backHallEffect.get() && !frontHallEffect.get();
     }
 
     public enum Location {

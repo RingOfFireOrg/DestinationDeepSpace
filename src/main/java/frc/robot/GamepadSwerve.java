@@ -53,7 +53,7 @@ public class GamepadSwerve extends SwerveDrive {
 		if (joystickAbsoluteDirection < 0) {
 			joystickAbsoluteDirection += 360;
 		}
-		if (leftDriveStick.getMagnitude() < RobotMap.ABSOLUTE_ROTATION_DEADZONE) {
+		if (rightDriveStick.getMagnitude() < RobotMap.ABSOLUTE_ROTATION_DEADZONE) {
 			joystickAbsoluteDirection = -1;
 		}
 
@@ -124,7 +124,9 @@ public class GamepadSwerve extends SwerveDrive {
 	}
 
 	public void joystickSwerve(Joystick rightDriveJoystick, Joystick leftDriveJoystick) {
-		translateAndRotate(rightDriveJoystick.getX(), rightDriveJoystick.getY(), leftDriveJoystick.getTwist(),
+		if(leftDriveJoystick.getX() >= 0.1 || leftDriveJoystick.getY() >= 0.1 || rightDriveJoystick.getTwist() >= 0.1){
+			translateAndRotate(leftDriveJoystick.getX(), leftDriveJoystick.getY(), rightDriveJoystick.getTwist(),
 				ahrs.getAngle() - ahrsOffset, 0, 0, 0);
+		}
 	}
 }

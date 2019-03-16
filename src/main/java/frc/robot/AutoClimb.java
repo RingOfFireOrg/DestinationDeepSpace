@@ -35,10 +35,13 @@ public class AutoClimb {
 
     private boolean doingAutoClimb = false; //false means not done
 
-    public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs) {
+    private double climbAngle = -5;
+
+    public AutoClimb(Climber climber, SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
         this.swerveDrive = swerveDrive;
         this.climber = climber;
         this.ahrs = ahrs;
+        this.cargoManipulator = cargoManipulator;
         timer.reset();
         robotPitchPID = new PID(0.02, 0.00005, 0);
         robotPitchPID.setOutputRange(-1, 1);
@@ -71,7 +74,7 @@ public class AutoClimb {
         
         //set cargo manipulator arm out of way of climber and get ready to climb
         case 0: 
-            cargoManipulator.setToCustomPosition(cargoManipulator.OUT_OF_CLIMBER_WAY_DEGREES);
+            cargoManipulator.setToCargoShipPosition();
             timer.start();
             step++;                
             break;
@@ -79,7 +82,7 @@ public class AutoClimb {
         // drive back a little 
         case 1:
             cargoManipulator.setToCurrentPosition();
-            if (timer.get() < 0.05) {
+            if (timer.get() < 0.05) { 
                 driveSwerve(-0.5);
             } else {
                 stopSwerve();
@@ -89,10 +92,32 @@ public class AutoClimb {
             }
             break;
 
-        // extend front and back legs all the way
+        //makes the front winch taught
         case 2:
             cargoManipulator.setToCurrentPosition();
-            robotPitchPID.setError(ahrs.getPitch() - pitchOffset);
+            if (pitchOffset - ahrs.getPitch() < -1) {
+                climber.extend(FRONT);
+            } else {
+                climber.stopClimbing(FRONT);
+                step ++;
+            }
+            break;
+
+        //makes the back winch taught
+        case 3:
+            cargoManipulator.setToCurrentPosition();
+            if (pitchOffset - ahrs.getPitch() > -0.1) {
+                climber.extend(BACK);
+            } else {
+                climber.stopClimbing(BACK);
+                step ++;
+            }
+            break;
+
+        // extend front and back legs all the way
+        case 4:
+            cargoManipulator.setToCurrentPosition();
+            robotPitchPID.setError((pitchOffset - ahrs.getPitch()) - climbAngle);
             robotPitchPID.update(); 
             climber.extendLevel(robotPitchPID.getOutput());
 
@@ -103,7 +128,7 @@ public class AutoClimb {
             break;
 
         // drive forward until front of robot is on platform and front leg hits platform
-        case 3:
+        case 5:
             cargoManipulator.setToCurrentPosition();
             if (isFrontLegTouching()) { 
                 climber.stopDriving();
@@ -116,7 +141,7 @@ public class AutoClimb {
             break;    
 
         //back up for 1/2 a second
-        case 4:
+        case 6:
             cargoManipulator.setToCurrentPosition();
             if (timer.get() < 0.05) {
                 climber.driveReverse();
@@ -127,7 +152,7 @@ public class AutoClimb {
             break;
 
         // retract front leg all the way
-        case 5:  
+        case 7:  
             cargoManipulator.setToCurrentPosition();
             if(climber.isFullyRetracted(FRONT)) {
                 resetLimitSwitches();
@@ -138,7 +163,7 @@ public class AutoClimb {
            break;
 
         // drive forward until robot is on platfrom and back leg hits platform AND MOVE CLIMBER BACK UP
-        case 6: 
+        case 8: 
             if (isBackLegTouching()) { 
                 climber.stopDriving(); 
                 step++;
@@ -150,7 +175,7 @@ public class AutoClimb {
             break;
 
         //back up for 1/2 a second
-        case 7: 
+        case 9: 
             if (timer.get() < 0.05) {
                 climber.driveReverse();
             } else {
@@ -160,7 +185,7 @@ public class AutoClimb {
             break;
 
         // retract back leg all the way up
-        case 8:   
+        case 10:   
             if(climber.isFullyRetracted(BACK)) {
                 timer.reset();
                 timer.start();
@@ -171,7 +196,7 @@ public class AutoClimb {
             break;
 
         // drive forward until all the way on platfrom
-        case 9:
+        case 11:
             if (timer.get() < 0.5) {
                 driveSwerve(0.5);
             } else {

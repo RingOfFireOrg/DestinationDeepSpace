@@ -265,6 +265,10 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
 	}
 
+	void translateAndRotate(double unregulatedTurning, double gyroReading, double robotTranslationX, double robotTranslationY) {
+		translateAndRotate(0, 0, unregulatedTurning, gyroReading, -1, robotTranslationX, robotTranslationY);
+	}
+
 	void parkPosition() {
 		// can be activated to give the robot increased traction when stopped
 		frontRight.control(0, -45);

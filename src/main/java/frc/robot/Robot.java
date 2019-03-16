@@ -98,8 +98,8 @@ public class Robot extends TimedRobot {
 		ahrs.reset();
 
 		swerveDrive = new GamepadSwerve(ahrs, driverGamepad, leftDriveJoystick, rightDriveJoystick);
-		climberController = new ClimberController(swerveDrive, ahrs);
-		SmartDashboard.putNumber("Version #", 5);
+		climberController = new ClimberController(swerveDrive, ahrs, cargoManipulator);
+		SmartDashboard.putNumber("Version #", 6);
 	}
 
 	@Override
@@ -107,12 +107,15 @@ public class Robot extends TimedRobot {
 		// if (/*limelight.isAutomationRunning() || autoClimbMode*/ false) {
 
 		// } else {
-		swerveDrive.runSwerve();
-		beakControl();
-		cargoManipulatorControl();
-		climberController.run();
-		swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
+
+		// swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
 		// }
+		drivePeriodic();
+	}
+
+	@Override
+	public void autonomousPeriodic() {
+		drivePeriodic();
 	}
 
 	@Override
@@ -120,6 +123,8 @@ public class Robot extends TimedRobot {
 		// robotTest.runTest();
 		cargoManipulator.currentAngle();
 		beak.close();
+		SmartDashboard.putNumber("RobotPitch", ahrs.getPitch());
+		SmartDashboard.putNumber("RobotYaw", ahrs.getYaw());
 	}
 
 	public void beakControl() {
@@ -147,45 +152,46 @@ public class Robot extends TimedRobot {
 		 * else { cargoManipulator.setWheelsOff(); }
 		 */
 
-		// eventually this needs a case for middle rocket
-		if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
-			cargoManipulator.setToUpPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
-			cargoManipulator.setToIntakePosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
-			cargoManipulator.setToCargoShipPosition();
-		} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
-			cargoManipulator.setToLowerRocketPosition();
+		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
+		if (cargoArmSpeed > 0.2) {
+			cargoManipulator.moveArmUp(0.45 * cargoArmSpeed);
+		} else if (cargoArmSpeed < -0.2) {
+			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
 		} else {
-			cargoManipulator.setToCurrentPosition();
-			// essentially keeps it steady at wherever we are so that it doesn't fall down
+			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
+				cargoManipulator.setToUpPosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
+				cargoManipulator.setToIntakePosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
+				cargoManipulator.setToCargoShipPosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
+				cargoManipulator.setToLowerRocketPosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON)) {
+				cargoManipulator.setToMidRocketPosition();
+			} else {
+				cargoManipulator.setToCurrentPosition();
+				// essentially keeps it steady at wherever we are so that it doesn't fall down
+			} 
+
 		}
+
 		// Wheel control for manipulator panel
 		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
 																	// this is the right place to get the axis
-		if (cargoWheelsSpeed > 0.2) {
+		if (cargoWheelsSpeed > 0.2 || manipulatorXButton.get()) {
 			cargoManipulator.setWheelsIn();
-		} else if (cargoWheelsSpeed < -0.2) {
+		} else if (cargoWheelsSpeed < -0.2 || manipulatorYButton.get()) {
 			cargoManipulator.setWheelsOut();
 		} else {
 			cargoManipulator.setWheelsOff();
 		}
 
-		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
-		if (cargoArmSpeed > 0.2) {
-			cargoManipulator.moveArmUp(cargoArmSpeed);
-		} else if (cargoArmSpeed < -0.2) {
-			cargoManipulator.moveArmDown(-cargoArmSpeed);
-		} else {
-			cargoManipulator.stopArm();
-		}
+	}
 
-		if (manipulatorXButton.get()) {
-			cargoManipulator.setWheelsIn();
-		} else if (manipulatorYButton.get()) {
-			cargoManipulator.setWheelsOut();
-		} else {
-			cargoManipulator.setWheelsOff();
-		}
+	public void drivePeriodic() {
+		swerveDrive.runSwerve();
+		beakControl();
+		cargoManipulatorControl();
+		climberController.run();
 	}
 }
