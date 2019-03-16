@@ -121,7 +121,7 @@ public class AutoClimb {
             robotPitchPID.update();
             climber.extendLevel(robotPitchPID.getOutput());
 
-            if(climber.isFullyExtended()) {
+            if(climber.isFullyExtendedL3()) {
                 resetLimitSwitches();
                 step++;
             }

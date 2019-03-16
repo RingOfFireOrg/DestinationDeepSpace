@@ -17,10 +17,6 @@ import static frc.robot.Climber.Location.FRONT;
 import static frc.robot.Climber.Location.BACK;
 
 public class Climber {
-    /**
-     * The default speed to make controlling easier
-     */
-
     private MovementState frontState = MovementState.STOP_MAGNET_DOWN;
     private MovementState backState = MovementState.STOP_MAGNET_DOWN;
 
@@ -123,20 +119,36 @@ public class Climber {
         }
     }
 
-    public boolean isFullyExtended() {
-        return isFullyExtended(FRONT) && isFullyExtended(BACK);
+    public boolean isFullyExtendedL3() {
+        return isFullyExtendedL3(FRONT) && isFullyExtendedL3(BACK);
     }
 
-    public boolean isFullyExtended(Location location) {
+    public boolean isFullyExtendedL2() {
+        return isFullyExtendedL2(FRONT) && isFullyExtendedL2(BACK);
+    }
+
+    public boolean isFullyExtendedL3(Location location) {
         if (Location.FRONT == location) {
-            return isFullyExtended(frontState);
+            return isFullyExtendedL3(frontState);
         } else {
-            return isFullyExtended(backState);
+            return isFullyExtendedL3(backState);
         }
     }
 
-    public static boolean isFullyExtended(MovementState current) {
+    public boolean isFullyExtendedL2(Location location) {
+        if (Location.FRONT == location) {
+            return isFullyExtendedL2(frontState);
+        } else {
+            return isFullyExtendedL2(backState);
+        }
+    }
+
+    public static boolean isFullyExtendedL3(MovementState current) {
         return current == MovementState.STOP_UP || current == MovementState.STOP_MAGNET_UP;
+    }
+
+    public static boolean isFullyExtendedL2(MovementState current) {
+        return current == MovementState.LEVEL_2_MAGNET;
     }
 
     public boolean isFullyRetracted() {
@@ -154,7 +166,6 @@ public class Climber {
     public static boolean isFullyRetracted(MovementState current) {
         return current == MovementState.STOP_DOWN || current == MovementState.STOP_MAGNET_DOWN;
     }
-
 
    //actually returning a goal NOT an actual speed - let's eventually change this method name
     public static double getDriveSpeed(Direction direction, MovementState current) {
@@ -246,13 +257,31 @@ public class Climber {
                 return MovementState.SLOW_UP;
             }
             if (direction == Direction.RETRACT && !sensorDetected) {
-                return MovementState.ALLOW;
+                return MovementState.ALLOW_ABOVE_L2;
             }
         }
 
-        if (current == MovementState.ALLOW) {
+        if (current == MovementState.ALLOW_ABOVE_L2) {
             if (direction == Direction.EXTEND && sensorDetected) {
                 return MovementState.SLOW_MAGNET_UP;
+            }
+            if (direction == Direction.RETRACT && sensorDetected) {
+                return MovementState.LEVEL_2_MAGNET;
+            }
+        }
+
+        if(current == MovementState.LEVEL_2_MAGNET) {
+            if (direction == Direction.EXTEND && !sensorDetected) {
+                return MovementState.ALLOW_ABOVE_L2;
+            } 
+            if (direction == Direction.RETRACT && !sensorDetected) {
+                return MovementState.ALLOW_BELOW_L2;
+            }
+        }
+
+        if(current == MovementState.ALLOW_BELOW_L2) {
+            if (direction == Direction.EXTEND && sensorDetected) {
+                return MovementState.LEVEL_2_MAGNET;
             }
             if (direction == Direction.RETRACT && sensorDetected) {
                 return MovementState.SLOW_MAGNET_DOWN;
@@ -261,7 +290,7 @@ public class Climber {
 
         if (current == MovementState.SLOW_MAGNET_DOWN) {
             if (direction == Direction.EXTEND && !sensorDetected) {
-                return MovementState.ALLOW;
+                return MovementState.ALLOW_BELOW_L2;
             }
             if (direction == Direction.RETRACT && !sensorDetected) {
                 return MovementState.SLOW_DOWN;
@@ -298,7 +327,6 @@ public class Climber {
     public void printHallEffectState(){
         SmartDashboard.putBoolean("Front HE Sensor", !frontHallEffect.get());
         SmartDashboard.putBoolean("Back HE sensor", !backHallEffect.get());
-
     }
 
     public enum Location {
