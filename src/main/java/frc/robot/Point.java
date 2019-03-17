@@ -12,6 +12,11 @@ public class Point {
         this.y = y;
     }
 
+    Point () {
+        this.x = 0;
+        this.y = 0;
+    }
+
     void setX(double x) {
         this.x = x;
     }
