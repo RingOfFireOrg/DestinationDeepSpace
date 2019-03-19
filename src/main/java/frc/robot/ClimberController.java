@@ -69,17 +69,17 @@ public class ClimberController {
             climbManually();            
         }
 
-        if (startL2AutoClimbTrue()) {
-            autoClimbL2.autoClimbL2Restart();
-        } else if (!climbModeTrue || stopAutoClimbGamepadBtn.get()) {
-            autoClimbL2.stopAutoClimbL2();
-        }
+        // if (startL2AutoClimbTrue()) {
+        //     autoClimbL2.autoClimbL2Restart();
+        // } else if (!climbModeTrue || stopAutoClimbGamepadBtn.get()) {
+        //     autoClimbL2.stopAutoClimbL2();
+        // }
 
-        if(autoClimbL2.autoClimbL2Enabled()) {
-            autoClimbL2.autoClimbL2();
-        } else {
-            climbManually();
-        }
+        // if(autoClimbL2.autoClimbL2Enabled()) {
+        //     autoClimbL2.autoClimbL2();
+        // } else {
+        //     climbManually();
+        // }
     }
 
     private void climbManually() {
