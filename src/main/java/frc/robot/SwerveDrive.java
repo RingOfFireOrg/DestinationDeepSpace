@@ -445,4 +445,176 @@ public class SwerveDrive {
 			backRight.setSteerSpeed(steerSpeed);
 		}
 	}
+
+	//---
+	//---
+	//---
+	//Refactoring for translate and rotate
+	//---
+	//---
+	//---
+	Point convertToFieldRelative(Point robotRelativeVector, Point fieldRelativeVector, double drivetrainAngle) {
+		double fieldTransMag = fieldRelativeVector.distanceFromZero();
+		if (fieldTransMag != 0) {
+			double initialAngle;
+			if (fieldRelativeVector.getX() == 0) {
+				if (fieldRelativeVector.getY() > 0) {
+					initialAngle = 90;
+				} else {
+					initialAngle = -90;
+				}
+			} else {
+				initialAngle = Math.toDegrees(Math.atan(fieldRelativeVector.getY() / fieldRelativeVector.getX()));
+			}
+			if (fieldRelativeVector.getX() < 0) {
+				if (fieldRelativeVector.getY()> 0) {
+					initialAngle += 180;
+				} else {
+					initialAngle -= 180;
+				}
+			}
+			double processedAngle = initialAngle + drivetrainAngle;
+			robotRelativeVector.setX(fieldTransMag * Math.cos(Math.toRadians(processedAngle)));
+			robotRelativeVector.setY(fieldTransMag * Math.sin(Math.toRadians(processedAngle)));
+		}
+		return robotRelativeVector;
+	}
+
+	double rotationMagnitude(Point translation, double absoluteTargetAngle, double unregulatedTurnValue, double drivetrainCompassHeading, double drivetrainAngleAccumulated) {
+		gyroRateBuffer.add(ahrs.getRate());
+		double rotationMagnitude;
+		if (absoluteTargetAngle != -1) {
+			if (absoluteTargetAngle < 0)
+				absoluteTargetAngle += 360;
+			if (drivetrainCompassHeading > 180 && absoluteTargetAngle == 0) {
+				absoluteTargetAngle = 360;
+			}
+			rotationMagnitude = (absoluteTargetAngle - drivetrainCompassHeading) * 0.005;
+			if (Math.abs(absoluteTargetAngle - drivetrainCompassHeading) > 180)
+				rotationMagnitude *= -1;
+			driveStraight = false;
+		} else if (unregulatedTurnValue > RobotMap.ROTATION_DEADZONE
+				|| unregulatedTurnValue < -RobotMap.ROTATION_DEADZONE) {
+			rotationMagnitude = unregulatedTurnValue;
+			driveStraight = false;
+		} else if (Math.sqrt(Math.pow(translation.getX(), 2) + Math.pow(translation.getY(), 2)) > RobotMap.TRANSLATION_DEADZONE * 0.75 && Math.abs(gyroRateBuffer.getAverage()) < 3) {
+			// no turning methods -- goes straight
+			if (driveStraight == false) {
+				driveStraight = true;
+				translationAngle = drivetrainAngleAccumulated;
+				pidDrivingStraight.reset();
+			}
+			pidDrivingStraight.setError(drivetrainAngleAccumulated - translationAngle);
+			pidDrivingStraight.update();
+			rotationMagnitude = -pidDrivingStraight.getOutput();
+		} else {
+			rotationMagnitude = 0;
+		}
+		if (rotationMagnitude > 1) {
+			rotationMagnitude = 1;
+		} else if (rotationMagnitude < -1) {
+			rotationMagnitude = -1;
+		}
+		return rotationMagnitude;
+	}
+
+	double[] speedScale(double[] speedSet, double speedLimit) {
+		double maxSpeed = speedSet[0];
+		if (speedSet[1] > maxSpeed) {
+			maxSpeed = speedSet[1];
+		}
+		if (speedSet[2] > maxSpeed) {
+			maxSpeed = speedSet[2];
+		}
+		if (speedSet[3] > maxSpeed) {
+			maxSpeed = speedSet[3];
+		}
+		if (maxSpeed > speedLimit) {
+			for (int i = 0; i < 4; i++) {
+				speedSet[i] /= maxSpeed;
+			}
+		}
+		return speedSet;
+	}
+
+	void setModules(double[] speed, double[] angle) {
+		frontRight.control(speed[0], angle[0]);
+		frontLeft.control(speed[1], angle[1]);
+		backLeft.control(speed[2], angle[2]);
+		backRight.control(speed[3], angle[3]);
+	}
+
+	void dataShoot(double gyroValue) {
+		// reads out the raw angles, processed angles, speed, and gyro
+		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
+		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
+		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
+		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
+
+		SmartDashboard.putNumber("Gyro 0-360", gyroValue);
+
+		// SmartDashboard.putNumber("FR Speed", wheelSpeed[0]);
+		// SmartDashboard.putNumber("FL Speed", wheelSpeed[1]);
+		// SmartDashboard.putNumber("BL Speed", wheelSpeed[2]);
+		// SmartDashboard.putNumber("BR Speed", wheelSpeed[3]);
+
+		// SmartDashboard.putNumber("FR Angle", wheelAngle[0]);
+		// SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
+		// SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
+		// SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
+	}
+
+	void translateAndRotateRefactoredStructure(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
+			double driveRobotTranslationY) {
+		// turns the gyro into a 0-360 range -- easier to work with
+		double gyroValueUnprocessed = ahrs.getAngle() - this.ahrsOffset;
+		double gyroValueProcessed = (Math.abs(((int) (gyroValueUnprocessed)) * 360) + gyroValueUnprocessed) % 360;
+
+		// initializing the main variables
+		Point fieldRelativeVector = new Point(driveFieldTranslationX, driveFieldTranslationY);
+		Point robotRelativeVector = new Point();
+		if (isCargoFront) {
+			robotRelativeVector.setX(driveRobotTranslationX);
+			robotRelativeVector.setY(driveRobotTranslationY);
+		} else {
+			robotRelativeVector.setX(-driveRobotTranslationY);
+			robotRelativeVector.setY(driveRobotTranslationX);
+		}
+		double unregulatedRotationValue = unregulatedTurning;
+		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
+
+		Point translationVector = convertToFieldRelative(robotRelativeVector, fieldRelativeVector, gyroValueProcessed);
+		
+		double rotationMagnitude = rotationMagnitude(translationVector, absoluteFieldRelativeDirection, unregulatedRotationValue, gyroValueProcessed, gyroValueUnprocessed);
+
+		Point rotationVector = new Point(rotationMagnitude, rotationMagnitude);
+
+		Point wheelVector[] = new Point[4];
+
+		wheelVector[0] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 90));
+		wheelVector[1] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 0));
+		wheelVector[2] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 270));
+		wheelVector[3] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 180));
+
+		double wheelSpeed[] = new double[4];
+
+		wheelSpeed[0] = wheelVector[0].distanceFromZero();
+		wheelSpeed[1] = wheelVector[1].distanceFromZero();
+		wheelSpeed[2] = wheelVector[2].distanceFromZero();
+		wheelSpeed[3] = wheelVector[3].distanceFromZero();
+
+		double wheelAngle[] = new double[4];
+
+		wheelAngle[0] = 360 - wheelVector[0].getCompassAngle();
+		wheelAngle[1] = 360 - wheelVector[1].getCompassAngle();
+		wheelAngle[2] = 360 - wheelVector[2].getCompassAngle();
+		wheelAngle[3] = 360 - wheelVector[3].getCompassAngle();
+
+		wheelSpeed = speedScale(wheelSpeed, 1);
+
+		setModules(wheelSpeed, wheelAngle);
+
+		dataShoot(gyroValueProcessed);
+	}
+
 }

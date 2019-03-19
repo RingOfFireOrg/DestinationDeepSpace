@@ -160,7 +160,7 @@ public class Robot extends TimedRobot {
 		 * else { cargoManipulator.setWheelsOff(); }
 		 */
 
-		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
+		double cargoArmSpeed = Math.pow(manipulatorGamepad.getRawAxis(5), 2);
 		if (cargoArmSpeed > 0.2) {
 			cargoManipulator.moveArmUp(0.45 * cargoArmSpeed);
 		} else if (cargoArmSpeed < -0.2) {

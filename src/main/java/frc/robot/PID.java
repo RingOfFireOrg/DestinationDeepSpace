@@ -14,8 +14,12 @@ public class PID {
     double lastTarget = 0;
     double target = 0;
     double targetMargin = 1;
+
+    double integralMinimumLimit = 0;
+    double integralMaximumLimit = 0;
+    boolean integralLimitEnabled = false;
      
-    PID (double P, double I, double D) {
+    public PID (double P, double I, double D) {
         kP = P;
         kI = I;
         kD = D;
@@ -26,36 +30,36 @@ public class PID {
         pidOutput = 0;
     }
 
-    void setVelocityControl(boolean velocityControl) {
+    public void setVelocityControl(boolean velocityControl) {
         velocityControlMode = velocityControl;
     }
 
     //only if the target will be rapidly changing
-    void setTargetMargin(double newTargetMargin) {
+    public void setTargetMargin(double newTargetMargin) {
         targetMargin = newTargetMargin;
     }
 
-    void setOutputRange(double minimum, double maximum) {
+    public void setOutputRange(double minimum, double maximum) {
         minimumOutputValue = minimum;
         maximumOutputValue = maximum;
     }
 
-    void setKP (double P) {
+    public void setKP (double P) {
         kP = P;
     }
 
-    void setKI (double I) {
+    public void setKI (double I) {
         kI = I;
     }
-    void setKD (double D) {
+    public void setKD (double D) {
         kD = D;
     }
 
-    void setError(double newError) {
+    public void setError(double newError) {
         error = newError;
     }
 
-    void setError(double newError, double target) {
+    public void setError(double newError, double target) {
         error = newError;
         if (Math.abs(target - lastTarget) > targetMargin) {
             integral = 0;
@@ -63,19 +67,35 @@ public class PID {
         }
     }
 
-    void reset() {
+    public void disableIntegralLimit() {
+        integralLimitEnabled = false;
+    }
+
+    public void setIntegralLimits(double integralMinimumLimit, double integralMaximumLimit) {
+        integralLimitEnabled = true;
+        this.integralMinimumLimit = integralMinimumLimit;
+        this.integralMaximumLimit = integralMaximumLimit;
+    }
+
+    public void reset() {
         pidOutput = 0;
         integral = 0;
         lastError = 0;
     }
-
-    void update() {
+    
+    public void update() {
         integral += (error);
-        pidOutput = (error * kP) + (integral * kI) + ((error - lastError) * kD);
+        if (integralLimitEnabled && integral < integralMinimumLimit) {
+            pidOutput = (error * kP) + (integralMinimumLimit * kI) + ((error - lastError) * kD);
+        } else if (integralLimitEnabled && integral > integralMaximumLimit) {
+            pidOutput = (error * kP) + (integralMaximumLimit * kI) + ((error - lastError) * kD);
+        } else {
+            pidOutput = (error * kP) + (integral * kI) + ((error - lastError) * kD);
+        }
         lastError = error;
     }
 
-    double getOutput() {
+    public double getOutput() {
         if (pidOutput < minimumOutputValue) {
             return minimumOutputValue;
         } else if (pidOutput > maximumOutputValue) {
