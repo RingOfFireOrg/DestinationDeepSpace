@@ -31,11 +31,11 @@ public class AutoClimb {
 
     private PID robotPitchPID;
     private double pitchOffset;
+    private double startingPitch;
 
     private Timer timer = new Timer();
 
     private boolean doingAutoClimb = false; //false means not done
-    private boolean gettingDownL2 = false; //false means not done
 
     private double climbAngle = -5;
 
@@ -89,6 +89,7 @@ public class AutoClimb {
             } else {
                 stopSwerve();
                 pitchOffset = ahrs.getPitch();
+                startingPitch = ahrs.getPitch();
                 step++;
                 robotPitchPID.reset();
             }
@@ -97,22 +98,23 @@ public class AutoClimb {
         //makes the front winch taught
         case 2:
             cargoManipulator.setToCurrentPosition();
-            if (pitchOffset - ahrs.getPitch() < -1) {
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 2) {
                 climber.extend(FRONT);
             } else {
                 climber.stopClimbing(FRONT);
-                step ++;
+                startingPitch = ahrs.getPitch();
+                step++;
             }
             break;
 
         //makes the back winch taught
         case 3:
             cargoManipulator.setToCurrentPosition();
-            if (pitchOffset - ahrs.getPitch() > -0.1) {
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 2) {
                 climber.extend(BACK);
             } else {
                 climber.stopClimbing(BACK);
-                step ++;
+                step++;
             }
             break;
 
@@ -207,91 +209,6 @@ public class AutoClimb {
                 step++;
             }
         }   
-    }
-
-    public void getDownL2() {
-        if(!gettingDownL2) {
-            return;
-        }
-
-        switch(stepDown) {
-            //starting everything
-            case 0:
-                cargoManipulator.setToCargoShipPosition();
-                timer.start();
-                step++;                
-                break;
-            
-            //drive forward 2ish inches
-            case 1:
-                cargoManipulator.setToCurrentPosition();
-                if (timer.get() < 0.05) { 
-                    driveSwerve(0.5);
-                } else {
-                    stopSwerve();
-                    pitchOffset = ahrs.getPitch();
-                    step++;
-                    robotPitchPID.reset();
-                }
-                break;
-
-            //extend front leg till it hits the ground
-            case 2: 
-                cargoManipulator.setToCurrentPosition();
-                if(climber.isFullyExtendedL2(FRONT)) {
-                    resetLimitSwitches();
-                    timer.reset();
-                    timer.start();
-                    step++;
-                } else {
-                    climber.extend(FRONT);
-                }
-                break;
-
-            //drive forward till back wheels off the platform
-            case 3: 
-                cargoManipulator.setToCurrentPosition();
-                if(timer.get() < 1) { //FIND ACTUAL NUMBER NECESSARY TO DO THIS!!!!!!!!
-                    driveSwerve(0.5);
-                } else {
-                    stopSwerve();
-                }
-
-            //extend back legs until they touch the ground
-            case 4:
-                cargoManipulator.setToCurrentPosition();
-                if(climber.isFullyExtendedL2(BACK)) {
-                    resetLimitSwitches();
-                    timer.reset();
-                    timer.start();
-                    step++;
-                } else {
-                    climber.extend(BACK);
-                }
-                break;
-
-            //drive forward 2ish inches
-            case 5:
-                cargoManipulator.setToCurrentPosition();
-                if(timer.get() < 0.05) {
-                    driveSwerve(0.5);
-                } else {
-                    stopSwerve();
-                }
-                break;
-
-            //retract both legs all the way
-            case 6: 
-                cargoManipulator.setToCurrentPosition();
-                robotPitchPID.setError((pitchOffset - ahrs.getPitch()) - climbAngle);
-                robotPitchPID.update();
-                climber.retractLevel(robotPitchPID.getOutput());
-    
-                if(climber.isFullyRetracted()) {
-                    resetLimitSwitches();
-                    step++;
-                }
-        }
     }
 
     private boolean isFrontLegTouching() {

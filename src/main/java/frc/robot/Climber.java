@@ -27,9 +27,12 @@ public class Climber {
     private DigitalInput frontHallEffect = new DigitalInput(RobotMap.INPUT_FRONT_SW);
     private DigitalInput backHallEffect = new DigitalInput(RobotMap.INPUT_BACK_SW);
 
+    private static boolean doStopAtL2 = false; 
+
     public void reset() {
         frontState = MovementState.STOP_MAGNET_DOWN;
         backState = MovementState.STOP_MAGNET_DOWN;
+        doStopAtL2 = false;
     }
 
     //extends both bars
@@ -123,16 +126,20 @@ public class Climber {
         return isFullyExtendedL3(FRONT) && isFullyExtendedL3(BACK);
     }
 
-    public boolean isFullyExtendedL2() {
-        return isFullyExtendedL2(FRONT) && isFullyExtendedL2(BACK);
-    }
-
     public boolean isFullyExtendedL3(Location location) {
         if (Location.FRONT == location) {
             return isFullyExtendedL3(frontState);
         } else {
             return isFullyExtendedL3(backState);
         }
+    }
+
+    public static boolean isFullyExtendedL3(MovementState current) {
+        return current == MovementState.STOP_UP || current == MovementState.STOP_MAGNET_UP;
+    }
+
+    public boolean isFullyExtendedL2() {
+        return isFullyExtendedL2(FRONT) && isFullyExtendedL2(BACK);
     }
 
     public boolean isFullyExtendedL2(Location location) {
@@ -143,12 +150,12 @@ public class Climber {
         }
     }
 
-    public static boolean isFullyExtendedL3(MovementState current) {
-        return current == MovementState.STOP_UP || current == MovementState.STOP_MAGNET_UP;
+    public static boolean isFullyExtendedL2(MovementState current) {
+        return current == MovementState.LEVEL_2_MAGNET || current == MovementState.ALLOW_ABOVE_L2;
     }
 
-    public static boolean isFullyExtendedL2(MovementState current) {
-        return current == MovementState.LEVEL_2_MAGNET;
+    public void setToExtendL2() {
+        doStopAtL2 = true;
     }
 
     public boolean isFullyRetracted() {
@@ -177,6 +184,11 @@ public class Climber {
             case SLOW_UP:
             case SLOW_MAGNET_UP:
                 return RobotMap.SPEED_SLOW_CLIMB;
+            case ALLOW_ABOVE_L2:
+            case LEVEL_2_MAGNET:
+                if (doStopAtL2) {
+                    return RobotMap.SPEED_STOP;
+                }
             default:
                 return RobotMap.SPEED_DEFAULT_CLIMB;
             }
