@@ -2,12 +2,30 @@ package frc.robot;
 
 public class GeometricMath {
 
-    double pointDistance(Point a, Point b) {
+    static double pointDistance(Point a, Point b) {
         return Math.hypot(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
-    Point addVectors(Point a, Point b) {
+    static Point vectorAddition(Point a, Point b) {
         return new Point(a.getX() + b.getX(), a.getY() + b.getY());
+    }
+
+    static Point vectorSubtraction(Point a, Point b) {
+        return new Point(a.getX() - b.getX(), a.getY() - b.getY());
+    }
+
+    static Point rotateVector(Point a, double rotationInDegrees) {
+        double magnitude = a.distanceFromZero();
+        double initialAngle = Math.toDegrees(Math.atan(a.getY() / a.getX()));
+        if (a.getX() < 0) {
+            if (a.getY() < 0) {
+                initialAngle -= 180;
+            } else {
+                initialAngle += 180;
+            }
+        }
+        double finalAngle = initialAngle + rotationInDegrees;
+        return new Point(magnitude * Math.cos(Math.toRadians(finalAngle)), magnitude * Math.sin(Math.toRadians(finalAngle)));
     }
 
 }

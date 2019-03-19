@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.awt.geom.Point2D;
-
 public class Point {
      
     double x;
@@ -41,8 +39,36 @@ public class Point {
         return this.y;
     }
 
-    //not done
+    //not done <------------ <--------------- <-----------
     double getAngle() {
-        return 0;
+        double angle = Math.toDegrees(Math.atan(x / y));
+        if (x >= 0) {
+            if (y >= 0) {
+                // already in Q1
+            } else {
+                // shift to Q4
+                angle += 180;
+            }
+        } else {
+            if (y >= 0) {
+                // shift to Q2
+            } else {
+                // shift to Q3
+                angle -= 180;
+            }
+        }
+        return angle;
+    }
+
+    double getCompassAngle() {
+        double angle = getAngle();
+        while (angle <= -180 || angle > 180) {
+            if (angle <= -180) {
+                angle += 360;
+            } else {
+                angle -= 360;
+            }
+        }
+        return angle;
     }
 }

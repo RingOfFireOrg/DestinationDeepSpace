@@ -518,6 +518,52 @@ public class SwerveDrive {
 		return rotationMagnitude;
 	}
 
+	double[] speedScale(double[] speedSet, double speedLimit) {
+		double maxSpeed = speedSet[0];
+		if (speedSet[1] > maxSpeed) {
+			maxSpeed = speedSet[1];
+		}
+		if (speedSet[2] > maxSpeed) {
+			maxSpeed = speedSet[2];
+		}
+		if (speedSet[3] > maxSpeed) {
+			maxSpeed = speedSet[3];
+		}
+		if (maxSpeed > speedLimit) {
+			for (int i = 0; i < 4; i++) {
+				speedSet[i] /= maxSpeed;
+			}
+		}
+		return speedSet;
+	}
+
+	void setModules(double[] speed, double[] angle) {
+		frontRight.control(speed[0], angle[0]);
+		frontLeft.control(speed[1], angle[1]);
+		backLeft.control(speed[2], angle[2]);
+		backRight.control(speed[3], angle[3]);
+	}
+
+	void dataShoot(double gyroValue) {
+		// reads out the raw angles, processed angles, speed, and gyro
+		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
+		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
+		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
+		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
+
+		SmartDashboard.putNumber("Gyro 0-360", gyroValue);
+
+		// SmartDashboard.putNumber("FR Speed", wheelSpeed[0]);
+		// SmartDashboard.putNumber("FL Speed", wheelSpeed[1]);
+		// SmartDashboard.putNumber("BL Speed", wheelSpeed[2]);
+		// SmartDashboard.putNumber("BR Speed", wheelSpeed[3]);
+
+		// SmartDashboard.putNumber("FR Angle", wheelAngle[0]);
+		// SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
+		// SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
+		// SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
+	}
+
 	void translateAndRotateRefactoredStructure(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
 			double driveRobotTranslationY) {
 		// turns the gyro into a 0-360 range -- easier to work with
@@ -537,117 +583,38 @@ public class SwerveDrive {
 		double unregulatedRotationValue = unregulatedTurning;
 		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
 
-
-
 		Point translationVector = convertToFieldRelative(robotRelativeVector, fieldRelativeVector, gyroValueProcessed);
-
+		
 		double rotationMagnitude = rotationMagnitude(translationVector, absoluteFieldRelativeDirection, unregulatedRotationValue, gyroValueProcessed, gyroValueUnprocessed);
 
-		// Vector math to combine the translation and the rotation values
-		// adding the various cartesian points for the end of the vectors
-		double xWithRotation = translationVector.getX() + rotationMagnitude;
-		double xWithoutRotation = translationVector.getX() - rotationMagnitude;
-		double yWithRotation = translationVector.getY() + rotationMagnitude;
-		double yWithoutRotation = translationVector.getY()- rotationMagnitude;
+		Point rotationVector = new Point(rotationMagnitude, rotationMagnitude);
 
-		// Constructing the arrays to be used to determine outcomes for each wheel
-		double wheelX[] = new double[4]; // the x value of the wheels vector
-		double wheelY[] = new double[4]; // the y value of the wheels vector
+		Point wheelVector[] = new Point[4];
 
-		double wheelSpeed[] = new double[4]; // the speed that will be assigned to the wheels output
-		double wheelAngle[] = new double[4]; // the angle that will be assigned to the modules output
+		wheelVector[0] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 90));
+		wheelVector[1] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 0));
+		wheelVector[2] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 270));
+		wheelVector[3] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 180));
 
-		// individually processes each wheel -- determines speed and angle
-		for (int i = 0; i < 4; i++) {
+		double wheelSpeed[] = new double[4];
 
-			// for each module, the turn vectors will extend in a different direction
-			if (i == 0 || i == 1) {
-				wheelX[i] = xWithRotation;
-			} else {
-				wheelX[i] = xWithoutRotation;
-			}
+		wheelSpeed[0] = wheelVector[0].distanceFromZero();
+		wheelSpeed[1] = wheelVector[1].distanceFromZero();
+		wheelSpeed[2] = wheelVector[2].distanceFromZero();
+		wheelSpeed[3] = wheelVector[3].distanceFromZero();
 
-			if (i == 0 || i == 3) {
-				wheelY[i] = yWithoutRotation;
-			} else {
-				wheelY[i] = yWithRotation;
-			}
+		double wheelAngle[] = new double[4];
 
-			// the wheels speed is just the distance from the end of its added vectors and
-			// the wheels center
-			wheelSpeed[i] = Math.sqrt(Math.pow(wheelX[i], 2) + Math.pow(wheelY[i], 2));
-			// the angle is the interior angle of the formed triangle
-			wheelAngle[i] = Math.toDegrees(Math.atan(wheelX[i] / wheelY[i]));
+		wheelAngle[0] = 360 - wheelVector[0].getCompassAngle();
+		wheelAngle[1] = 360 - wheelVector[1].getCompassAngle();
+		wheelAngle[2] = 360 - wheelVector[2].getCompassAngle();
+		wheelAngle[3] = 360 - wheelVector[3].getCompassAngle();
 
-			// The math only allows for directions in 2 quadrants, have to reassign values
-			// to gain the 2nd and 3rd quadrants
-			if (wheelX[i] >= 0) {
-				if (wheelY[i] >= 0) {
-					// already in Q1
-				} else {
-					// shift to Q4
-					wheelAngle[i] += 180;
-				}
-			} else {
-				if (wheelY[i] >= 0) {
-					// shift to Q2
-				} else {
-					// shift to Q3
-					wheelAngle[i] -= 180;
-				}
-			}
+		wheelSpeed = speedScale(wheelSpeed, 1);
 
-			// math is done assuming clockwise, wheel outputs are counterclockwise
-			wheelAngle[i] *= -1;
+		setModules(wheelSpeed, wheelAngle);
 
-			// makes all angles positive -- if negative will make it a positive co-terminal
-			// angle
-			if (wheelAngle[i] < 0) {
-				wheelAngle[i] += 360;
-			}
-		}
-
-		// assures that no wheel is given a speed higher than 1 -- if so, will divide
-		// all speeds by the highest speed
-		double maxSpeed = wheelSpeed[0];
-		if (wheelSpeed[1] > maxSpeed) {
-			maxSpeed = wheelSpeed[1];
-		}
-		if (wheelSpeed[2] > maxSpeed) {
-			maxSpeed = wheelSpeed[2];
-		}
-		if (wheelSpeed[3] > maxSpeed) {
-			maxSpeed = wheelSpeed[3];
-		}
-		if (maxSpeed > 1) {
-			for (int i = 0; i < 4; i++) {
-				wheelSpeed[i] /= maxSpeed;
-			}
-		}
-
-		// sets all modules to the calculated speed and angle
-		frontRight.control(wheelSpeed[0], wheelAngle[0]);
-		frontLeft.control(wheelSpeed[1], wheelAngle[1]);
-		backLeft.control(wheelSpeed[2], wheelAngle[2]);
-		backRight.control(wheelSpeed[3], wheelAngle[3]);
-
-		// reads out the raw angles, processed angles, speed, and gyro
-		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
-		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
-		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
-		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
-
-		// SmartDashboard.putNumber("FR Speed", wheelSpeed[0]);
-		// SmartDashboard.putNumber("FL Speed", wheelSpeed[1]);
-		// SmartDashboard.putNumber("BL Speed", wheelSpeed[2]);
-		// SmartDashboard.putNumber("BR Speed", wheelSpeed[3]);
-
-		// SmartDashboard.putNumber("FR Angle", wheelAngle[0]);
-		// SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
-		// SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
-		// SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
-
-		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
+		dataShoot(gyroValueProcessed);
 	}
 
 }
