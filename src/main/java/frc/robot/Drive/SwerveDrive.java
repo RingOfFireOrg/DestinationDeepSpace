@@ -1,10 +1,17 @@
-package frc.robot;
+package frc.robot.Drive;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import frc.robot.Utility.PID;
+import frc.robot.Utility.Point;
+import frc.robot.Utility.GeometricMath;
+import frc.robot.RobotMap;
+import frc.robot.Utility.RotatingBuffer;
+import frc.robot.AbsoluteAnalogEncoder;
 
 public class SwerveDrive {
 
@@ -63,7 +70,7 @@ public class SwerveDrive {
 		return swerveDrive;
 	}
 
-	void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
+	public void translateAndRotate(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
 			double driveRobotTranslationY) {
 		// turns the gyro into a 0-360 range -- easier to work with
 		double gyroValueUnprocessed = ahrs.getAngle() - this.ahrsOffset;
@@ -275,7 +282,7 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("Gyro 0-360", gyroValueProcessed);
 	}
 
-	void selectiveTranslateAndRotate(selectiveSwerveDriveModes selectiveSwerveDriveMode, double turnInput,
+	public void selectiveTranslateAndRotate(selectiveSwerveDriveModes selectiveSwerveDriveMode, double turnInput,
 			double translateXInput, double translateYInput) {
 		this.selectiveSwerveDriveMode = selectiveSwerveDriveMode;
 		switch (this.selectiveSwerveDriveMode) {
@@ -306,7 +313,7 @@ public class SwerveDrive {
 		backRight.control(0, 45);
 	}
 
-	void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
+	public void syncroDrive(double driveSpeed, double driveAngle, double twist, double gyroReading) {
 		// not field relative yet -- sitll needs work
 		driveAngle += gyroReading;
 
@@ -430,7 +437,7 @@ public class SwerveDrive {
 		// backLeft.convertToRobotRelative(backLeft.getAngle()));
 	}
 
-	void testSwerveModule(boolean isFront, boolean isLeft, double driveSpeed, double steerSpeed) {
+	public void testSwerveModule(boolean isFront, boolean isLeft, double driveSpeed, double steerSpeed) {
 		if (isFront && isLeft) {
 			frontLeft.setDriveSpeed(driveSpeed);
 			frontLeft.setSteerSpeed(steerSpeed);

@@ -1,21 +1,25 @@
-package frc.robot;
+package frc.robot.Subsytems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import frc.robot.Utility.PID;
+import frc.robot.RobotMap;
+import frc.robot.PotentiometerEncoder;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoManipulator {
-    enum intakePosition {
+    public enum intakePosition {
         INTAKE, LOWER_ROCKET, MID_ROCKET, CARGO_SHIP, UP, ELSE, MANUAL_MODE
     };
 
-    enum wheelState {
+    public enum wheelState {
         IN, OUT, OFF
     };
 
-    enum encoderPresence {
+    public enum encoderPresence {
         LEFT, RIGHT, BOTH, NONE
     }
 

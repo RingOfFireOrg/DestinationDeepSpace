@@ -6,11 +6,12 @@ public class PotentiometerEncoder extends AnalogInput {
 
     protected double angleOffset;
 
-    PotentiometerEncoder (int channel) {
+    public PotentiometerEncoder (int channel) {
         super(channel);
         this.angleOffset = 0;
     }
-    PotentiometerEncoder (int channel, double angleOffset) {
+    
+    public PotentiometerEncoder (int channel, double angleOffset) {
         super(channel);
         this.angleOffset = angleOffset;
     }

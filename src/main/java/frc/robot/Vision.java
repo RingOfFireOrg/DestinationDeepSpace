@@ -4,9 +4,10 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.CargoManipulator.intakePosition;
-import frc.robot.CargoManipulator.wheelState;
-import frc.robot.SwerveDrive.selectiveSwerveDriveModes;
+//import frc.robot.Subsystems.CargoManipulator.intakePosition;
+import frc.robot.Drive.SwerveDrive;
+import frc.robot.Subsytems.Beak;
+import frc.robot.Subsytems.CargoManipulator;
 
 public class Vision {
     private double ts;

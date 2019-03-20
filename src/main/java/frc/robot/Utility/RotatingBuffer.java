@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.Utility;
 
 public class RotatingBuffer {
     
@@ -6,7 +6,7 @@ public class RotatingBuffer {
     int length;
     int position = 0;
 
-    RotatingBuffer(int length) {
+    public RotatingBuffer(int length) {
         this.length = length;
         data = new double[length];
         for (int i = 0 ; i < length ; i ++) {
