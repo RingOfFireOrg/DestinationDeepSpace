@@ -30,6 +30,7 @@ public class AutoClimb {
 
     private PID robotPitchPID;
     private double pitchOffset;
+    private double startingPitch;
 
     private Timer timer = new Timer();
 
@@ -87,6 +88,7 @@ public class AutoClimb {
             } else {
                 stopSwerve();
                 pitchOffset = ahrs.getPitch();
+                startingPitch = ahrs.getPitch();
                 step++;
                 robotPitchPID.reset();
             }
@@ -95,22 +97,23 @@ public class AutoClimb {
         //makes the front winch taught
         case 2:
             cargoManipulator.setToCurrentPosition();
-            if (pitchOffset - ahrs.getPitch() < -1) {
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 2) {
                 climber.extend(FRONT);
             } else {
                 climber.stopClimbing(FRONT);
-                step ++;
+                startingPitch = ahrs.getPitch();
+                step++;
             }
             break;
 
         //makes the back winch taught
         case 3:
             cargoManipulator.setToCurrentPosition();
-            if (pitchOffset - ahrs.getPitch() > -0.1) {
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 2) {
                 climber.extend(BACK);
             } else {
                 climber.stopClimbing(BACK);
-                step ++;
+                step++;
             }
             break;
 
