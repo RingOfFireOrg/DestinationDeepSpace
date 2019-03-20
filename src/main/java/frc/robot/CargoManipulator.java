@@ -194,14 +194,18 @@ public class CargoManipulator {
     double getEncoderInDegrees() {
         return (180.0 - (rightCargoEncoder.getVoltage() * 54.0)); //remove once following code has been reviewed
 
-        if (rightCargoEncoder.getVoltage() < 4.8 && rightCargoEncoder.getVoltage() > 0.2) {
-            return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
-        } else if (leftCargoEncoder.getVoltage() < 4.8 && leftCargoEncoder.getVoltage() > 0.2) {
-            return 270 - (180.0 - (leftCargoEncoder.getVoltage() * 54.0)); //temporary value -- get actual offset and such later
-        } else {
-            return 270;
-        }
+        //insert this once it has been reviewed <-------- :0 <------- :) <--------- !!!
+        // if (rightCargoEncoder.getVoltage() < 4.8 && rightCargoEncoder.getVoltage() > 0.2) {
+        //     return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
+        // } else if (leftCargoEncoder.getVoltage() < 4.8 && leftCargoEncoder.getVoltage() > 0.2) {
+        //     return 270 - (180.0 - (leftCargoEncoder.getVoltage() * 54.0)); //temporary value -- get actual offset and such later
+        // } else {
+        //     return 270;
+        // }
 
+
+
+        
         // switch (currentEncoderPresence) {
         // case BOTH:
         //     if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15
