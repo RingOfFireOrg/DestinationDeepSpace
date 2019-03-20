@@ -154,9 +154,9 @@ public class Robot extends TimedRobot {
 
 		double cargoArmSpeed = manipulatorGamepad.getRawAxis(5);
 		if (cargoArmSpeed > 0.2) {
-			cargoManipulator.moveArmUp(0.45 * cargoArmSpeed);
+			cargoManipulator.moveArm(0.45 * cargoArmSpeed);
 		} else if (cargoArmSpeed < -0.2) {
-			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
+			cargoManipulator.moveArm(0.3 * cargoArmSpeed);
 		} else {
 			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 				cargoManipulator.setToUpPosition();

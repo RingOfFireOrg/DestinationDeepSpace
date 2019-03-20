@@ -128,7 +128,12 @@ public class CargoManipulator {
         }
     }
 
-    public void moveArmUp(double speed) {
+    public void moveArm(double speed) {
+        cargoArmMotor.set(ControlMode.PercentOutput, speed);
+        this.position = intakePosition.MANUAL_MODE;
+    }
+
+    public void moveArmUp (double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, speed);
         this.position = intakePosition.MANUAL_MODE;
     }
@@ -168,7 +173,7 @@ public class CargoManipulator {
         }
         armAngleControl.setError(error);
         armAngleControl.update();
-        cargoArmMotor.set(ControlMode.PercentOutput, armAngleControl.getOutput() + 0.2);
+        cargoArmMotor.set(ControlMode.PercentOutput, armAngleControl.getOutput());
         if (Math.abs(error) < 5) {
             atTargetAngle = true;
         } else {
