@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drive.SwerveDrive;
-import frc.robot.Subsytems.CargoManipulator;
+import frc.robot.Subsystems.CargoManipulator;
 import frc.robot.Utility.PID;
 
 public class AutoClimb {

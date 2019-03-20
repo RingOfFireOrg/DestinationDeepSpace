@@ -1,4 +1,4 @@
-package frc.robot.Subsytems;
+package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;

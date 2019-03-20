@@ -15,7 +15,7 @@ import frc.robot.AbsoluteAnalogEncoder;
 
 public class SwerveDrive {
 
-	enum selectiveSwerveDriveModes {
+	public enum selectiveSwerveDriveModes {
 		ROBOT_UNREGULATED, ROBOT_ABSOLUTE, FIELD_UNREGULATED, FIELD_ABSOLUTE
 	}
 
@@ -349,11 +349,11 @@ public class SwerveDrive {
 		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
 	}
 
-	void setRobotFrontToCargo() {
+	public void setRobotFrontToCargo() {
 		isCargoFront = true;
 	}
 
-	void setRobotFrontToHatch() {
+	public void setRobotFrontToHatch() {
 		isCargoFront = false;
 	}
 

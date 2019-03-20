@@ -1,4 +1,4 @@
-package frc.robot.Subsytems;
+package frc.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -183,15 +183,15 @@ public class CargoManipulator {
         }
     }
 
-    intakePosition getPosition() {
+    public intakePosition getPosition() {
         return position;
     }
 
-    boolean getAtTargetAngle() {
+    public boolean getAtTargetAngle() {
         return atTargetAngle;
     }
 
-    wheelState getWheelState() {
+    public wheelState getWheelState() {
         return wheels;
     }
 

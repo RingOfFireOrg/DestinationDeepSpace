@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Drive.GamepadSwerve;
-import frc.robot.Subsytems.Beak;
-import frc.robot.Subsytems.CargoManipulator;
+import frc.robot.Subsystems.Beak;
+import frc.robot.Subsystems.CargoManipulator;
 
 /**
  * The VM is configured to automatically run this class, and to call the
