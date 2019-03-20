@@ -194,5 +194,4 @@ public class Robot extends TimedRobot {
 		cargoManipulatorControl();
 		climberController.run();
 	}
-
 }
