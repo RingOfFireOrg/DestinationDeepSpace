@@ -28,17 +28,20 @@ public class CargoManipulator {
     private PID armAngleControl;
     private PotentiometerEncoder rightCargoEncoder;
     private PotentiometerEncoder leftCargoEncoder;
-    private double adjustment = 0;
     private boolean atTargetAngle = false;
 
     private static CargoManipulator cargoManipulator;
 
-    final double INTAKE_POSITION_DEGREES = -19;
-    final double LOWER_ROCKET_POSITION_DEGREES = 11; //26
-    final double MID_ROCKET_POSITION_DEGREES = 38; //78
-    final double CARGO_SHIP_POSITION_DEGREES = 31; //65
-    final double UP_POSITION_DEGREES = 81;
+    //relative to level
+    final double INTAKE_POSITION_DEGREES = -7;
+    final double LOWER_ROCKET_POSITION_DEGREES = 23; //26
+    final double MID_ROCKET_POSITION_DEGREES = 50; //78
+    final double CARGO_SHIP_POSITION_DEGREES = 43; //65
+    final double UP_POSITION_DEGREES = 90;
     double customTargetAngle = 0;
+
+    //level Angle
+    private double LEVEL_DEGREES_ABSOLUTE = -12;
 
     protected CargoManipulator() {
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
@@ -62,7 +65,7 @@ public class CargoManipulator {
 
     // Helps for if the encoder slips we can just adjust all the values
     public void adjustAllTargets(double adjustment) {
-        this.adjustment = adjustment;
+        this.LEVEL_DEGREES_ABSOLUTE = adjustment;
     }
 
     // if for some reason we need to give it an angle other than a set scoring angle
@@ -161,7 +164,7 @@ public class CargoManipulator {
     }
 
     private void moveCargoArmToAngle(double targetAngle) {
-        double error = targetAngle + adjustment - currentAngle();
+        double error = targetAngle + LEVEL_DEGREES_ABSOLUTE - currentAngle();
         if (currentAngle() == 270) {
             cargoArmMotor.set(ControlMode.PercentOutput, 0);
             return;
