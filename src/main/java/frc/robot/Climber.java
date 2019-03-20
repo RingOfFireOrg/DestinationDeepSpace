@@ -119,6 +119,22 @@ public class Climber {
         }
     }
 
+    public void retractManual(Location location, double speed) {
+        if (location == Location.FRONT) {
+            if (getDriveSpeed(Direction.RETRACT, frontState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
+                climberFront.set(ControlMode.PercentOutput, -RobotMap.SPEED_DEFAULT_CLIMB * speed);
+            } else {
+                climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, frontState));
+            }
+        } else {
+            if (getDriveSpeed(Direction.RETRACT, backState) == -RobotMap.SPEED_DEFAULT_CLIMB) {
+                climberFront.set(ControlMode.PercentOutput, -RobotMap.SPEED_DEFAULT_CLIMB * speed);
+            } else {
+                climberFront.set(ControlMode.PercentOutput, getDriveSpeed(Direction.RETRACT, backState));
+            }
+        }
+    }
+
     public boolean isFullyExtendedL3() {
         return isFullyExtendedL3(FRONT) && isFullyExtendedL3(BACK);
     }
