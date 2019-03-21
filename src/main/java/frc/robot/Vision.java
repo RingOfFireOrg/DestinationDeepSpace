@@ -83,23 +83,44 @@ public class Vision {
         }
     }
 
+    String leftRightStop = "no value";
     void leftRightAlignmentTest() {
-        String leftRightStop;
-        if (Math.abs(tx) < 3) { // three is a random placeholder
-            double strafeRightLeft = tx * STEER_K * -1;
-            SmartDashboard.putNumber("translate x", strafeRightLeft);
+        
+        double strafeRightLeft = tx * STEER_K * -1;
+        final double MAX_SPEED = 0.4;
+        final double MIN_SPEED = 0.1; // stall speed??
 
-            if (strafeRightLeft >= 0) {
-                leftRightStop = "left";
-            } else { // if(strafeRightLeft < 0)
-                leftRightStop = "right";
+        if (Math.abs(tx) > 3) { // three is a random placeholder
+            // RJC is it imprtant that the 3 placeholder here and the 3 placeholder above
+            // have the same value? If so maybe move to a constant and use that? if not this
+            // is fine.
+
+            // deal with min and max speeds for right left
+            if (Math.abs(strafeRightLeft) < MIN_SPEED) {
+                if (strafeRightLeft > 0) {
+                    strafeRightLeft = MIN_SPEED;
+                    leftRightStop = "left";
+                } else { // if (strafeRightLeft <= 0
+                    strafeRightLeft = -MIN_SPEED;
+                    leftRightStop = "right";
+                }
+            } else if (Math.abs(strafeRightLeft) > MAX_SPEED) {
+                if (strafeRightLeft > 0) {
+                    strafeRightLeft = MAX_SPEED;
+                    leftRightStop = "left";
+                } else {
+                    strafeRightLeft = -MAX_SPEED;
+                    leftRightStop = "right";
+                }
             }
-
         } else {
+            strafeRightLeft = 0;
             leftRightStop = "stop";
         }
 
+        
         SmartDashboard.putString("Strafe direction left/right", leftRightStop);
+
     }
 
     boolean alignment() {
@@ -118,7 +139,7 @@ public class Vision {
 
             // deal with min and max speeds for right left
             if (Math.abs(strafeRightLeft) < MIN_SPEED) {
-                if (strafeRightLeft >= 0) {
+                if (strafeRightLeft > 0) {
                     strafeRightLeft = MIN_SPEED;
                 } else { // if (strafeRightLeft <= 0
                     strafeRightLeft = -MIN_SPEED;
