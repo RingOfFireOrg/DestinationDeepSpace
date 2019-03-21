@@ -41,7 +41,7 @@ public class CargoManipulator {
     double customTargetAngle = 0;
 
     //level Angle
-    private double LEVEL_DEGREES_ABSOLUTE = -12;
+    private final double ZERO_DEGREE_ARM_VALUE = -12;
 
     protected CargoManipulator() {
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
@@ -61,11 +61,6 @@ public class CargoManipulator {
             cargoManipulator = new CargoManipulator();
         }
         return cargoManipulator;
-    }
-
-    // Helps for if the encoder slips we can just adjust all the values
-    public void adjustAllTargets(double adjustment) {
-        this.LEVEL_DEGREES_ABSOLUTE = adjustment;
     }
 
     // if for some reason we need to give it an angle other than a set scoring angle
@@ -164,7 +159,7 @@ public class CargoManipulator {
     }
 
     private void moveCargoArmToAngle(double targetAngle) {
-        double error = targetAngle + LEVEL_DEGREES_ABSOLUTE - currentAngle();
+        double error = targetAngle + ZERO_DEGREE_ARM_VALUE - currentAngle();
         if (currentAngle() == 270) {
             cargoArmMotor.set(ControlMode.PercentOutput, 0);
             return;
