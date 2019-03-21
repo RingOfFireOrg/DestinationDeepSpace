@@ -157,8 +157,8 @@ public class RobotMap {
 	public static final double LEFT_CARGO_WHEEL_OFF_SPEED = 0;
 	public static final double RIGHT_CARGO_WHEEL_SHOOT_SPEED = 1;
 	public static final double LEFT_CARGO_WHEEL_SHOOT_SPEED = -1;
-	public static final double RIGHT_CARGO_WHEEL_INTAKE_SPEED = -0.4;
-	public static final double LEFT_CARGO_WHEEL_INTAKE_SPEED = 0.4;
+	public static final double RIGHT_CARGO_WHEEL_INTAKE_SPEED = -0.6;
+	public static final double LEFT_CARGO_WHEEL_INTAKE_SPEED = 0.6;
 
 	// arm speed on cargo manipulator
 	public static final double ARM_RAW_SPEED = 0.4;

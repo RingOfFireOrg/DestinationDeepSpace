@@ -357,6 +357,10 @@ public class Climber {
         SmartDashboard.putBoolean("Back HE sensor", !backHallEffect.get());
     }
 
+    public boolean isClimberDown() {
+        return !backHallEffect.get() && !frontHallEffect.get();
+    }
+
     public enum Location {
         FRONT, BACK
     }

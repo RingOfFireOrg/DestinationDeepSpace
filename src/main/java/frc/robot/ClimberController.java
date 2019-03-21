@@ -7,6 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID;
 
@@ -26,9 +27,21 @@ public class ClimberController {
 
     private boolean climbModeTrue;
 
+    private AHRS ahrs;
+
+    private PID robotPitchPID;
+    private double pitchOffset;
+
+    private double climbAngle = -5;
+
 
     public ClimberController(SwerveDrive swerveDrive, AHRS ahrs, CargoManipulator cargoManipulator) {
         autoClimb = new AutoClimb(climber, swerveDrive, ahrs, cargoManipulator);
+        this.ahrs = ahrs;
+        robotPitchPID = new PID(0.02, 0.00005, 0);
+        robotPitchPID.setOutputRange(-1, 1);
+        pitchOffset = ahrs.getPitch();
+        robotPitchPID.reset();
     }
 
     private boolean startAutoClimbTrue(){ //should find a better name
@@ -44,6 +57,7 @@ public class ClimberController {
 
     public void run() {
         climber.printHallEffectState();
+        SmartDashboard.putNumber("gyro pitch: ", ahrs.getPitch());
 
         climbModeTrue = climbModeToggle.get() || enableClimbButton.get();
 
@@ -62,13 +76,23 @@ public class ClimberController {
 
     private void climbManually() {
         double climberDrive = manipulatorController.getRawAxis(RobotMap.MANIPULATOR_LEFT_STICK_Y_AXIS);
-        boolean extendFrontBtn = manipulatorController.getBumper(GenericHID.Hand.kRight);
-        boolean extendBackBtn = manipulatorController.getBumper(GenericHID.Hand.kLeft);
-        double retractFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
-        double retractBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
+        double extendFrontBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kRight);
+        double extendBackBtn = manipulatorController.getTriggerAxis(GenericHID.Hand.kLeft);
+        boolean retractFrontBtn = manipulatorController.getBumper(GenericHID.Hand.kRight);
+        boolean retractBackBtn = manipulatorController.getBumper(GenericHID.Hand.kLeft);
         
         if (!climbModeTrue){
             return;
+        }
+
+        if (climber.isClimberDown()) {
+            robotPitchPID.reset();
+        }
+
+        if (extendFrontBtn > 0.5 && extendBackBtn > 0.5) {
+            robotPitchPID.setError((pitchOffset - ahrs.getPitch()) - climbAngle);
+            robotPitchPID.update(); 
+            climber.extendLevel(robotPitchPID.getOutput());
         }
         
         if (climberDrive > 0.25) {
@@ -79,17 +103,17 @@ public class ClimberController {
             climber.stopDriving();
         }
 
-        if (extendFrontBtn) {
+        if (extendFrontBtn > 0.5) {
             climber.extendManual(FRONT);
-        } else if (retractFrontBtn > 0.5) {
+        } else if (retractFrontBtn) {
             climber.retractManual(FRONT);
         } else {
             climber.stopClimbing(FRONT);
         }
 
-        if (extendBackBtn) {
+        if (extendBackBtn > 0.5) {
             climber.extendManual(BACK);
-        } else if (retractBackBtn > 0.5) {
+        } else if (retractBackBtn) {
             climber.retractManual(BACK);
         } else {
             climber.stopClimbing(BACK);
