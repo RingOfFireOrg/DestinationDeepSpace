@@ -1,21 +1,25 @@
-package frc.robot;
+package frc.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import frc.robot.Utility.PID;
+import frc.robot.RobotMap;
+import frc.robot.PotentiometerEncoder;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoManipulator {
-    enum intakePosition {
+    public enum intakePosition {
         INTAKE, LOWER_ROCKET, MID_ROCKET, CARGO_SHIP, UP, ELSE, MANUAL_MODE
     };
 
-    enum wheelState {
+    public enum wheelState {
         IN, OUT, OFF
     };
 
-    enum encoderPresence {
+    public enum encoderPresence {
         LEFT, RIGHT, BOTH, NONE
     }
 
@@ -28,17 +32,20 @@ public class CargoManipulator {
     private PID armAngleControl;
     private PotentiometerEncoder rightCargoEncoder;
     private PotentiometerEncoder leftCargoEncoder;
-    private double adjustment = 0;
     private boolean atTargetAngle = false;
 
     private static CargoManipulator cargoManipulator;
 
-    final double INTAKE_POSITION_DEGREES = -19;
-    final double LOWER_ROCKET_POSITION_DEGREES = 11; //26
-    final double MID_ROCKET_POSITION_DEGREES = 38; //78
-    final double CARGO_SHIP_POSITION_DEGREES = 31; //65
-    final double UP_POSITION_DEGREES = 81;
+    //relative to level
+    final double INTAKE_POSITION_DEGREES = -7;
+    final double LOWER_ROCKET_POSITION_DEGREES = 23; //26
+    final double MID_ROCKET_POSITION_DEGREES = 50; //78
+    final double CARGO_SHIP_POSITION_DEGREES = 43; //65
+    final double UP_POSITION_DEGREES = 90;
     double customTargetAngle = 0;
+
+    //level Angle
+    private double LEVEL_DEGREES_ABSOLUTE = -12;
 
     protected CargoManipulator() {
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
@@ -62,7 +69,7 @@ public class CargoManipulator {
 
     // Helps for if the encoder slips we can just adjust all the values
     public void adjustAllTargets(double adjustment) {
-        this.adjustment = adjustment;
+        this.LEVEL_DEGREES_ABSOLUTE = adjustment;
     }
 
     // if for some reason we need to give it an angle other than a set scoring angle
@@ -161,7 +168,7 @@ public class CargoManipulator {
     }
 
     private void moveCargoArmToAngle(double targetAngle) {
-        double error = targetAngle + adjustment - currentAngle();
+        double error = targetAngle + LEVEL_DEGREES_ABSOLUTE - currentAngle();
         if (currentAngle() == 270) {
             cargoArmMotor.set(ControlMode.PercentOutput, 0);
             return;
@@ -176,21 +183,33 @@ public class CargoManipulator {
         }
     }
 
-    intakePosition getPosition() {
+    public intakePosition getPosition() {
         return position;
     }
 
-    boolean getAtTargetAngle() {
+    public boolean getAtTargetAngle() {
         return atTargetAngle;
     }
 
-    wheelState getWheelState() {
+    public wheelState getWheelState() {
         return wheels;
     }
 
     double getEncoderInDegrees() {
-        return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
+        return (180.0 - (rightCargoEncoder.getVoltage() * 54.0)); //remove once following code has been reviewed
 
+        //insert this once it has been reviewed <-------- :0 <------- :) <--------- !!!
+        // if (rightCargoEncoder.getVoltage() < 4.8 && rightCargoEncoder.getVoltage() > 0.2) {
+        //     return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
+        // } else if (leftCargoEncoder.getVoltage() < 4.8 && leftCargoEncoder.getVoltage() > 0.2) {
+        //     return 270 - (180.0 - (leftCargoEncoder.getVoltage() * 54.0)); //temporary value -- get actual offset and such later
+        // } else {
+        //     return 270;
+        // }
+
+
+
+        
         // switch (currentEncoderPresence) {
         // case BOTH:
         //     if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15

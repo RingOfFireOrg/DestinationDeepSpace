@@ -1,8 +1,10 @@
-package frc.robot;
+package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import frc.robot.RobotMap;
 
 public class Beak {
     private boolean isOpen;
@@ -24,17 +26,17 @@ public class Beak {
         return beak;
     }
 
-    void open() {
+    public void open() {
         beakActuator.setSpeed(1.0);
         isOpen = true;
     }
 
-    void close(){
+    public void close(){
         beakActuator.setSpeed(-1.0);
         isOpen = false;
     }
 
-    boolean isOpen(){
+    public boolean isOpen(){
         return isOpen;
     }    
 }
