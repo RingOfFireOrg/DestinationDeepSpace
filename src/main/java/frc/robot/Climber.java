@@ -83,11 +83,19 @@ public class Climber {
         }
  
         if (getDriveSpeed(Direction.EXTEND, backState) == RobotMap.SPEED_DEFAULT_CLIMB) {
-            climberBack.set(0.7 * (RobotMap.SPEED_DEFAULT_CLIMB - difference));
+            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * (RobotMap.SPEED_DEFAULT_CLIMB - difference));
         } else {
             climberBack.set(getDriveSpeed(Direction.EXTEND, backState));
         }
     }
+
+        //takes robot to the top, handles whether to stop cause of magnet and also regulating the two bars to keep them at the same height
+        public void extendLevelManual(double difference) {
+            SmartDashboard.putNumber("difference", difference);
+            //assuming that the gyro will be + when rotated forward
+            climberFront.set(ControlMode.PercentOutput, RobotMap.SPEED_DEFAULT_CLIMB + difference);
+            climberBack.set(RobotMap.BACK_CLIMBER_SPEED_MULTIPLE * (RobotMap.SPEED_DEFAULT_CLIMB - difference));
+        }
 
     //not used, not needed
     //takes robot to the bottom

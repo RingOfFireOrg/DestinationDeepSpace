@@ -97,25 +97,25 @@ public class AutoClimb {
 
         //makes the front winch taught
         case 2:
-            cargoManipulator.setToCurrentPosition();
-            if (Math.abs(startingPitch - ahrs.getPitch()) > 2) {
-                climber.extend(FRONT);
-            } else {
-                climber.stopClimbing(FRONT);
-                startingPitch = ahrs.getPitch();
-                step++;
-            }
+            // cargoManipulator.setToCurrentPosition();
+            // if (startingPitch - ahrs.getPitch() > 3) {
+            //     climber.extend(FRONT);
+            // } else {
+            //     climber.stopClimbing(FRONT);
+            //     startingPitch = ahrs.getPitch();
+                 step++;
+            // }
             break;
 
         //makes the back winch taught
         case 3:
-            cargoManipulator.setToCurrentPosition();
-            if (Math.abs(startingPitch - ahrs.getPitch()) > 0) {
-                climber.extend(BACK);
-            } else {
-                climber.stopClimbing(BACK);
+            // cargoManipulator.setToCurrentPosition();
+            // if (startingPitch - ahrs.getPitch() < 1) {
+            //     climber.extend(BACK);
+            // } else {
+            //     climber.stopClimbing(BACK);
                 step++;
-            }
+            // }
             break;
 
         // extend front and back legs all the way
