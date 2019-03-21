@@ -617,4 +617,30 @@ public class SwerveDrive {
 		dataShoot(gyroValueProcessed);
 	}
 
+	public double frontRightDegreesPerSecond() {
+		return frontRight.getRate();
+	}
+	public double frontLeftDegreesPerSecond() {
+		return frontLeft.getRate();
+	}
+	public double backLeftDegreesPerSecond() {
+		return backLeft.getRate();
+	}
+	public double backRightDegreesPerSecond() {
+		return backRight.getRate();
+	}
+
+	public double frontRightAngle() {
+		return frontRight.getAngle();
+	}
+	public double frontLeftAngle() {
+		return frontLeft.getAngle();
+	}
+	public double backLeftAngle() {
+		return backLeft.getAngle();
+	}
+	public double backRightAngle() {
+		return backRight.getAngle();
+	}
+
 }
