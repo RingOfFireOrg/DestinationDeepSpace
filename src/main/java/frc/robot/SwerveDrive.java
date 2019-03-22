@@ -643,4 +643,17 @@ public class SwerveDrive {
 		return backRight.getAngle();
 	}
 
+	public double frontRightCMPerSecond() {
+		return frontRightDegreesPerSecond() * 2.54 * 6 * 3.14 / 360;
+	}
+	public double frontLeftCMPerSecond() {
+		return frontLeftDegreesPerSecond() * 2.54 * 6 * 3.14 / 360;
+	}
+	public double backLeftCMPerSecond() {
+		return backLeftDegreesPerSecond() * 2.54 * 6 * 3.14 / 360;
+	}
+	public double backRightCMPerSecond() {
+		return backRightDegreesPerSecond() * 2.54 * 6 * 3.14 / 360;
+	}
+
 }

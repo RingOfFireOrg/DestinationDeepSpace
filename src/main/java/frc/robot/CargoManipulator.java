@@ -71,7 +71,7 @@ public class CargoManipulator {
     }
 
     public void setToIntakePosition() {
-        // what is this even doing
+        // what is this even doing?
         if (currentAngle() < 0) {
             cargoArmMotor.set(ControlMode.PercentOutput, 0);
             return;
@@ -235,5 +235,6 @@ public class CargoManipulator {
         SmartDashboard.putNumber("Cargo Voltage Right: ", rightCargoEncoder.getVoltage());
         SmartDashboard.putNumber("Cargo Voltage Left: ", leftCargoEncoder.getVoltage());
         return (getEncoderInDegrees());
+        //um... does this need to have the zero angle subtracted from it?
     }
 }

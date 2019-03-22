@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Beak {
     private boolean isOpen;
     private Servo beakActuator; //= new Servo(RobotMap.BEAK_ACTUATOR_CHANNEL);
-
     private static Beak beak;
 
     protected Beak() {
