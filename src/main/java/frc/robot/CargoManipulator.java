@@ -19,7 +19,7 @@ public class CargoManipulator {
         LEFT, RIGHT, BOTH, NONE
     }
 
-    private intakePosition position = intakePosition.INTAKE;
+    private intakePosition position = intakePosition.MANUAL_MODE;
     private wheelState wheels;
     private encoderPresence currentEncoderPresence;
     public TalonSRX leftIntakeWheel;
@@ -41,7 +41,7 @@ public class CargoManipulator {
     double customTargetAngle = 0;
 
     // level Angle
-    private final double ZERO_DEGREE_ARM_VALUE = -15;
+    private final double ZERO_DEGREE_ARM_VALUE = -10;
 
     protected CargoManipulator() {
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
@@ -128,11 +128,18 @@ public class CargoManipulator {
 
     public void moveArmUp(double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, speed);
+        SmartDashboard.putNumber("CargoArmPower", speed);
         this.position = intakePosition.MANUAL_MODE;
     }
 
     public void moveArmDown(double speed) {
         cargoArmMotor.set(ControlMode.PercentOutput, -speed);
+        SmartDashboard.putNumber("CargoArmPower", -speed);
+        this.position = intakePosition.MANUAL_MODE;
+    }
+
+    public void moveArm(double speed) {
+        cargoArmMotor.set(ControlMode.PercentOutput, speed);
         this.position = intakePosition.MANUAL_MODE;
     }
 

@@ -75,47 +75,48 @@ public class AutoClimb {
         
         //set cargo manipulator arm out of way of climber and get ready to climb
         case 0: 
-            cargoManipulator.setToCargoShipPosition();
-            timer.start();
+            // cargoManipulator.setToCargoShipPosition();
+            // timer.start();
             step++;                
             break;
 
         // drive back a little 
         case 1:
             cargoManipulator.setToCurrentPosition();
-            if (timer.get() < 0.05) { 
-                driveSwerve(-0.5);
-            } else {
-                stopSwerve();
+            // if (timer.get() < 0.05) { 
+            //     driveSwerve(-0.5);
+            // } else {
+            //     stopSwerve();
                 pitchOffset = ahrs.getPitch();
                 SmartDashboard.putNumber("Pitch Offset auto: ", pitchOffset);
                 startingPitch = ahrs.getPitch();
                 step++;
-                robotPitchPID.reset();
-            }
+            //  robotPitchPID.reset();
+            // }
             break;
 
         //makes the front winch taught
         case 2:
-            // cargoManipulator.setToCurrentPosition();
-            // if (startingPitch - ahrs.getPitch() > 3) {
-            //     climber.extend(FRONT);
-            // } else {
-            //     climber.stopClimbing(FRONT);
-            //     startingPitch = ahrs.getPitch();
+            cargoManipulator.setToCurrentPosition();
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 3) { //test
+                climber.extend(FRONT);
+            } else {
+                climber.stopClimbing(FRONT);
+                startingPitch = ahrs.getPitch();
                  step++;
-            // }
+            }
             break;
 
         //makes the back winch taught
         case 3:
-            // cargoManipulator.setToCurrentPosition();
-            // if (startingPitch - ahrs.getPitch() < 1) {
-            //     climber.extend(BACK);
-            // } else {
-            //     climber.stopClimbing(BACK);
-                step++;
-            // }
+            cargoManipulator.setToCurrentPosition();
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 3) { //test
+                climber.extend(BACK);
+            } else {
+                climber.stopClimbing(BACK);
+               // step++;
+               step = 12;
+            }
             break;
 
         // extend front and back legs all the way

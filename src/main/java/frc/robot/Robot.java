@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -82,7 +84,7 @@ public class Robot extends TimedRobot {
 
 	boolean autoClimbMode = false;
 
-	// Vision limelight = new Vision();
+	//Vision limelight = new Vision();
 
 	GamepadSwerve swerveDrive;
 
@@ -100,6 +102,7 @@ public class Robot extends TimedRobot {
 		swerveDrive = new GamepadSwerve(ahrs, driverGamepad, leftDriveJoystick, rightDriveJoystick);
 		climberController = new ClimberController(swerveDrive, ahrs, cargoManipulator);
 		SmartDashboard.putNumber("Version #", 6);
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	@Override
@@ -125,6 +128,18 @@ public class Robot extends TimedRobot {
 		beak.close();
 		SmartDashboard.putNumber("RobotPitch", ahrs.getPitch());
 		SmartDashboard.putNumber("RobotYaw", ahrs.getYaw());
+		
+		//limelight.logValues();
+		double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+        double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+        double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+
+        SmartDashboard.putNumber("tv", tv);
+        SmartDashboard.putNumber("ta", ta);
+        SmartDashboard.putNumber("ty", ty);
+		SmartDashboard.putNumber("tx", tx);
+
 	}
 
 	
@@ -160,11 +175,14 @@ public class Robot extends TimedRobot {
 		 * else { cargoManipulator.setWheelsOff(); }
 		 */
 
-		double cargoArmSpeed = Math.pow(manipulatorGamepad.getRawAxis(5), 2);
+
+		double cargoArmSpeed = -Math.pow(manipulatorGamepad.getRawAxis(5), 3);
 		if (cargoArmSpeed > 0.2) {
 			cargoManipulator.moveArmUp(0.45 * cargoArmSpeed);
+			//cargoManipulator.moveArm(0.45 * cargoArmSpeed);
 		} else if (cargoArmSpeed < -0.2) {
 			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
+			//cargoManipulator.moveArm(0.3 * ca)
 		} else {
 			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 				cargoManipulator.setToUpPosition();
@@ -178,7 +196,7 @@ public class Robot extends TimedRobot {
 				cargoManipulator.setToMidRocketPosition();
 			} else {
 				cargoManipulator.setToCurrentPosition();
-				// essentially keeps it steady at wherever we are so that it doesn't fall down
+				// keeps it steady at wherever we are and/or continues going to that location
 			} 
 
 		}
