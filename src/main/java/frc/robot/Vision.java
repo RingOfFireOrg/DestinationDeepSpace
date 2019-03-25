@@ -251,4 +251,17 @@ public class Vision {
         return automationRunning;
     }
 
+    void logValues(){
+        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+        ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+
+        SmartDashboard.putNumber("tv", tv);
+        SmartDashboard.putNumber("ta", ta);
+        SmartDashboard.putNumber("ty", ty);
+        SmartDashboard.putNumber("tx", tx);
+
+    }
+
 }

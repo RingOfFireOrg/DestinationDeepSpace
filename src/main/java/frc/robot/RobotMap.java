@@ -146,6 +146,11 @@ public class RobotMap {
 	public static final int ROBOT_STANCE_X_IN_CM = 51;
 	public static final int ROBOT_STANCE_Y_IN_CM = 51;
 
+	//Constants
+	public static final int SWERVE_WHEEL_DIAMETER = 6;
+	public static final double inchToCM = 2.54;
+	public static final double pi = 3.14;
+
 	// deadzones
 	public static final double TRANSLATION_DEADZONE = 0.1;
 	public static final double ROTATION_DEADZONE = 0.1;

@@ -644,7 +644,7 @@ public class SwerveDrive {
 	}
 
 	public double frontRightCMPerSecond() {
-		return frontRightDegreesPerSecond() * 2.54 * 6 * 3.14 / 360;
+		return frontRightDegreesPerSecond() * RobotMap.inchToCM * RobotMap.SWERVE_WHEEL_DIAMETER * RobotMap.pi / 360;
 	}
 	public double frontLeftCMPerSecond() {
 		return frontLeftDegreesPerSecond() * 2.54 * 6 * 3.14 / 360;

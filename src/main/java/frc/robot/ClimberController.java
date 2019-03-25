@@ -91,24 +91,24 @@ public class ClimberController {
         if (extendFrontBtn > 0.5 && extendBackBtn > 0.5) {
             robotPitchPID.setError((pitchOffset - ahrs.getPitch()) - climbAngle);
             robotPitchPID.update(); 
-            climber.extendLevel(robotPitchPID.getOutput());
+            climber.extendLevelManual(robotPitchPID.getOutput());
         } else { 
             if (extendFrontBtn > 0.5) {
-             climber.extendManual(FRONT);
-          } else if (retractFrontBtn) {
-             climber.retractManual(FRONT);
-         } else {
-            climber.stopClimbing(FRONT);
-        }
+                climber.extendManual(FRONT);
+            } else if (retractFrontBtn) {
+                climber.retractManual(FRONT);
+            } else {
+                climber.stopClimbing(FRONT);
+            }
          
-         if(extendBackBtn > 0.5) {
-            climber.extendManual(BACK);
-        } else if (retractBackBtn) {
-            climber.retractManual(BACK);
-        } else {
-            climber.stopClimbing(BACK);
+            if(extendBackBtn > 0.5) {
+                climber.extendManual(BACK);
+            } else if (retractBackBtn) {
+                climber.retractManual(BACK);
+            } else {
+                climber.stopClimbing(BACK);
+            }
         }
-    }
        
         
         if (climberDrive > 0.25) {
