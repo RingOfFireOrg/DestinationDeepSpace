@@ -142,9 +142,9 @@ public class RobotMap {
 	public static final double WHEEL_DIAMETER = 4;
 	public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
 
-	// dimensions of the robot in CM
-	public static final int ROBOT_X_IN_CM = 51;
-	public static final int ROBOT_Y_IN_CM = 51;
+	// dimension of the robot in CM
+	public static final int ROBOT_STANCE_X_IN_CM = 51;
+	public static final int ROBOT_STANCE_Y_IN_CM = 51;
 
 	// deadzones
 	public static final double TRANSLATION_DEADZONE = 0.1;

@@ -61,6 +61,10 @@ public class SwerveModule {
 		return ((wheelAngleGoal - zeroValue) + 720) % 360;
 	}
 
+	public double robotRelativeAngle() {
+		return convertToRobotRelative(getAngle());
+	}
+
 	public double getAngle() {
 		return turnEncoder.getAngle();
 	}
