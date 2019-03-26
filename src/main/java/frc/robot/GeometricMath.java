@@ -14,6 +14,10 @@ public class GeometricMath {
         return new Point(a.getX() - b.getX(), a.getY() - b.getY());
     }
 
+    static Point midPoint(Point a, Point b) {
+        return new Point((a.getX() + b.getX()) / 2, (a.getY() + b.getY()) / 2);
+    }
+
     static Point rotateVector(Point a, double rotationInDegrees) {
         double magnitude = a.distanceFromZero();
         double initialAngle = Math.toDegrees(Math.atan(a.getY() / a.getX()));
