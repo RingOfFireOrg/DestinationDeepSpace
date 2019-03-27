@@ -42,8 +42,10 @@ public class SwerveAutomation {
 
 			Point originalCenter = GeometricMath.midPoint(GeometricMath.midPoint(frWheelOriginalVector, blWheelOriginalVector), GeometricMath.midPoint(flWheelOriginalVector, brWheelOriginalVector));
 			Point translatedCenter = GeometricMath.midPoint(GeometricMath.midPoint(frWheelTransformedVector, blWheelTransformedVector), GeometricMath.midPoint(flWheelTransformedVector, brWheelTransformedVector));
-		} else {
 
+			return GeometricMath.vectorSubtraction(translatedCenter, originalCenter);
+		} else {
+			
 		}
 
 	}

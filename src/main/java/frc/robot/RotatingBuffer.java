@@ -14,11 +14,25 @@ public class RotatingBuffer {
         }
     }
 
+    RotatingBuffer(int length, int initialSetPoint) {
+        this.length = length;
+        data = new double[length];
+        for (int i = 0 ; i < length ; i ++) {
+            data[i] = initialSetPoint;
+        }
+    }
+
     public void add(double newData) {
         data[position] = newData;
         position ++;
         if (position >= length) {
             position = 0;
+        }
+    }
+
+    public void setAll(double newData) {
+        for (int i = 0 ; i < length ; i ++) {
+            data[i] = newData;
         }
     }
 

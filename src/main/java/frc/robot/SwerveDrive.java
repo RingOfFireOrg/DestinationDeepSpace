@@ -16,10 +16,17 @@ public class SwerveDrive {
 	double ahrsOffset;
 	PID pidDrivingStraight;
 	RotatingBuffer gyroRateBuffer;
+	RotatingBuffer[] modulePowerInput = new RotatingBuffer[4];
+	RotatingBuffer[] encoderRateResponse = new RotatingBuffer[4];
 	boolean driveStraight = false;
 	double translationAngle;
 	boolean isCargoFront = true;
 	private selectiveSwerveDriveModes selectiveSwerveDriveMode;
+
+	public boolean frSpeedEncoderIsWorking = true;
+	public boolean flSpeedEncoderIsWorking = true;
+	public boolean blSpeedEncoderIsWorking = true;
+	public boolean brSpeedEndoderIsWorking = true;
 
 	private static SwerveDrive swerveDrive;
 
@@ -54,6 +61,10 @@ public class SwerveDrive {
 
 		reset();
 		gyroRateBuffer = new RotatingBuffer(5);
+		for (int i = 0 ; i < 4 ; i++) {
+			modulePowerInput[i] = new RotatingBuffer(5);
+			encoderRateResponse[i] = new RotatingBuffer(5, 5);
+		}
 	}
 
 	public static SwerveDrive getInstance(AHRS ahrs) {
@@ -453,6 +464,100 @@ public class SwerveDrive {
 	//---
 	//---
 	//---
+	
+
+	void translateAndRotateRefactoredStructure(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
+			double driveRobotTranslationY) {
+		// turns the gyro into a 0-360 range -- easier to work with
+		double gyroValueUnprocessed = ahrs.getAngle() - this.ahrsOffset;
+		double gyroValueProcessed = (Math.abs(((int) (gyroValueUnprocessed)) * 360) + gyroValueUnprocessed) % 360;
+
+		// initializing the main variables
+		Point fieldRelativeVector = new Point(driveFieldTranslationX, driveFieldTranslationY);
+		Point robotRelativeVector = new Point();
+		if (isCargoFront) {
+			robotRelativeVector.setX(driveRobotTranslationX);
+			robotRelativeVector.setY(driveRobotTranslationY);
+		} else {
+			robotRelativeVector.setX(-driveRobotTranslationY);
+			robotRelativeVector.setY(driveRobotTranslationX);
+		}
+		double unregulatedRotationValue = unregulatedTurning;
+		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
+
+		Point translationVector = convertToFieldRelative(robotRelativeVector, fieldRelativeVector, gyroValueProcessed);
+		
+		double rotationMagnitude = rotationMagnitude(translationVector, absoluteFieldRelativeDirection, unregulatedRotationValue, gyroValueProcessed, gyroValueUnprocessed);
+
+		Point rotationVector = new Point(rotationMagnitude, rotationMagnitude);
+
+		Point[] wheelVector = new Point[4];
+
+		wheelVector[0] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 90));
+		wheelVector[1] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 0));
+		wheelVector[2] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 270));
+		wheelVector[3] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 180));
+
+		double[] wheelSpeed = new double[4];
+
+		wheelSpeed[0] = wheelVector[0].distanceFromZero();
+		wheelSpeed[1] = wheelVector[1].distanceFromZero();
+		wheelSpeed[2] = wheelVector[2].distanceFromZero();
+		wheelSpeed[3] = wheelVector[3].distanceFromZero();
+
+		double[] wheelAngle = new double[4];
+
+		wheelAngle[0] = 360 - wheelVector[0].getCompassAngle();
+		wheelAngle[1] = 360 - wheelVector[1].getCompassAngle();
+		wheelAngle[2] = 360 - wheelVector[2].getCompassAngle();
+		wheelAngle[3] = 360 - wheelVector[3].getCompassAngle();
+
+		wheelSpeed = speedScale(wheelSpeed, 1);
+
+		//will this use the array?
+		updateModuleHardwareStates(wheelSpeed);
+		setModules(wheelSpeed, wheelAngle);
+
+		dataShoot(gyroValueProcessed);
+	}
+
+	void updateModuleHardwareStates(double[] wheelSpeeds) {
+
+		modulePowerInput[0].add(wheelSpeeds[0]);
+		encoderRateResponse[0].add(frontRightDegreesPerSecond());
+		modulePowerInput[1].add(wheelSpeeds[1]);
+		encoderRateResponse[1].add(frontLeftDegreesPerSecond());
+		modulePowerInput[2].add(wheelSpeeds[2]);
+		encoderRateResponse[2].add(backLeftDegreesPerSecond());
+		modulePowerInput[3].add(wheelSpeeds[3]);
+		encoderRateResponse[3].add(backRightDegreesPerSecond());
+
+		if (modulePowerInput[0].getAverage() > 0.8 && encoderRateResponse[0].getAverage() < 10) {
+			frSpeedEncoderIsWorking = false;
+		} else if (modulePowerInput[0].getAverage() > 0.8 && encoderRateResponse[0].getAverage() > 20) {
+			frSpeedEncoderIsWorking = true;
+		}
+
+		if (modulePowerInput[1].getAverage() > 0.8 && encoderRateResponse[1].getAverage() < 10) {
+			flSpeedEncoderIsWorking = false;
+		} else if (modulePowerInput[1].getAverage() > 0.8 && encoderRateResponse[1].getAverage() > 20) {
+			flSpeedEncoderIsWorking = true;
+		}
+
+		if (modulePowerInput[2].getAverage() > 0.8 && encoderRateResponse[2].getAverage() < 10) {
+			blSpeedEncoderIsWorking = false;
+		} else if (modulePowerInput[2].getAverage() > 0.8 && encoderRateResponse[2].getAverage() > 20) {
+			blSpeedEncoderIsWorking = true;
+		}
+		
+		if (modulePowerInput[3].getAverage() > 0.8 && encoderRateResponse[3].getAverage() < 10) {
+			brSpeedEndoderIsWorking = false;
+		} else if (modulePowerInput[3].getAverage() > 0.8 && encoderRateResponse[3].getAverage() > 20) {
+			brSpeedEndoderIsWorking = true;
+		}
+
+	}
+
 	Point convertToFieldRelative(Point robotRelativeVector, Point fieldRelativeVector, double drivetrainAngle) {
 		double fieldTransMag = fieldRelativeVector.distanceFromZero();
 		if (fieldTransMag != 0) {
@@ -562,59 +667,6 @@ public class SwerveDrive {
 		// SmartDashboard.putNumber("FL Angle", wheelAngle[1]);
 		// SmartDashboard.putNumber("BL Angle", wheelAngle[2]);
 		// SmartDashboard.putNumber("BR Angle", wheelAngle[3]);
-	}
-
-	void translateAndRotateRefactoredStructure(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
-			double driveRobotTranslationY) {
-		// turns the gyro into a 0-360 range -- easier to work with
-		double gyroValueUnprocessed = ahrs.getAngle() - this.ahrsOffset;
-		double gyroValueProcessed = (Math.abs(((int) (gyroValueUnprocessed)) * 360) + gyroValueUnprocessed) % 360;
-
-		// initializing the main variables
-		Point fieldRelativeVector = new Point(driveFieldTranslationX, driveFieldTranslationY);
-		Point robotRelativeVector = new Point();
-		if (isCargoFront) {
-			robotRelativeVector.setX(driveRobotTranslationX);
-			robotRelativeVector.setY(driveRobotTranslationY);
-		} else {
-			robotRelativeVector.setX(-driveRobotTranslationY);
-			robotRelativeVector.setY(driveRobotTranslationX);
-		}
-		double unregulatedRotationValue = unregulatedTurning;
-		double absoluteFieldRelativeDirection = fieldRelativeRobotDirection;
-
-		Point translationVector = convertToFieldRelative(robotRelativeVector, fieldRelativeVector, gyroValueProcessed);
-		
-		double rotationMagnitude = rotationMagnitude(translationVector, absoluteFieldRelativeDirection, unregulatedRotationValue, gyroValueProcessed, gyroValueUnprocessed);
-
-		Point rotationVector = new Point(rotationMagnitude, rotationMagnitude);
-
-		Point wheelVector[] = new Point[4];
-
-		wheelVector[0] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 90));
-		wheelVector[1] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 0));
-		wheelVector[2] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 270));
-		wheelVector[3] = GeometricMath.vectorAddition(translationVector, GeometricMath.rotateVector(rotationVector, 180));
-
-		double wheelSpeed[] = new double[4];
-
-		wheelSpeed[0] = wheelVector[0].distanceFromZero();
-		wheelSpeed[1] = wheelVector[1].distanceFromZero();
-		wheelSpeed[2] = wheelVector[2].distanceFromZero();
-		wheelSpeed[3] = wheelVector[3].distanceFromZero();
-
-		double wheelAngle[] = new double[4];
-
-		wheelAngle[0] = 360 - wheelVector[0].getCompassAngle();
-		wheelAngle[1] = 360 - wheelVector[1].getCompassAngle();
-		wheelAngle[2] = 360 - wheelVector[2].getCompassAngle();
-		wheelAngle[3] = 360 - wheelVector[3].getCompassAngle();
-
-		wheelSpeed = speedScale(wheelSpeed, 1);
-
-		setModules(wheelSpeed, wheelAngle);
-
-		dataShoot(gyroValueProcessed);
 	}
 
 	public double frontRightDegreesPerSecond() {
