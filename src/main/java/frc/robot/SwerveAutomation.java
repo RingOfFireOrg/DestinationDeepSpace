@@ -40,11 +40,12 @@ public class SwerveAutomation {
 			Point blWheelTransformedVector = GeometricMath.vectorAddition(blWheelOriginalVector, blWheelOriginalVector);
 			Point brWheelTransformedVector = GeometricMath.vectorAddition(brWheelOriginalVector, brWheelOriginalVector);
 
-			//Point originalCenter = GeometricMath.midPoint(GeometricMath.midPoint, b)
+			Point originalCenter = GeometricMath.midPoint(GeometricMath.midPoint(frWheelOriginalVector, blWheelOriginalVector), GeometricMath.midPoint(flWheelOriginalVector, brWheelOriginalVector));
+			Point translatedCenter = GeometricMath.midPoint(GeometricMath.midPoint(frWheelTransformedVector, blWheelTransformedVector), GeometricMath.midPoint(flWheelTransformedVector, brWheelTransformedVector));
 		} else {
 
 		}
-		
+
 	}
 
 }
