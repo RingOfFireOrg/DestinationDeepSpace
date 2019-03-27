@@ -365,18 +365,6 @@ public class SwerveDrive {
 		return Math.signum(inputReading) * inputReading * inputReading;
 	}
 
-	double degToInches(double degrees) {
-		double wheelRotations = degrees / 360;
-
-		return RobotMap.WHEEL_CIRCUMFERENCE * wheelRotations;
-	}
-
-	double inchesToDeg(double inches) {
-		double wheelRotations = inches / RobotMap.WHEEL_CIRCUMFERENCE;
-
-		return wheelRotations * 360;
-	}
-
 	protected void reset() {
 		frontRight.resetModule();
 		frontLeft.resetModule();
@@ -696,7 +684,7 @@ public class SwerveDrive {
 	}
 
 	public double frontRightCMPerSecond() {
-		return frontRightDegreesPerSecond() * RobotMap.inchToCM * RobotMap.SWERVE_WHEEL_DIAMETER * RobotMap.pi / 360;
+		return frontRightDegreesPerSecond() * RobotMap.INCH_TO_CM * RobotMap.SWERVE_WHEEL_DIAMETER * Math.PI / 360;
 	}
 	public double frontLeftCMPerSecond() {
 		return frontLeftDegreesPerSecond() * 2.54 * 6 * 3.14 / 360;

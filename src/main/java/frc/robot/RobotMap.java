@@ -138,18 +138,13 @@ public class RobotMap {
 
 	public static final double DEFAULT_FIND_SPEED = 0.5;
 
-	// Wheels
-	public static final double WHEEL_DIAMETER = 4;
-	public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
-
 	// dimension of the robot in CM
 	public static final int ROBOT_STANCE_X_IN_CM = 51;
 	public static final int ROBOT_STANCE_Y_IN_CM = 51;
 
 	//Constants
-	public static final int SWERVE_WHEEL_DIAMETER = 6;
-	public static final double inchToCM = 2.54;
-	public static final double pi = 3.14;
+	public static final int SWERVE_WHEEL_DIAMETER = 4;
+	public static final double INCH_TO_CM = 2.54;
 
 	// deadzones
 	public static final double TRANSLATION_DEADZONE = 0.1;
@@ -164,9 +159,6 @@ public class RobotMap {
 	public static final double LEFT_CARGO_WHEEL_SHOOT_SPEED = -1;
 	public static final double RIGHT_CARGO_WHEEL_INTAKE_SPEED = -0.6;
 	public static final double LEFT_CARGO_WHEEL_INTAKE_SPEED = 0.6;
-
-	// arm speed on cargo manipulator
-	public static final double ARM_RAW_SPEED = 0.4;
 
 	//null value return in cargo manipulator for dual encoder failure
 	public static final double FAILURE_RETURN_ENCODER_VALUE = -6;
