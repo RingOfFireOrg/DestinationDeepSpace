@@ -38,10 +38,10 @@ public class SwerveAutomation {
 		Point brWheelTransformationVector = GeometricMath.rotateVector(new Point(0, swerveDrive.backRightCMPerSecond()),
 				swerveDrive.backRightAngle());
 
-		Point frWheelTransformedVector = GeometricMath.vectorAddition(frWheelOriginalVector, frWheelOriginalVector);
-		Point flWheelTransformedVector = GeometricMath.vectorAddition(flWheelOriginalVector, flWheelOriginalVector);
-		Point blWheelTransformedVector = GeometricMath.vectorAddition(blWheelOriginalVector, blWheelOriginalVector);
-		Point brWheelTransformedVector = GeometricMath.vectorAddition(brWheelOriginalVector, brWheelOriginalVector);
+		Point frWheelTransformedVector = GeometricMath.vectorAddition(frWheelOriginalVector, frWheelTransformationVector);
+		Point flWheelTransformedVector = GeometricMath.vectorAddition(flWheelOriginalVector, flWheelTransformationVector);
+		Point blWheelTransformedVector = GeometricMath.vectorAddition(blWheelOriginalVector, blWheelTransformationVector);
+		Point brWheelTransformedVector = GeometricMath.vectorAddition(brWheelOriginalVector, brWheelTransformationVector);
 
 		if (swerveDrive.frSpeedEncoderIsWorking && swerveDrive.flSpeedEncoderIsWorking
 				&& swerveDrive.blSpeedEncoderIsWorking && swerveDrive.brSpeedEncoderIsWorking) {

@@ -454,6 +454,9 @@ public class SwerveDrive {
 	//---
 	
 
+	void translateAndRotateCM(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX, double driveRobotTranslationY) {
+		translateAndRotateRefactoredStructure(driveFieldTranslationX / RobotMap.MAX_CM_PER_SECOND, driveFieldTranslationY / RobotMap.MAX_CM_PER_SECOND, unregulatedTurning, fieldRelativeRobotDirection, driveRobotTranslationX / RobotMap.MAX_CM_PER_SECOND, driveRobotTranslationY / RobotMap.MAX_CM_PER_SECOND);
+	}
 	void translateAndRotateRefactoredStructure(double driveFieldTranslationX, double driveFieldTranslationY, double unregulatedTurning, double fieldRelativeRobotDirection, double driveRobotTranslationX,
 			double driveRobotTranslationY) {
 		// turns the gyro into a 0-360 range -- easier to work with
