@@ -24,7 +24,6 @@ public class SwerveModule {
 	PID speedRegulation;
 	double accumulatedGR = 0;
 	int powerInversion = 1;
-	static final double MAX_DRIVE_POWER = 0.8;
 	static final double MAX_STEER_POWER = 0.8;
 	
 
@@ -41,7 +40,7 @@ public class SwerveModule {
 		driveEncoder.setDistancePerPulse(18); //in degrees (360)/(20 pulses per rotation)
 
 		speedRegulation = new PID(0, -0.000001, 0);
-		speedRegulation.setOutputRange(-1, 1);
+		speedRegulation.setOutputRange(-RobotMap.MAX_DRIVE_POWER, RobotMap.MAX_DRIVE_POWER);
 		speedRegulation.reset();
 	}
 
@@ -79,25 +78,17 @@ public class SwerveModule {
 	}
 
 	public void setDriveSpeed(double drivePower) {
-		/*if (moduleName == "BackLeft") {
-			accumulatedGR += drivePower;
-			speedRegulation.setError((drivePower * 28000) - getRate());
-			speedRegulation.update();
-			optimizedSpeed = drivePower + speedRegulation.getOutput();
-			if (optimizedSpeed > MAX_DRIVE_POWER) optimizedSpeed = MAX_DRIVE_POWER;
-			if (optimizedSpeed < -MAX_DRIVE_POWER) optimizedSpeed = -MAX_DRIVE_POWER;
-			drive.set(optimizedSpeed);
-			//SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
-			//SmartDashboard("encoder a", driveEncoder.());
-		} else { */ 
-			if (drivePower > MAX_DRIVE_POWER) {
-				drivePower = MAX_DRIVE_POWER;
-			} else if (drivePower < -MAX_DRIVE_POWER) {
-				drivePower = -MAX_DRIVE_POWER;
-			}
-			drive.set(ControlMode.PercentOutput, powerInversion * drivePower);
-		//} 
-		//}
+		drivePower *= powerInversion;
+		if (drivePower > RobotMap.MAX_DRIVE_POWER) {
+			drivePower = RobotMap.MAX_DRIVE_POWER;
+		} else if (drivePower < -RobotMap.MAX_DRIVE_POWER) {
+			drivePower = -RobotMap.MAX_DRIVE_POWER;
+		}
+		double currentSpeed = getRate() * RobotMap.DPS_TO_RPM;
+		speedRegulation.setError(drivePower - ((getRate() * RobotMap.DPS_TO_RPM) / (RobotMap.MAX_SWERVE_SPEED_IN_RPM * RobotMap.DRIVE_GEARING_RATIO)) );
+		speedRegulation.update();
+		optimizedSpeed = GeometricMath.limitRange(drivePower + speedRegulation.getOutput(), -RobotMap.MAX_DRIVE_POWER, RobotMap.MAX_DRIVE_POWER);
+		drive.set(ControlMode.PercentOutput, optimizedSpeed);
 		
 		//SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
 		//SmartDashboard.putNumber("DP - " + moduleName, drivePower);

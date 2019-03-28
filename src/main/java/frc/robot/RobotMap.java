@@ -145,8 +145,10 @@ public class RobotMap {
 	//Constants
 	public static final int SWERVE_WHEEL_DIAMETER = 4;
 	public static final double INCH_TO_CM = 2.54;
-	public static final double MAX_SWERVE_SPEED_IN_RPM = 600; //modules are capable of 660 -- this is after gearing
+	public static final double MAX_SWERVE_SPEED_IN_RPM = 550; //modules are capable of 660 -- this is after gearing
 	public static final double DRIVE_GEARING_RATIO = 6.67;
+	public static final double DPS_TO_RPM = 0.1667;
+	public static final double MAX_DRIVE_POWER = MAX_SWERVE_SPEED_IN_RPM / 660;
 
 	// deadzones
 	public static final double TRANSLATION_DEADZONE = 0.1;

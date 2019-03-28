@@ -2,6 +2,15 @@ package frc.robot;
 
 public class GeometricMath {
 
+    static double limitRange(double input, double min, double max) {
+        if (input < min) {
+            input = min;
+        } else if (input > max) {
+            input = max;
+        }
+        return input;
+    }
+    
     static double pointDistance(Point a, Point b) {
         return Math.hypot(a.getX() - b.getX(), a.getY() - b.getY());
     }
