@@ -25,6 +25,7 @@ public class SwerveModule {
 	double accumulatedGR = 0;
 	int powerInversion = 1;
 	static final double MAX_STEER_POWER = 0.8;
+	public boolean driveEncoderWorking = true;
 	
 
 	//will need to make changes to the input --Encoder driveRotEncoder <-- add to constructor
@@ -84,11 +85,15 @@ public class SwerveModule {
 		} else if (drivePower < -RobotMap.MAX_DRIVE_POWER) {
 			drivePower = -RobotMap.MAX_DRIVE_POWER;
 		}
-		double currentSpeed = getRate() * RobotMap.DPS_TO_RPM;
-		speedRegulation.setError(drivePower - ((getRate() * RobotMap.DPS_TO_RPM) / (RobotMap.MAX_SWERVE_SPEED_IN_RPM * RobotMap.DRIVE_GEARING_RATIO)) );
-		speedRegulation.update();
-		optimizedSpeed = GeometricMath.limitRange(drivePower + speedRegulation.getOutput(), -RobotMap.MAX_DRIVE_POWER, RobotMap.MAX_DRIVE_POWER);
-		drive.set(ControlMode.PercentOutput, optimizedSpeed);
+		if (driveEncoderWorking) {
+			speedRegulation.setError(drivePower - ((getRate() * RobotMap.DPS_TO_RPM) / (RobotMap.MAX_SWERVE_SPEED_IN_RPM * RobotMap.DRIVE_GEARING_RATIO)) );
+			speedRegulation.update();
+			optimizedSpeed = GeometricMath.limitRange(drivePower + speedRegulation.getOutput(), -RobotMap.MAX_DRIVE_POWER, RobotMap.MAX_DRIVE_POWER);
+			drive.set(ControlMode.PercentOutput, optimizedSpeed);
+		} else {
+			drive.set(ControlMode.PercentOutput, drivePower);
+		}
+		
 		
 		//SmartDashboard.putNumber("OS - " + moduleName, optimizedSpeed);
 		//SmartDashboard.putNumber("DP - " + moduleName, drivePower);

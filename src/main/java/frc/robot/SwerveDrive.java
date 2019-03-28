@@ -26,7 +26,7 @@ public class SwerveDrive {
 	public boolean frSpeedEncoderIsWorking = true;
 	public boolean flSpeedEncoderIsWorking = true;
 	public boolean blSpeedEncoderIsWorking = true;
-	public boolean brSpeedEndoderIsWorking = true;
+	public boolean brSpeedEncoderIsWorking = true;
 
 	private static SwerveDrive swerveDrive;
 
@@ -539,10 +539,15 @@ public class SwerveDrive {
 		}
 		
 		if (modulePowerInput[3].getAverage() > 0.8 && encoderRateResponse[3].getAverage() < 10) {
-			brSpeedEndoderIsWorking = false;
+			brSpeedEncoderIsWorking = false;
 		} else if (modulePowerInput[3].getAverage() > 0.8 && encoderRateResponse[3].getAverage() > 20) {
-			brSpeedEndoderIsWorking = true;
+			brSpeedEncoderIsWorking = true;
 		}
+
+		frontRight.driveEncoderWorking = frSpeedEncoderIsWorking;
+		frontLeft.driveEncoderWorking = flSpeedEncoderIsWorking;
+		backLeft.driveEncoderWorking = blSpeedEncoderIsWorking;
+		backRight.driveEncoderWorking = brSpeedEncoderIsWorking;
 
 	}
 

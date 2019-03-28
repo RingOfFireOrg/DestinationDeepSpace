@@ -44,7 +44,7 @@ public class SwerveAutomation {
 		Point brWheelTransformedVector = GeometricMath.vectorAddition(brWheelOriginalVector, brWheelOriginalVector);
 
 		if (swerveDrive.frSpeedEncoderIsWorking && swerveDrive.flSpeedEncoderIsWorking
-				&& swerveDrive.blSpeedEncoderIsWorking && swerveDrive.brSpeedEndoderIsWorking) {
+				&& swerveDrive.blSpeedEncoderIsWorking && swerveDrive.brSpeedEncoderIsWorking) {
 			Point originalCenter = GeometricMath.midPoint(
 					GeometricMath.midPoint(frWheelOriginalVector, blWheelOriginalVector),
 					GeometricMath.midPoint(flWheelOriginalVector, brWheelOriginalVector));
@@ -56,7 +56,7 @@ public class SwerveAutomation {
 			Point originalCenter = GeometricMath.midPoint(frWheelOriginalVector, blWheelOriginalVector);
 			Point translatedCenter = GeometricMath.midPoint(frWheelTransformedVector, blWheelTransformedVector);
 			return GeometricMath.vectorSubtraction(translatedCenter, originalCenter);
-		} else if (swerveDrive.flSpeedEncoderIsWorking && swerveDrive.brSpeedEndoderIsWorking) {
+		} else if (swerveDrive.flSpeedEncoderIsWorking && swerveDrive.brSpeedEncoderIsWorking) {
 			Point originalCenter = GeometricMath.midPoint(flWheelOriginalVector, brWheelOriginalVector);
 			Point translatedCenter = GeometricMath.midPoint(flWheelTransformedVector, brWheelTransformedVector);
 			return GeometricMath.vectorSubtraction(translatedCenter, originalCenter);
