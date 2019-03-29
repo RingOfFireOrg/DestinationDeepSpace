@@ -69,6 +69,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+
+    DriverStation.reportWarning("Anish", false);
+
     double leftSpeed = -leftStick.getY();
     double rightSpeed = -rightStick.getY();
     double yPos = manipulatorStick.getY();

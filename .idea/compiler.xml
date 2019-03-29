@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="CargoTest.main" target="11" />
+      <module name="CargoTest.test" target="11" />
+      <module name="DestinationDeepSpace.main" target="11" />
+      <module name="DestinationDeepSpace.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

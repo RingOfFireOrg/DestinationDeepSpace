@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CargoTest.main.iml" filepath="$PROJECT_DIR$/.idea/modules/CargoTest.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CargoTest.test.iml" filepath="$PROJECT_DIR$/.idea/modules/CargoTest.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DestinationDeepSpace.iml" filepath="$PROJECT_DIR$/DestinationDeepSpace.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DestinationDeepSpace.main.iml" filepath="$PROJECT_DIR$/.idea/modules/DestinationDeepSpace.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DestinationDeepSpace.test.iml" filepath="$PROJECT_DIR$/.idea/modules/DestinationDeepSpace.test.iml" />
+    </modules>
+  </component>
+</project>

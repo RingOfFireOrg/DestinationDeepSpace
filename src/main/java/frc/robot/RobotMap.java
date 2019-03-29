@@ -11,9 +11,9 @@ public final class RobotMap {
     public static final int PWM_TEST_ATTACHMENT = 2;
 
     // Drive Train Motors
-    public static final int MOTOR_FRONT_LEFT = 8;
-    public static final int MOTOR_FRONT_RIGHT = 3;
-    public static final int MOTOR_BACK_LEFT = 0;
+    public static final int MOTOR_FRONT_LEFT = 7; //8;
+    public static final int MOTOR_FRONT_RIGHT = 0; //3;
+    public static final int MOTOR_BACK_LEFT = 9; // 0;
     public static final int MOTOR_BACK_RIGHT = 1;
 
     // Digital I/O

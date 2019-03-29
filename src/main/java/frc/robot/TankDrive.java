@@ -14,7 +14,7 @@ public class TankDrive extends DifferentialDrive {
 	private Encoder rightEncoder = new Encoder(RobotMap.DRIVE_TRAIN_RIGHT_ENCODER_A, RobotMap.DRIVE_TRAIN_RIGHT_ENCODER_B, false, Encoder.EncodingType.k1X);
 	
 	TankDrive() {
-		super(new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.MOTOR_FRONT_LEFT), new WPI_VictorSPX(RobotMap.MOTOR_BACK_LEFT)),
+		super(new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.MOTOR_FRONT_LEFT), new WPI_TalonSRX(RobotMap.MOTOR_BACK_LEFT)),
 				new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.MOTOR_FRONT_RIGHT), new WPI_VictorSPX(RobotMap.MOTOR_BACK_RIGHT)));
 		initEncoder(leftEncoder);
 		initEncoder(rightEncoder);

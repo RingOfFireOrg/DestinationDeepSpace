@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="CargoTest" external.linked.project.path="$USER_HOME$/Downloads/CargoTest" external.root.project.path="$USER_HOME$/Downloads/CargoTest" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$USER_HOME$/Downloads/CargoTest">
+      <excludeFolder url="file://$USER_HOME$/Downloads/CargoTest/.gradle" />
+      <excludeFolder url="file://$USER_HOME$/Downloads/CargoTest/build" />
+      <excludeFolder url="file://$USER_HOME$/Downloads/CargoTest/out" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
