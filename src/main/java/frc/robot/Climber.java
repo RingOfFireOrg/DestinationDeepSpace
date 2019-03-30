@@ -89,7 +89,7 @@ public class Climber {
         }
     }
 
-        //takes robot to the top, handles whether to stop cause of magnet and also regulating the two bars to keep them at the same height
+        //takes robot to the top
         public void extendLevelManual(double difference) {
             SmartDashboard.putNumber("difference", difference);
             //assuming that the gyro will be + when rotated forward

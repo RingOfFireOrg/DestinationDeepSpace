@@ -90,7 +90,7 @@ public class AutoClimb {
                 pitchOffset = ahrs.getPitch();
                 SmartDashboard.putNumber("Pitch Offset auto: ", pitchOffset);
                 startingPitch = ahrs.getPitch();
-                step++;
+                step = 4;
             //  robotPitchPID.reset();
             // }
             break;
@@ -114,8 +114,7 @@ public class AutoClimb {
                 climber.extend(BACK);
             } else {
                 climber.stopClimbing(BACK);
-               // step++;
-               step = 12;
+                step++;
             }
             break;
 
@@ -128,7 +127,7 @@ public class AutoClimb {
 
             if(climber.isFullyExtendedL3()) {
                 resetLimitSwitches();
-                step++;
+                step = 12;
             }
             break;
 
