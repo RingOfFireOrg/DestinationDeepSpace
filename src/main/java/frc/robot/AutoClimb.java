@@ -90,7 +90,7 @@ public class AutoClimb {
                 pitchOffset = ahrs.getPitch();
                 SmartDashboard.putNumber("Pitch Offset auto: ", pitchOffset);
                 startingPitch = ahrs.getPitch();
-                step = 4;
+                step++;
             //  robotPitchPID.reset();
             // }
             break;
@@ -98,7 +98,7 @@ public class AutoClimb {
         //makes the front winch taught
         case 2:
             cargoManipulator.setToCurrentPosition();
-            if (Math.abs(startingPitch - ahrs.getPitch()) < 3) { //test
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 0.3) { //test
                 climber.extend(FRONT);
             } else {
                 climber.stopClimbing(FRONT);
@@ -110,11 +110,11 @@ public class AutoClimb {
         //makes the back winch taught
         case 3:
             cargoManipulator.setToCurrentPosition();
-            if (Math.abs(startingPitch - ahrs.getPitch()) < 3) { //test
+            if (Math.abs(startingPitch - ahrs.getPitch()) < 0.3) { //test
                 climber.extend(BACK);
             } else {
                 climber.stopClimbing(BACK);
-                step++;
+                step = 12;
             }
             break;
 
