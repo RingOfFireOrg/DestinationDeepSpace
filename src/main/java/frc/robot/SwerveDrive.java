@@ -1,9 +1,13 @@
 package frc.robot;
 
+import java.awt.Robot;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveDrive {
@@ -22,6 +26,14 @@ public class SwerveDrive {
 	double translationAngle;
 	boolean isCargoFront = true;
 	private selectiveSwerveDriveModes selectiveSwerveDriveMode;
+
+	Timer swerveTimer = new Timer();
+	double lastTimeStamp = swerveTimer.get();
+	double currentTimeStamp = swerveTimer.get();
+	double[] lastAcceleration = new double[4];
+	double[] lastVelocity = new double[4];
+	double[] currentAcceleration = new double[4];
+	double[] currentJerk = new double[4];
 
 	public boolean frSpeedEncoderIsWorking = true;
 	public boolean flSpeedEncoderIsWorking = true;
@@ -64,6 +76,9 @@ public class SwerveDrive {
 		for (int i = 0 ; i < 4 ; i++) {
 			modulePowerInput[i] = new RotatingBuffer(5);
 			encoderRateResponse[i] = new RotatingBuffer(5, 5);
+			lastAcceleration[i] = 0;
+			lastVelocity[i] = 0;
+			currentAcceleration[i] = 0;
 		}
 	}
 
@@ -505,11 +520,50 @@ public class SwerveDrive {
 
 		wheelSpeed = speedScale(wheelSpeed, 1);
 
+		wheelSpeed = limitForces(wheelSpeed);
 		//will this use the array?
 		updateModuleHardwareStates(wheelSpeed);
 		setModules(wheelSpeed, wheelAngle);
 
 		dataShoot(gyroValueProcessed);
+	}
+
+	double[] limitForces(double[] currentVelocity) {
+		currentTimeStamp = swerveTimer.get();
+		for (int i = 0 ; i < 4 ; i ++) {
+			currentAcceleration[i] = (currentVelocity[i] - lastVelocity[i]) / (currentTimeStamp - lastTimeStamp);
+			if (Math.abs(currentAcceleration[i]) > RobotMap.DRIVE_MAX_ACCELERATION_PER_SECOND) {
+				if (currentAcceleration[i] > 0) {
+					currentVelocity[i] = lastVelocity[i] + ((currentTimeStamp - lastTimeStamp) * RobotMap.DRIVE_MAX_ACCELERATION_PER_SECOND);
+				} else {
+					currentVelocity[i] = lastVelocity[i] - ((currentTimeStamp - lastTimeStamp) * RobotMap.DRIVE_MAX_ACCELERATION_PER_SECOND);
+				}
+				currentAcceleration[i] = (currentVelocity[i] - lastVelocity[i]) / (currentTimeStamp - lastTimeStamp);
+			}
+			currentJerk[i] = (currentAcceleration[i] - lastAcceleration[i]) / (currentTimeStamp - lastTimeStamp);
+			if (Math.abs(currentJerk[i]) > RobotMap.DRIVE_MAX_JERK_PER_SECOND) {
+				//MATH NEEDS TO BE FIXED
+				if (currentVelocity[i] > 0) {
+					if (currentJerk[i] > 0) {
+						currentVelocity[i] = lastVelocity[i] + ((currentTimeStamp - lastTimeStamp) * (lastAcceleration[i] + ((currentTimeStamp - lastTimeStamp) * RobotMap.DRIVE_MAX_JERK_PER_SECOND)));
+					} else {
+						currentVelocity[i] = lastVelocity[i] - ((currentTimeStamp - lastTimeStamp) * (lastAcceleration[i] + ((currentTimeStamp - lastTimeStamp) * RobotMap.DRIVE_MAX_JERK_PER_SECOND)));
+					}
+				} else {
+					if (currentJerk[i] > 0) {
+						currentVelocity[i] = lastVelocity[i] + ((currentTimeStamp - lastTimeStamp) * (lastAcceleration[i] - ((currentTimeStamp - lastTimeStamp) * RobotMap.DRIVE_MAX_JERK_PER_SECOND)));
+					} else {
+						currentVelocity[i] = lastVelocity[i] - ((currentTimeStamp - lastTimeStamp) * (lastAcceleration[i] - ((currentTimeStamp - lastTimeStamp) * RobotMap.DRIVE_MAX_JERK_PER_SECOND)));
+					}
+				}
+				currentAcceleration[i] = (currentVelocity[i] - lastVelocity[i]) / (currentTimeStamp - lastTimeStamp);
+			}
+			
+
+			lastVelocity[i] = currentVelocity[i];
+			lastAcceleration[i] = currentAcceleration[i];
+		}
+		return currentVelocity;
 	}
 
 	void updateModuleHardwareStates(double[] wheelSpeeds) {
