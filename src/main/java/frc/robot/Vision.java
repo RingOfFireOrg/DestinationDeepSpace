@@ -104,6 +104,8 @@ public class Vision {
 
     boolean alignment() {
         double strafeRightLeft = tx * STEER_K * -1;
+
+        //this division should still be subtraction, otherwise it will go forward when at the right target <------------
         double strafeForwardBack = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
         final double MAX_SPEED = 0.4;
         final double MIN_SPEED = 0.1; // stall speed??
@@ -113,9 +115,8 @@ public class Vision {
 
         if (Math.abs(tx) > 3) { // three is a random placeholder
             // RJC is it imprtant that the 3 placeholder here and the 3 placeholder above
-            // have the same value? If so maybe move to a constant and use that? if not this
-            // is fine.
-
+            // have the same value? If so maybe move to a constant and use that? if not this is fine.
+            
             // deal with min and max speeds for right left
             if (Math.abs(strafeRightLeft) < MIN_SPEED) {
                 if (strafeRightLeft >= 0) {
@@ -135,9 +136,8 @@ public class Vision {
             rightLeftAligned = true;
         }
 
-        if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) { // is 0.9 close enough??
-            // this would speed up or slow down and go drive_K for the perfect setup
-            // change the division to subtraction
+        //what if you are closer than desired when starting?
+        if (Math.abs(DESIRED_TARGET_AREA / ta) < 0.9) { // is 0.9 close enough?? //wouldn't the desired target area be where we stop, so shouldn't this be 1
             if (strafeForwardBack < MIN_SPEED) {
                 // won't ever go backward
                 strafeForwardBack = MIN_SPEED;
@@ -148,8 +148,8 @@ public class Vision {
             strafeForwardBack = 0;
             frontBackAligned = true;
         }
-        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, strafeRightLeft,
-                strafeForwardBack);
+
+        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, strafeRightLeft, strafeForwardBack);
 
         if (frontBackAligned && rightLeftAligned) {
             return true;
