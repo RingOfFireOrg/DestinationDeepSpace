@@ -24,7 +24,14 @@ public class Vision {
     // These numbers must be tuned for your Robot! Be careful!
     final double STEER_K = 0.03; // how hard to drive sideways to center on the target
     final double DRIVE_K = 0.7; // how hard to drive fwd toward the target
-    final double DESIRED_TARGET_AREA = 13.0; // Area of the target when the robot reaches the wall
+    //does this come back in % or decimal form
+    final double DESIRED_TARGET_AREA = 13.0;
+    final double MAX_SPEED = 0.4;
+    final double MIN_SPEED = 0.1; // stall speed?? // Area of the target when the robot reaches the wall 
+    
+
+    private PID strafePID;
+    private PID drivePID;
 
     SwerveDrive swerveDrive = SwerveDrive.getInstance(ahrs);
     Beak beak = Beak.getInstance();
@@ -34,6 +41,15 @@ public class Vision {
 
     public double alignmentPositionAngle = 0;
 
+    Vision() {
+        strafePID = new PID(STEER_K, 0, 0);
+        strafePID.setOutputRange(-MAX_SPEED, MAX_SPEED);
+        strafePID.setInternalRestiction(MIN_SPEED);
+        drivePID = new PID(DRIVE_K, 0, 0);
+        drivePID.setOutputRange(-MAX_SPEED, MAX_SPEED);
+        drivePID.setInternalRestiction(MIN_SPEED);
+
+    }
     private boolean validTarget() {
         tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
@@ -105,12 +121,34 @@ public class Vision {
     }
 
     boolean alignment() {
-        double strafeRightLeft = tx * STEER_K * -1;
+        //Alternative PID framework (written on 4/1/19, might not have been updated) ------>
+        // strafePID.setError(-tx);
+        // drivePID.setError(1 - (DESIRED_TARGET_AREA / ta));
+        // strafePID.update();
+        // drivePID.update();
+        // boolean xAligned = false, yAligned = false;
+        // SmartDashboard.putNumber("XTranslation", strafePID.getOutput());
+        // double translationX = strafePID.getOutput();
+        // double translationY = drivePID.getOutput();
+        // if (Math.abs(tx) < 3) {
+        //     translationX = 0;
+        //     xAligned = true;
+        // }
+        // if (Math.abs(DESIRED_TARGET_AREA / ta) > 0.9) {
+        //     translationY = 0;
+        //     yAligned = true;
+        // }
+        // swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, alignmentPositionAngle, translationX, translationY);
+        // if(xAligned && yAligned) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
 
-        //this division should still be subtraction, otherwise it will go forward when at the right target <------------
-        double strafeForwardBack = (DESIRED_TARGET_AREA / ta) * DRIVE_K;
-        final double MAX_SPEED = 0.4;
-        final double MIN_SPEED = 0.1; // stall speed??
+        //if using the PID framework, delete code below: ----->
+
+        double strafeRightLeft = tx * STEER_K * -1;
+        double strafeForwardBack = (1 - (DESIRED_TARGET_AREA / ta)) * DRIVE_K;
         boolean rightLeftAligned = false;
         boolean frontBackAligned = false;
         SmartDashboard.putNumber("translate x", strafeRightLeft);
@@ -158,6 +196,9 @@ public class Vision {
         } else {
             return false;
         }
+        //^
+        //|
+        //deleted section if using PID ends here _-_-_-
 
     }
 

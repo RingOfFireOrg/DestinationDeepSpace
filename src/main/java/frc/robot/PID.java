@@ -8,6 +8,7 @@ public class PID {
     double integral;
     double minimumOutputValue;
     double maximumOutputValue;
+    double internalRestriction;
     double pidOutput;
     double error;
     boolean velocityControlMode = false;
@@ -27,6 +28,7 @@ public class PID {
         integral = 0;
         minimumOutputValue = -1;
         maximumOutputValue = 1;
+        internalRestriction = 0;
         pidOutput = 0;
     }
 
@@ -42,6 +44,10 @@ public class PID {
     public void setOutputRange(double minimum, double maximum) {
         minimumOutputValue = minimum;
         maximumOutputValue = maximum;
+    }
+
+    public void setInternalRestiction(double internalRestriction) {
+        this.internalRestriction = internalRestriction;
     }
 
     public void setKP (double P) {
@@ -96,12 +102,21 @@ public class PID {
     }
 
     public double getOutput() {
-        if (pidOutput < minimumOutputValue) {
-            return minimumOutputValue;
-        } else if (pidOutput > maximumOutputValue) {
-            return maximumOutputValue;
+        if (Math.abs(pidOutput) < internalRestriction) {
+            if (pidOutput < internalRestriction) {
+                return internalRestriction;
+            } else {
+                return -internalRestriction;
+            }
         } else {
-            return pidOutput;
+            if (pidOutput < minimumOutputValue) {
+                return minimumOutputValue;
+            } else if (pidOutput > maximumOutputValue) {
+                return maximumOutputValue;
+            } else {
+                return pidOutput;
+            }
         }
+       
     }
 }
