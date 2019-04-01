@@ -152,8 +152,7 @@ public class SwerveDrive {
 			if (Math.abs(absoluteFieldRelativeDirection - gyroValueProcessed) > 180)
 				rotationMagnitude *= -1;
 			driveStraight = false;
-		} else if (unregulatedRotationValue > RobotMap.ROTATION_DEADZONE
-				|| unregulatedRotationValue < -RobotMap.ROTATION_DEADZONE) {
+		} else if (unregulatedRotationValue != 0) {
 			rotationMagnitude = unregulatedRotationValue;
 			driveStraight = false;
 		} else if (Math.sqrt(Math.pow(robotRelativeX, 2) + Math.pow(robotRelativeY, 2)) > RobotMap.TRANSLATION_DEADZONE

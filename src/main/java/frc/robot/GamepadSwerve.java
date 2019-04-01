@@ -96,6 +96,10 @@ public class GamepadSwerve extends SwerveDrive {
 			robotTranslateY = 0;
 		}
 
+		if (Math.abs(unregulatedTurning) < RobotMap.ROTATION_DEADZONE) {
+			unregulatedTurning = 0;
+		}
+
 		if (driveController.getYButton() || joystickRobotFrontCargoButton.get()) {
 			setRobotFrontToCargo();
 		} else if (driveController.getBButton() || joystickRobotFrontHatchButton.get()) {
