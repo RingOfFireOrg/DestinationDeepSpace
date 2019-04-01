@@ -32,6 +32,8 @@ public class Vision {
     private boolean cameraFacingBeak;
     private int automationStep = 0;
 
+    public double alignmentPositionAngle = 0;
+
     private boolean validTarget() {
         tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
@@ -116,7 +118,7 @@ public class Vision {
         if (Math.abs(tx) > 3) { // three is a random placeholder
             // RJC is it imprtant that the 3 placeholder here and the 3 placeholder above
             // have the same value? If so maybe move to a constant and use that? if not this is fine.
-            
+
             // deal with min and max speeds for right left
             if (Math.abs(strafeRightLeft) < MIN_SPEED) {
                 if (strafeRightLeft >= 0) {
@@ -149,7 +151,7 @@ public class Vision {
             frontBackAligned = true;
         }
 
-        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, strafeRightLeft, strafeForwardBack);
+        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, alignmentPositionAngle, strafeRightLeft, strafeForwardBack);
 
         if (frontBackAligned && rightLeftAligned) {
             return true;
@@ -164,18 +166,22 @@ public class Vision {
             if (ahrs.getCompassHeading() < ALLOWED_OFFSET && ahrs.getCompassHeading() > (360 - ALLOWED_OFFSET)) {
                 // snap to 0 degrees
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 0, 0, 0);
+                alignmentPositionAngle = 0;
             } else if (ahrs.getCompassHeading() > (90 - ALLOWED_OFFSET)
                     && ahrs.getCompassHeading() < (90 + ALLOWED_OFFSET)) {
                 // snap to 90 degree-s
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 90, 0, 0);
+                alignmentPositionAngle = 90;
             } else if (ahrs.getCompassHeading() > (180 - ALLOWED_OFFSET)
                     && ahrs.getCompassHeading() < (180 + ALLOWED_OFFSET)) {
                 // snap to 180 degrees
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 180, 0, 0);
+                alignmentPositionAngle = 180;
             } else if (ahrs.getCompassHeading() > (270 - ALLOWED_OFFSET)
                     && ahrs.getCompassHeading() < (270 + ALLOWED_OFFSET)) {
                 // snap to 270 degrees
                 swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, 270, 0, 0);
+                alignmentPositionAngle = 270;
             } else { // if you aren't within the 20 degree window for each 90 degree angle, you are
                      // likely trying to deliver to the rocket OR a lost cause
                 // question: should we be returning true??? or something else? maybe it should
