@@ -244,7 +244,7 @@ public class Vision {
         return true;
     }
 
-    boolean cargoScore(intakePosition position) {
+    boolean cargoScore() {
         ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
         ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
         tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
@@ -268,15 +268,16 @@ public class Vision {
             }
             break;
         case 3: // score
-            if (cargoManipulator.getPosition() != position || !cargoManipulator.getAtTargetAngle()) {
-                if (position == intakePosition.CARGO_SHIP) {
-                    cargoManipulator.setToCargoShipPosition();
-                } else if (position == intakePosition.LOWER_ROCKET) {
-                    cargoManipulator.setToLowerRocketPosition();
-                }
-            } else {
-                automationStep++;
-            }
+            // if (cargoManipulator.getPosition() != position || !cargoManipulator.getAtTargetAngle()) {
+            //     if (position == intakePosition.CARGO_SHIP) {
+            //         cargoManipulator.setToCargoShipPosition();
+            //     } else if (position == intakePosition.LOWER_ROCKET) {
+            //         cargoManipulator.setToLowerRocketPosition();
+            //     }
+            // } else {
+            //     automationStep++;
+            // }
+            automationStep++;
             break;
         case 4: // back up slightly
             if (DESIRED_TARGET_AREA / ta > 0.8) { // NEED TEST!!

@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
 
 	boolean autoClimbMode = false;
 
-	//Vision limelight = new Vision();
+	Vision limelight = new Vision();
 
 	GamepadSwerve swerveDrive;
 
@@ -114,11 +114,15 @@ public class Robot extends TimedRobot {
 		// swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
 		// }
 		drivePeriodic();
+		
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		drivePeriodic();
+		if(manipulatorAButton.get()){
+			limelight.cargoScore();
+		}
 	}
 
 	@Override
@@ -153,11 +157,13 @@ public class Robot extends TimedRobot {
 	}
 
 	public void beakControl() {
-		if (manipulatorPanelOpenBeak.get() || manipulatorAButton.get()) {
-			beak.open();
-		} else if (manipulatorPanelCloseBeak.get() || manipulatorBButton.get()) {
-			beak.close();
-		}
+		
+		
+		// if (manipulatorPanelOpenBeak.get() || manipulatorAButton.get()) {
+		// 	beak.open();
+		// } else if (manipulatorPanelCloseBeak.get() || manipulatorBButton.get()) {
+		// 	beak.close();
+		// }
 	}
 
 	public void cargoManipulatorControl() {
