@@ -22,6 +22,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  */
 public class Robot extends TimedRobot {
 
+	enum Mode{
+		TELEOP, VISION, AUTO_CLIMB
+	}
+	public Mode currentMode = Mode.TELEOP;
+	
 	Beak beak = Beak.getInstance();
 	CargoManipulator cargoManipulator = CargoManipulator.getInstance();
 
@@ -80,9 +85,7 @@ public class Robot extends TimedRobot {
 
 	AHRS ahrs;
 
-	boolean driveMode = false;
 
-	boolean autoClimbMode = false;
 
 	Vision limelight = new Vision();
 
