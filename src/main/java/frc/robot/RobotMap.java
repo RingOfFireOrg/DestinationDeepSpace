@@ -16,9 +16,6 @@ public final class RobotMap {
     public static final int MOTOR_BACK_LEFT = 0;
     public static final int MOTOR_BACK_RIGHT = 1;
 
-    // Digital I/O
-    // Example: public static final int IO_UPPER_LIMIT_SW = 6;
-
     // Drive Train Encoders
     public static final int DRIVE_TRAIN_LEFT_ENCODER_A = 2;
     public static final int DRIVE_TRAIN_LEFT_ENCODER_B = 3;
@@ -34,11 +31,4 @@ public final class RobotMap {
     public static final int JOYSTICK_DRIVE_LEFT = 0;
     public static final int JOYSTICK_DRIVE_RIGHT = 1;
     public static final int JOYSTICK_MANIPULATOR = 2;
-
-    //motor for vacuum rotation
-    public static final int MOTOR_VACUUM = 7; //CAN
-
-    // Joystick Buttons
-    // Example: public static final int BUTTON_LIFT_UP = 6;
-
 }
