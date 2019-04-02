@@ -26,9 +26,10 @@ public class CargoManipulator {
     public TalonSRX rightIntakeWheel;
     public TalonSRX cargoArmMotor;
     private PID armAngleControl;
-    private PotentiometerEncoder rightCargoEncoder;
-    private PotentiometerEncoder leftCargoEncoder;
+    // private PotentiometerEncoder rightCargoEncoder;
+    // private PotentiometerEncoder leftCargoEncoder;
     private boolean atTargetAngle = false;
+    private AbsoluteAnalogEncoder rightCargoEncoder;
 
     private static CargoManipulator cargoManipulator;
 
@@ -51,8 +52,9 @@ public class CargoManipulator {
         currentEncoderPresence = encoderPresence.RIGHT;
         armAngleControl = new PID(0.0075, 0.00002, 0);
         armAngleControl.setOutputRange(-0.75, 0.75);
-        rightCargoEncoder = new PotentiometerEncoder(RobotMap.RIGHT_ENCODER_CARGO_ARM, 180);
-        leftCargoEncoder = new PotentiometerEncoder(RobotMap.LEFT_ENCODER_CARGO_ARM, 90);
+        // rightCargoEncoder = new PotentiometerEncoder(RobotMap.RIGHT_ENCODER_CARGO_ARM, 180);
+        // leftCargoEncoder = new PotentiometerEncoder(RobotMap.LEFT_ENCODER_CARGO_ARM, 90);
+        rightCargoEncoder = new AbsoluteAnalogEncoder(RobotMap.RIGHT_ENCODER_CARGO_ARM);
     }
 
     // ensures we only ever have one instance of our manipulator
@@ -193,60 +195,60 @@ public class CargoManipulator {
         return wheels;
     }
 
-    double getEncoderInDegrees() {
-        return -(180.0 - (leftCargoEncoder.getVoltage() * 54.0)); // remove once following code has been reviewed
+    // double getEncoderInDegrees() {
+    //     return -(180.0 - (rightCargoEncoder.getVoltage() * 54.0)); // remove once following code has been reviewed
 
-        // insert this once it has been reviewed <-------- :0 <------- :) <--------- !!!
-        // if (rightCargoEncoder.getVoltage() < 4.8 && rightCargoEncoder.getVoltage() >
-        // 0.2) {
-        // return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
-        // } else if (leftCargoEncoder.getVoltage() < 4.8 &&
-        // leftCargoEncoder.getVoltage() > 0.2) {
-        // return 270 - (180.0 - (leftCargoEncoder.getVoltage() * 54.0)); //temporary
-        // value -- get actual offset and such later
-        // } else {
-        // return 270;
-        // }
+    //     // insert this once it has been reviewed <-------- :0 <------- :) <--------- !!!
+    //     // if (rightCargoEncoder.getVoltage() < 4.8 && rightCargoEncoder.getVoltage() >
+    //     // 0.2) {
+    //     // return (180.0 - (rightCargoEncoder.getVoltage() * 54.0));
+    //     // } else if (leftCargoEncoder.getVoltage() < 4.8 &&
+    //     // leftCargoEncoder.getVoltage() > 0.2) {
+    //     // return 270 - (180.0 - (leftCargoEncoder.getVoltage() * 54.0)); //temporary
+    //     // value -- get actual offset and such later
+    //     // } else {
+    //     // return 270;
+    //     // }
 
-        // switch (currentEncoderPresence) {
-        // case BOTH:
-        // if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15
-        // && -leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15)
-        // {
-        // return (rightCargoEncoder.getAngle() - leftCargoEncoder.getAngle()) / 2;
-        // } else if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle()
-        // > -15) {
-        // return rightCargoEncoder.getAngle();
-        // } else if (leftCargoEncoder.getAngle() < 105 && leftCargoEncoder.getAngle() >
-        // -15) {
-        // return -leftCargoEncoder.getAngle();
-        // } else {
-        // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
-        // }
-        // case LEFT:
-        // if (-leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15)
-        // {
-        // return -leftCargoEncoder.getAngle();
-        // }
-        // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
-        // case RIGHT:
-        // if (rightCargoEncoder.getAngle() > 105 && rightCargoEncoder.getAngle() > -15)
-        // {
-        // return rightCargoEncoder.getAngle();
-        // }
-        // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
-        // case NONE:
-        // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
-        // default:
-        // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
-        // }
-    }
+    //     // switch (currentEncoderPresence) {
+    //     // case BOTH:
+    //     // if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15
+    //     // && -leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15)
+    //     // {
+    //     // return (rightCargoEncoder.getAngle() - leftCargoEncoder.getAngle()) / 2;
+    //     // } else if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle()
+    //     // > -15) {
+    //     // return rightCargoEncoder.getAngle();
+    //     // } else if (leftCargoEncoder.getAngle() < 105 && leftCargoEncoder.getAngle() >
+    //     // -15) {
+    //     // return -leftCargoEncoder.getAngle();
+    //     // } else {
+    //     // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+    //     // }
+    //     // case LEFT:
+    //     // if (-leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15)
+    //     // {
+    //     // return -leftCargoEncoder.getAngle();
+    //     // }
+    //     // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+    //     // case RIGHT:
+    //     // if (rightCargoEncoder.getAngle() > 105 && rightCargoEncoder.getAngle() > -15)
+    //     // {
+    //     // return rightCargoEncoder.getAngle();
+    //     // }
+    //     // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+    //     // case NONE:
+    //     // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+    //     // default:
+    //     // return RobotMap.FAILURE_RETURN_ENCODER_VALUE;
+    //     // }
+    // }
 
     public double currentAngle() {
-        SmartDashboard.putNumber("CargoEncoder", ZERO_DEGREE_ARM_VALUE - getEncoderInDegrees());
-        SmartDashboard.putNumber("Raw Cargo Encoder Degrees", getEncoderInDegrees());
+        SmartDashboard.putNumber("CargoEncoder", ZERO_DEGREE_ARM_VALUE - rightCargoEncoder.getAngle());
+        SmartDashboard.putNumber("Raw Cargo Encoder Degrees", rightCargoEncoder.getAngle());
         SmartDashboard.putNumber("Cargo Voltage Right: ", rightCargoEncoder.getVoltage());
-        SmartDashboard.putNumber("Cargo Voltage Left: ", leftCargoEncoder.getVoltage());
-        return (ZERO_DEGREE_ARM_VALUE - getEncoderInDegrees());
+        // SmartDashboard.putNumber("Cargo Voltage Left: ", leftCargoEncoder.getVoltage());
+        return (ZERO_DEGREE_ARM_VALUE - rightCargoEncoder.getAngle());
     }
 }
