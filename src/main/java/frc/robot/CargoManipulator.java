@@ -29,7 +29,7 @@ public class CargoManipulator {
     // private PotentiometerEncoder rightCargoEncoder;
     // private PotentiometerEncoder leftCargoEncoder;
     private boolean atTargetAngle = false;
-    private AbsoluteAnalogEncoder rightCargoEncoder;
+    public AbsoluteAnalogEncoder rightCargoEncoder;
 
     private static CargoManipulator cargoManipulator;
 
@@ -213,7 +213,7 @@ public class CargoManipulator {
     //     // switch (currentEncoderPresence) {
     //     // case BOTH:
     //     // if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle() > -15
-    //     // && -leftCargoEncoder.getAngle() < 105 && -leftCargoEncoder.getAngle() > -15)
+    //     // && -leftCargoEncoder.getAngle() < 105 && -.getAngle() > -15)
     //     // {
     //     // return (rightCargoEncoder.getAngle() - leftCargoEncoder.getAngle()) / 2;
     //     // } else if (rightCargoEncoder.getAngle() < 105 && rightCargoEncoder.getAngle()

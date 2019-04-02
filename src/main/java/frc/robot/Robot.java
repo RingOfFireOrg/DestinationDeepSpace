@@ -140,6 +140,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("ty", ty);
 		SmartDashboard.putNumber("tx", tx);
 
+		SmartDashboard.putNumber("cargoAngle" ,cargoManipulator.rightCargoEncoder.getAngle());
+
 	}
 
 	
