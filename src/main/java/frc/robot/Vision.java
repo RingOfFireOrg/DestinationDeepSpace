@@ -92,8 +92,7 @@ public class Vision {
     }
 
     boolean cargoScoreReady() {
-        if (validTarget() && cargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak
-                && cargoManipulator.getPosition() == intakePosition.INTAKE
+        if (validTarget() && cargoManipulator.getWheelState() != wheelState.OUT
                 && Math.abs(90 - (ahrs.getCompassHeading() % 90)) < 10) {
             return true;
         } else {
