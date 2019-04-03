@@ -88,10 +88,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 	public JoystickButton manipulatorPanelClimbingSwitch = new JoystickButton(manipulatorPanel,
 			RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
 
-	static AHRS ahrs;
-	//yikes
-
-
 	Vision limelight = new Vision();
 
 	GamepadSwerve swerveDrive;
@@ -101,6 +97,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 	ClimberController climberController;
 
 	RobotTest robotTest = new RobotTest();
+
+	static AHRS ahrs;
 
 	public static AHRS getGyroInstance(){
 		if (ahrs == null) {
