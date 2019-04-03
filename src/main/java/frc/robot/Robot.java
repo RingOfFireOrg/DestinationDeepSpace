@@ -20,7 +20,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class Robot extends TimedRobot {
+
+
+
+
+
+ public class Robot extends TimedRobot {
 
 	enum Mode{
 		TELEOP, VISION, AUTO_CLIMB
@@ -83,8 +88,8 @@ public class Robot extends TimedRobot {
 	public JoystickButton manipulatorPanelClimbingSwitch = new JoystickButton(manipulatorPanel,
 			RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
 
-	AHRS ahrs;
-
+	static AHRS ahrs;
+	//yikes
 
 
 	Vision limelight = new Vision();
@@ -97,9 +102,17 @@ public class Robot extends TimedRobot {
 
 	RobotTest robotTest = new RobotTest();
 
+	public static AHRS getGyroInstance(){
+		if (ahrs == null) {
+			ahrs = new AHRS(SerialPort.Port.kUSB);
+		}
+		return ahrs;
+	}
+	
+
 	@Override
 	public void robotInit() {
-		ahrs = new AHRS(SerialPort.Port.kUSB);
+		ahrs = getGyroInstance();
 		ahrs.reset();
 
 		swerveDrive = new GamepadSwerve(ahrs, driverGamepad, leftDriveJoystick, rightDriveJoystick);

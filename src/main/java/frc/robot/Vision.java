@@ -16,7 +16,7 @@ public class Vision {
     private double ta;
     private double thor;
     private double tvert;
-    AHRS ahrs;
+    AHRS ahrs = Robot.getGyroInstance();
 
     private boolean automationRunning = false;
     final int ALLOWED_OFFSET = 20;
