@@ -252,7 +252,8 @@ public class Vision {
 
         switch (automationStep) {
         case 0: // set up step -> eventually this will set the pipeline
-            swerveDrive.setRobotFrontToCargo();
+            //swerveDrive.setRobotFrontToCargo();
+            cargoManipulator.setToUpPosition();
             automationStep++;
             break;
 
@@ -260,11 +261,13 @@ public class Vision {
             if (snapTo90DegreeAngle()) {
                 automationStep++;
             }
+            cargoManipulator.setToCurrentPosition();
             break;
         case 2:// line up with target
             if (alignment()) {
                 automationStep++;
             }
+            cargoManipulator.setToCurrentPosition();
             break;
         case 3: // score
             // if (cargoManipulator.getPosition() != position || !cargoManipulator.getAtTargetAngle()) {
@@ -276,6 +279,10 @@ public class Vision {
             // } else {
             //     automationStep++;
             // }
+           if(cargoManipulator.getPosition() == intakePosition.UP && cargoManipulator.getAtTargetAngle()){
+                cargoManipulator.setWheelsOut();
+           }
+            cargoManipulator.setToCurrentPosition();
             automationStep++;
             break;
         case 4: // back up slightly
@@ -291,6 +298,7 @@ public class Vision {
             return true;
             // break;
         }
+        SmartDashboard.putNumber("step", automationStep);
         return false;
     }
 
