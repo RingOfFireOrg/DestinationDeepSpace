@@ -94,7 +94,8 @@ public class Vision {
     boolean cargoScoreReady() {
         if (validTarget() && cargoManipulator.getWheelState() == wheelState.OFF && !cameraFacingBeak
                 && cargoManipulator.getPosition() == intakePosition.INTAKE
-                && Math.abs(90 - (ahrs.getCompassHeading() % 90)) < 10) {
+                && Math.abs(90  - (ahrs.getCompassHeading() % 90)) < 10) { //are all of these needed, I'd get rid of the cameraFacingBeak, and the cargo position, make it come up as part of vision
+                //shouldnt the 90 be a 45, and then a > x
             return true;
         } else {
             return false;
@@ -287,12 +288,17 @@ public class Vision {
             }
             break;
         case 5:
-            automationRunning = false;
-            automationStep = 0;
+            exitVision();
             return true;
             // break;
         }
         return false;
+    }
+
+    public void exitVision() {
+        automationRunning = false;
+        automationStep = 0;
+        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, 0, 0);
     }
 
     boolean isAutomationRunning() {
