@@ -31,4 +31,17 @@ public final class RobotMap {
     public static final int JOYSTICK_DRIVE_LEFT = 0;
     public static final int JOYSTICK_DRIVE_RIGHT = 1;
     public static final int JOYSTICK_MANIPULATOR = 2;
+
+    //Joystick Buttons
+    public static final int JOYSTICK_BUTTON_UP = 0;
+    public static final int JOYSTICK_BUTTON_LEVEL = 1;
+    public static final int JOYSTICK_BUTTON_RELEASE = 2;
+
+    //Servo
+    public static final int SERVO_HATCH = 0; //find actual
+
+    //Hatch Servo Angles
+    public static final int SERVO_HATCH_UP_ANGLE = 90;
+    public static final int SERVO_HATCH_LEVEL_ANGLE = 0;
+    public static final int SERVO_HATCH_RELEASE_ANGLE = 10;
 }

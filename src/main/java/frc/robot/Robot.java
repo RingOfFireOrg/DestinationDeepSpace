@@ -6,11 +6,18 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public class Robot extends TimedRobot {
   private Joystick leftStick = new Joystick(RobotMap.JOYSTICK_DRIVE_LEFT);
   private Joystick rightStick = new Joystick(RobotMap.JOYSTICK_DRIVE_RIGHT);
   private Joystick manipulatorStick = new Joystick(RobotMap.JOYSTICK_MANIPULATOR);
+  private JoystickButton hatchServoUpButton = new JoystickButton(manipulatorStick, RobotMap.JOYSTICK_BUTTON_UP);
+  private JoystickButton hatchServoLevelButton = new JoystickButton(manipulatorStick, RobotMap.JOYSTICK_BUTTON_LEVEL);
+  private JoystickButton hatchServoReleaseButton = new JoystickButton(manipulatorStick, RobotMap.JOYSTICK_BUTTON_RELEASE);
+
+  private Servo hatchServo = new Servo(RobotMap.SERVO_HATCH);
 
   Prototype_PWM hatchPrototype;
 
@@ -34,24 +41,25 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
+	  hatchServo.set(0);
   }
 
   @Override
   public void teleopPeriodic() {
     double leftSpeed = -leftStick.getY();
     double rightSpeed = -rightStick.getY();
-    double yPos = manipulatorStick.getY();
 
     drive.tankDrive(leftSpeed, rightSpeed);
 
-    if (yPos > 0.25) {
-      hatchPrototype.forward();
-    } else if(yPos < 0.25) {
-      hatchPrototype.reverse();
-    } else {
-      hatchPrototype.stop();
-    }
+	if(hatchServoUpButton.get()) {
+		hatchServo.setAngle(RobotMap.SERVO_HATCH_UP_ANGLE);
+	}
+	if(hatchServoLevelButton.get()) {
+		hatchServo.setAngle(RobotMap.SERVO_HATCH_LEVEL_ANGLE); //down to do thing
+	}
+	if(hatchServoReleaseButton.get()) {
+		hatchServo.setAngle(RobotMap.SERVO_HATCH_RELEASE_ANGLE); //slightly above to release hatch
+	}
   }
 
   @Override
