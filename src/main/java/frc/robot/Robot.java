@@ -143,7 +143,7 @@ public class Robot extends TimedRobot {
 	public void testPeriodic() {
 		// robotTest.runTest();
 		cargoManipulator.currentAngle();
-		beak.close();
+		// beak.close();
 		SmartDashboard.putNumber("RobotPitch", ahrs.getPitch());
 		SmartDashboard.putNumber("RobotYaw", ahrs.getYaw());
 
@@ -159,6 +159,8 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("tx", tx);
 
 		SmartDashboard.putNumber("cargoAngle", cargoManipulator.rightCargoEncoder.getAngle());
+
+		swerveDrive.readOutEncoderValues();
 
 	}
 

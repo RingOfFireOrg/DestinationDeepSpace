@@ -304,6 +304,13 @@ public class SwerveDrive {
 		}
 	}
 
+	void readOutEncoderValues(){
+		SmartDashboard.putNumber("FR raw angle", frontRight.getAngle());
+		SmartDashboard.putNumber("FL raw angle", frontLeft.getAngle());
+		SmartDashboard.putNumber("BL raw angle", backLeft.getAngle());
+		SmartDashboard.putNumber("BR raw angle", backRight.getAngle());
+	}
+	
 	void setAHRSOffset(double ahrsOffset) {
 		this.ahrsOffset = ahrsOffset;
 	}
