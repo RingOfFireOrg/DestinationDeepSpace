@@ -1,4 +1,4 @@
-       package frc.robot;
+package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -21,17 +21,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  * directory.
  */
 
+public class Robot extends TimedRobot {
 
-
-
-
- public class Robot extends TimedRobot {
-
-	enum Mode{
+	enum Mode {
 		TELEOP, VISION, AUTO_CLIMB
 	}
+
 	public Mode currentMode = Mode.TELEOP;
-	
+
 	Beak beak = Beak.getInstance();
 	CargoManipulator cargoManipulator = CargoManipulator.getInstance();
 
@@ -73,6 +70,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 			RobotMap.AUTO_MID_ROCKET_CARGO_SCORE_BUTTON);
 	public JoystickButton manipulatorPanelAutoLowRocket = new JoystickButton(manipulatorPanel,
 			RobotMap.AUTO_LOW_ROCKET_CARGO_SCORE_BUTTON);
+	// AES can all these be renamed to button at the end so we can more easily see
+	// whats going
 	public JoystickButton manipulatorPanelAutoCargoShip = new JoystickButton(manipulatorPanel,
 			RobotMap.AUTO_CARGOSHIP_CARGO_SCORE_BUTTON);
 	public JoystickButton manipulatorPanelCargoUp = new JoystickButton(manipulatorPanel,
@@ -98,15 +97,16 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 	RobotTest robotTest = new RobotTest();
 
+	boolean lastManipulatorPanelCargoShipState = false;
+
 	static AHRS ahrs;
 
-	public static AHRS getGyroInstance(){
+	public static AHRS getGyroInstance() {
 		if (ahrs == null) {
 			ahrs = new AHRS(SerialPort.Port.kUSB);
 		}
 		return ahrs;
 	}
-	
 
 	@Override
 	public void robotInit() {
@@ -128,13 +128,13 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 		// swerveDrive.joystickSwerve(rightDriveJoystick, leftDriveJoystick);
 		// }
 		drivePeriodic();
-		
+
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		drivePeriodic();
-		if(manipulatorAButton.get()){
+		if (manipulatorAButton.get()) {
 			limelight.cargoScore();
 		}
 	}
@@ -146,65 +146,77 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 		beak.close();
 		SmartDashboard.putNumber("RobotPitch", ahrs.getPitch());
 		SmartDashboard.putNumber("RobotYaw", ahrs.getYaw());
-		
-		//limelight.logValues();
-		double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-        double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-        double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
-        SmartDashboard.putNumber("tv", tv);
-        SmartDashboard.putNumber("ta", ta);
-        SmartDashboard.putNumber("ty", ty);
+		// limelight.logValues();
+		double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+		double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+		double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+		double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+
+		SmartDashboard.putNumber("tv", tv);
+		SmartDashboard.putNumber("ta", ta);
+		SmartDashboard.putNumber("ty", ty);
 		SmartDashboard.putNumber("tx", tx);
 
-		SmartDashboard.putNumber("cargoAngle" ,cargoManipulator.rightCargoEncoder.getAngle());
+		SmartDashboard.putNumber("cargoAngle", cargoManipulator.rightCargoEncoder.getAngle());
 
 	}
 
-	
 	public void drivePeriodic() {
-		swerveDrive.runSwerve();
-		beakControl();
-		cargoManipulatorControl();
-		climberController.run();
+		if (limelight.cargoScoreReady()) {
+			// turn on led
+			if (manipulatorPanelAutoCargoShip.get() && !lastManipulatorPanelCargoShipState) {
+
+			}
+		} else {
+			// turn off led
+		}
+
+		if (manipulatorPanelAutoCargoShip.get() && !lastManipulatorPanelCargoShipState) {
+			if (currentMode == Mode.TELEOP && limelight.cargoScoreReady()) {
+				currentMode = Mode.VISION;
+			} else if (currentMode == Mode.VISION) {
+				limelight.exitVision();
+				currentMode = Mode.TELEOP;
+			}
+		}
+
+		lastManipulatorPanelCargoShipState = manipulatorPanelAutoCargoShip.get();
+
+		switch (currentMode) {
+		case TELEOP:
+			swerveDrive.runSwerve();
+			cargoManipulatorControl(); // should make a method in the class for this
+			climberController.run();
+			break;
+		case VISION:
+			limelight.cargoScore();
+			break;
+		case AUTO_CLIMB:
+
+			break;
+		}
+		// beakControl();
 	}
 
 	public void beakControl() {
-		
-		
+
 		// if (manipulatorPanelOpenBeak.get() || manipulatorAButton.get()) {
-		// 	beak.open();
+		// beak.open();
 		// } else if (manipulatorPanelCloseBeak.get() || manipulatorBButton.get()) {
-		// 	beak.close();
+		// beak.close();
 		// }
 	}
 
 	public void cargoManipulatorControl() {
-		/*
-		 * if (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_LEFT_TRIGGER_AXIS) >
-		 * 0.3) { cargoManipulator.setToIntakePosition(); } else if
-		 * (manipulatorGamepad.getRawAxis(RobotMap.MANIPULATOR_RIGHT_TRIGGER_AXIS) >
-		 * 0.3) { cargoManipulator.setToUpPosition(); }
-		 */
-		// piece below is meant to make the arm go up or down unbounded
-		/*
-		 * else if (manipulatorGamepad.getPOV() == 0) {
-		 * cargoManipulator.overrideTarget(-1); } else if (manipulatorGamepad.getPOV()
-		 * == 180) { cargoManipulator.overrideTarget(1); }
-		 */
-		/*
-		 * else { cargoManipulator.setWheelsOff(); }
-		 */
-
 
 		double cargoArmSpeed = -Math.pow(manipulatorGamepad.getRawAxis(5), 3);
 		if (cargoArmSpeed > 0.2) {
 			cargoManipulator.moveArmUp(0.45 * cargoArmSpeed);
-			//cargoManipulator.moveArm(0.45 * cargoArmSpeed);
+			// cargoManipulator.moveArm(0.45 * cargoArmSpeed);
 		} else if (cargoArmSpeed < -0.2) {
 			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
-			//cargoManipulator.moveArm(0.3 * ca)
+			// cargoManipulator.moveArm(0.3 * ca)
 		} else {
 			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
 				cargoManipulator.setToUpPosition();
@@ -219,7 +231,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 			} else {
 				cargoManipulator.setToCurrentPosition();
 				// keeps it steady at wherever we are and/or continues going to that location
-			} 
+			}
 
 		}
 

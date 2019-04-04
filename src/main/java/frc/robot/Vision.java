@@ -293,13 +293,18 @@ public class Vision {
             }
             break;
         case 5:
-            automationRunning = false;
-            automationStep = 0;
+            exitVision();
             return true;
             // break;
         }
         SmartDashboard.putNumber("step", automationStep);
         return false;
+    }
+
+    public void exitVision() {
+        automationRunning = false;
+        automationStep = 0;
+        swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_UNREGULATED, 0, 0, 0);
     }
 
     boolean isAutomationRunning() {
