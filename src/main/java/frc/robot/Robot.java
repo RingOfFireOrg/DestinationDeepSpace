@@ -16,6 +16,7 @@ public class Robot extends TimedRobot {
   private JoystickButton hatchServoUpButton = new JoystickButton(manipulatorStick, RobotMap.JOYSTICK_BUTTON_UP);
   private JoystickButton hatchServoLevelButton = new JoystickButton(manipulatorStick, RobotMap.JOYSTICK_BUTTON_LEVEL);
   private JoystickButton hatchServoReleaseButton = new JoystickButton(manipulatorStick, RobotMap.JOYSTICK_BUTTON_RELEASE);
+  private JoystickButton hatchServoBelowButton = new JoystickButton(manipulatorStick, RobotMap.JOYSTICK_BUTTON_BELOW);
 
   private Servo hatchServo = new Servo(RobotMap.SERVO_HATCH);
 
@@ -52,14 +53,17 @@ public class Robot extends TimedRobot {
     drive.tankDrive(leftSpeed, rightSpeed);
 
 	if(hatchServoUpButton.get()) {
-		hatchServo.setAngle(RobotMap.SERVO_HATCH_UP_ANGLE);
+		hatchServo.setAngle(RobotMap.SERVO_HATCH_UP_ANGLE); //90 degree angle
 	}
 	if(hatchServoLevelButton.get()) {
-		hatchServo.setAngle(RobotMap.SERVO_HATCH_LEVEL_ANGLE); //down to do thing
+		hatchServo.setAngle(RobotMap.SERVO_HATCH_LEVEL_ANGLE); //level
 	}
 	if(hatchServoReleaseButton.get()) {
-		hatchServo.setAngle(RobotMap.SERVO_HATCH_RELEASE_ANGLE); //slightly above to release hatch
+		hatchServo.setAngle(RobotMap.SERVO_HATCH_RELEASE_ANGLE); //slightly above level to release hatch
 	}
+	if(hatchServoBelowButton.get()) {
+		hatchServo.setAngle(RobotMap.SERVO_HATCH_BELOW_ANGLE); // slightly below level
+	} 
   }
 
   @Override
