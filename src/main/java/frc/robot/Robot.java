@@ -220,29 +220,30 @@ public class Robot extends TimedRobot {
 			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
 			// cargoManipulator.moveArm(0.3 * ca)
 		} else {
-			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
-				cargoManipulator.setToUpPosition();
-			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
-				cargoManipulator.setToIntakePosition();
-			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
-				cargoManipulator.setToCargoShipPosition();
-			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
-				cargoManipulator.setToLowerRocketPosition();
-			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON)) {
-				cargoManipulator.setToMidRocketPosition();
-			} else {
-				cargoManipulator.setToCurrentPosition();
-				// keeps it steady at wherever we are and/or continues going to that location
-			}
+			// if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
+			// 	cargoManipulator.setToUpPosition();
+			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
+			// 	cargoManipulator.setToIntakePosition();
+			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
+			// 	cargoManipulator.setToCargoShipPosition();
+			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
+			// 	cargoManipulator.setToLowerRocketPosition();
+			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON)) {
+			// 	cargoManipulator.setToMidRocketPosition();
+			// } else {
+			// 	cargoManipulator.setToCurrentPosition();
+			// 	// keeps it steady at wherever we are and/or continues going to that location
+			// }
+			cargoManipulator.moveArmUp(0);
 
 		}
 
 		// Wheel control for manipulator panel
-		double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
+		// double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
 																	// this is the right place to get the axis
-		if (cargoWheelsSpeed > 0.2 || manipulatorXButton.get()) {
+		if (manipulatorXButton.get()) {
 			cargoManipulator.setWheelsIn();
-		} else if (cargoWheelsSpeed < -0.2 || manipulatorYButton.get()) {
+		} else if (manipulatorYButton.get()) {
 			cargoManipulator.setWheelsOut();
 		} else {
 			cargoManipulator.setWheelsOff();
