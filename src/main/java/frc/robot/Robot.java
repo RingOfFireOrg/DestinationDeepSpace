@@ -229,9 +229,9 @@ public class Robot extends TimedRobot {
 			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
 			// cargoManipulator.moveArm(0.3 * ca)
 		} else {
-			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
+			if (manipulatorPanelCargoIntakePosition.get()) {
 				cargoManipulator.setToIntakePosition();
-			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
+			} else if (manipulatorPanelCargoCargoShip.get()) {
 				cargoManipulator.setToCargoShipPosition();
 			} else if (manipulatorPanelKillArm.get()) {
 				cargoManipulator.stopArm();
