@@ -65,6 +65,10 @@ public class PID {
         error = newError;
     }
 
+    public double mostRecentError() {
+        return error;
+    }
+
     public void setError(double newError, double target) {
         error = newError;
         if (Math.abs(target - lastTarget) > targetMargin) {

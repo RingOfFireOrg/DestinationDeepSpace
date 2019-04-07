@@ -117,6 +117,8 @@ public class Vision {
         }
 
         SmartDashboard.putString("Strafe direction left/right", leftRightStop);
+
+        //swerveDrive.selectiveTranslateAndRotate(selectiveSwerveDriveModes.ROBOT_ABSOLUTE, alignmentPositionAngle, strafeRightLeft, strafeForwardBack);
     }
 
     boolean alignment() {

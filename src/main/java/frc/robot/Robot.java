@@ -86,6 +86,16 @@ public class Robot extends TimedRobot {
 			RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON);
 	public JoystickButton manipulatorPanelClimbingSwitch = new JoystickButton(manipulatorPanel,
 			RobotMap.CLIMBING_MODE_PROTECTED_SWITCH);
+	public JoystickButton manipulatorPanelIntakeWheels = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_WHEELS_INTAKE);
+	public JoystickButton manipulatorPanelOutakeWheels = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_WHEELS_OUTAKE);
+	public JoystickButton manipulatorPanelArmUpWithEncoder = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_UP_WITH_ENCODER);
+	public JoystickButton manipulatorPanelArmDownWithEncoder = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_DOWN_WITH_ENCODER);
+	public JoystickButton manipulatorPanelKillArm = new JoystickButton(manipulatorPanel,
+			RobotMap.CARGO_KILL_ARM_BUTTON);
 
 	Vision limelight = new Vision();
 
@@ -117,6 +127,7 @@ public class Robot extends TimedRobot {
 		climberController = new ClimberController(swerveDrive, ahrs, cargoManipulator);
 		SmartDashboard.putNumber("Version #", 6);
 		CameraServer.getInstance().startAutomaticCapture();
+		// NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(2);
 	}
 
 	@Override
@@ -167,12 +178,10 @@ public class Robot extends TimedRobot {
 	public void drivePeriodic() {
 		if (limelight.cargoScoreReady()) {
 			// turn on led
-			if (manipulatorPanelAutoCargoShip.get() && !lastManipulatorPanelCargoShipState) {
-
-			}
 		} else {
 			// turn off led
 		}
+		SmartDashboard.putBoolean("cargo score ready?", limelight.cargoScoreReady());
 
 		if (manipulatorPanelAutoCargoShip.get() && !lastManipulatorPanelCargoShipState) {
 			if (currentMode == Mode.TELEOP && limelight.cargoScoreReady()) {
@@ -188,7 +197,7 @@ public class Robot extends TimedRobot {
 		switch (currentMode) {
 		case TELEOP:
 			swerveDrive.runSwerve();
-			cargoManipulatorControl(); // should make a method in the class for this
+			cargoManipulatorControl(); // should make a method in the class for this - um no we shouldn't.
 			climberController.run();
 			break;
 		case VISION:
@@ -220,30 +229,26 @@ public class Robot extends TimedRobot {
 			cargoManipulator.moveArmDown(-0.3 * cargoArmSpeed);
 			// cargoManipulator.moveArm(0.3 * ca)
 		} else {
-			// if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_UP_POSITION_BUTTON)) {
-			// 	cargoManipulator.setToUpPosition();
-			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
-			// 	cargoManipulator.setToIntakePosition();
-			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
-			// 	cargoManipulator.setToCargoShipPosition();
-			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_LOW_ROCKET_POSITION_BUTTON)) {
-			// 	cargoManipulator.setToLowerRocketPosition();
-			// } else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_MID_ROCKET_POSITION_BUTTON)) {
-			// 	cargoManipulator.setToMidRocketPosition();
-			// } else {
-			// 	cargoManipulator.setToCurrentPosition();
-			// 	// keeps it steady at wherever we are and/or continues going to that location
-			// }
-			cargoManipulator.moveArmUp(0);
+			if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_INTAKE_POSITION_BUTTON)) {
+				cargoManipulator.setToIntakePosition();
+			} else if (manipulatorPanel.getRawButton(RobotMap.CARGO_ARM_CARGO_SHIP_POSITION_BUTTON)) {
+				cargoManipulator.setToCargoShipPosition();
+			} else if (manipulatorPanelKillArm.get()) {
+				cargoManipulator.stopArm();
+			} else {
+				cargoManipulator.setToCurrentPosition();
+				// keeps it steady at wherever we are and/or continues going to that location
+			}
+			//cargoManipulator.moveArmUp(0);
 
 		}
 
 		// Wheel control for manipulator panel
 		// double cargoWheelsSpeed = manipulatorPanel.getRawAxis(0); // check if this is the correct axis; also check if
 																	// this is the right place to get the axis
-		if (manipulatorXButton.get()) {
+		if (manipulatorXButton.get() || manipulatorPanelIntakeWheels.get()) {
 			cargoManipulator.setWheelsIn();
-		} else if (manipulatorYButton.get()) {
+		} else if (manipulatorYButton.get() || manipulatorPanelOutakeWheels.get()) {
 			cargoManipulator.setWheelsOut();
 		} else {
 			cargoManipulator.setWheelsOff();

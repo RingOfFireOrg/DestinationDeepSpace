@@ -34,15 +34,18 @@ public class CargoManipulator {
     private static CargoManipulator cargoManipulator;
 
     // relative to level
-    final double INTAKE_POSITION_DEGREES = -7;
+    final double INTAKE_POSITION_DEGREES = -1;
     final double LOWER_ROCKET_POSITION_DEGREES = 23; // 26
     final double MID_ROCKET_POSITION_DEGREES = 50; // 78
-    final double CARGO_SHIP_POSITION_DEGREES = 43; // 65
+    final double CARGO_SHIP_POSITION_DEGREES = 90; // 65
     final double UP_POSITION_DEGREES = 90;
     double customTargetAngle = 0;
 
     // level Angle
-    private final double ZERO_DEGREE_ARM_VALUE = -10;
+    private final double ZERO_DEGREE_ARM_VALUE = 207;
+
+    private final double ARM_UP_KP = 0.01;
+    private final double ARM_DOWN_KP = 0.005;
 
     protected CargoManipulator() {
         leftIntakeWheel = new TalonSRX(RobotMap.LEFT_INTAKE_WHEEL);
@@ -50,8 +53,9 @@ public class CargoManipulator {
         cargoArmMotor = new TalonSRX(RobotMap.CARGO_ARM);
         wheels = wheelState.OFF;
         currentEncoderPresence = encoderPresence.RIGHT;
-        armAngleControl = new PID(0.0075, 0.00002, 0);
-        armAngleControl.setOutputRange(-0.75, 0.75);
+        //this p was 0.0075
+        armAngleControl = new PID(ARM_UP_KP, 0.00002, 0);
+        armAngleControl.setOutputRange(-0.3, 0.55);
         // rightCargoEncoder = new PotentiometerEncoder(RobotMap.RIGHT_ENCODER_CARGO_ARM, 180);
         // leftCargoEncoder = new PotentiometerEncoder(RobotMap.LEFT_ENCODER_CARGO_ARM, 90);
         rightCargoEncoder = new AbsoluteAnalogEncoder(RobotMap.RIGHT_ENCODER_CARGO_ARM);
@@ -147,6 +151,7 @@ public class CargoManipulator {
 
     public void stopArm() {
         cargoArmMotor.set(ControlMode.PercentOutput, 0);
+        this.position = intakePosition.MANUAL_MODE;
     }
 
     public void setWheelsOff() {
@@ -168,14 +173,19 @@ public class CargoManipulator {
     }
 
     private void moveCargoArmToAngle(double targetAngle) {
-        double error = targetAngle + currentAngle();
+        double error = targetAngle - currentAngle();
+        if (armAngleControl.mostRecentError() < 0) {
+            armAngleControl.setKP(ARM_DOWN_KP);
+        } else {
+            armAngleControl.setKP(ARM_UP_KP);
+        }
         if (currentAngle() == 270) {
             cargoArmMotor.set(ControlMode.PercentOutput, 0);
             return;
         }
         armAngleControl.setError(error);
         armAngleControl.update();
-        cargoArmMotor.set(ControlMode.PercentOutput, armAngleControl.getOutput() + 0.2);
+        cargoArmMotor.set(ControlMode.PercentOutput, armAngleControl.getOutput() + 0.1);
         if (Math.abs(error) < 5) {
             atTargetAngle = true;
         } else {
@@ -245,10 +255,12 @@ public class CargoManipulator {
     // }
 
     public double currentAngle() {
-        SmartDashboard.putNumber("CargoEncoder", ZERO_DEGREE_ARM_VALUE - rightCargoEncoder.getAngle());
+        
+        double currentAngle = (rightCargoEncoder.getAngle() - ZERO_DEGREE_ARM_VALUE);
+        SmartDashboard.putNumber("CargoEncoder", currentAngle);
         SmartDashboard.putNumber("Raw Cargo Encoder Degrees", rightCargoEncoder.getAngle());
         SmartDashboard.putNumber("Cargo Voltage Right: ", rightCargoEncoder.getVoltage());
         // SmartDashboard.putNumber("Cargo Voltage Left: ", leftCargoEncoder.getVoltage());
-        return (ZERO_DEGREE_ARM_VALUE - rightCargoEncoder.getAngle());
+        return currentAngle;
     }
 }

@@ -21,9 +21,14 @@ public class RobotMap {
 	public static final int CARGO_ARM_UP_POSITION_BUTTON = 8;
 	public static final int CARGO_ARM_MID_ROCKET_POSITION_BUTTON = 9;
 	public static final int CARGO_ARM_LOW_ROCKET_POSITION_BUTTON = 10;
-	public static final int CARGO_ARM_CARGO_SHIP_POSITION_BUTTON = 11;
-	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 12;
+	public static final int CARGO_ARM_CARGO_SHIP_POSITION_BUTTON = 5;
+	public static final int CARGO_ARM_INTAKE_POSITION_BUTTON = 9;
 	public static final int CLIMBING_MODE_PROTECTED_SWITCH = 13;
+	public static final int CARGO_WHEELS_INTAKE = 10;
+	public static final int CARGO_WHEELS_OUTAKE = 6;
+	public static final int CARGO_UP_WITH_ENCODER = 1;
+	public static final int CARGO_DOWN_WITH_ENCODER = 4;
+	public static final int CARGO_KILL_ARM_BUTTON = 11;
 	//the old climb sqitch was wired to 16
 
 	public static final int INTAKE_WHEELS_SPEED_JOYSTICK_AXIS = 1;
