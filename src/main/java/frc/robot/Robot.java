@@ -124,6 +124,7 @@ public class Robot extends TimedRobot {
 		ahrs.reset();
 
 		swerveDrive = new GamepadSwerve(ahrs, driverGamepad, leftDriveJoystick, rightDriveJoystick);
+		swerveDrive.setSpeedScale(1);
 		climberController = new ClimberController(swerveDrive, ahrs, cargoManipulator);
 		SmartDashboard.putNumber("Version #", 6);
 		CameraServer.getInstance().startAutomaticCapture();
@@ -172,6 +173,11 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("cargoAngle", cargoManipulator.rightCargoEncoder.getAngle());
 
 		swerveDrive.readOutEncoderValues();
+
+		//slowed driving function
+		swerveDrive.setSpeedScale(0.5);
+		swerveDrive.runSwerve();
+		cargoManipulatorControl();
 
 	}
 

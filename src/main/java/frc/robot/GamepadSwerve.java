@@ -18,6 +18,7 @@ public class GamepadSwerve extends SwerveDrive {
 	private JoystickButton joystickRobotFrontCargoButton;
 	private JoystickButton joystickRobotFrontHatchButton;
 	private JoystickButton joystickGyroResetButton;
+	private double speedScale = 1;
 
 	public GamepadSwerve(AHRS ahrs, XboxController driveController, Joystick leftDriveStick, Joystick rightDriveStick) {
 		super(ahrs);
@@ -100,6 +101,12 @@ public class GamepadSwerve extends SwerveDrive {
 			unregulatedTurning = 0;
 		}
 
+		robotTranslateX *= speedScale;
+		robotTranslateY *= speedScale;
+		fieldTranslateX *= speedScale;
+		fieldTranslateY *= speedScale;
+		unregulatedTurning *= speedScale;
+
 		if (driveController.getYButton() || joystickRobotFrontCargoButton.get()) {
 			setRobotFrontToCargo();
 		} else if (driveController.getBButton() || joystickRobotFrontHatchButton.get()) {
@@ -133,6 +140,10 @@ public class GamepadSwerve extends SwerveDrive {
 
 		SmartDashboard.putNumber("ahrs angle", ahrs.getAngle() - ahrsOffset);
 		// SmartDashboard.putNumber("POV", driveController.getPOV());
+
+	}
+
+	public void setSpeedScale(double speedScale) {
 
 	}
 }
