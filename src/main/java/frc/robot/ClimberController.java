@@ -58,7 +58,7 @@ public class ClimberController {
         climber.printHallEffectState();
         SmartDashboard.putNumber("gyro pitch: ", ahrs.getPitch());
 
-        climbModeTrue = climbModeToggle.get() || enableClimbButton.get();
+        climbModeTrue = true; //climbModeToggle.get() || enableClimbButton.get();
 
         if (startAutoClimbTrue()) {
             autoClimb.autoClimbRestart();
