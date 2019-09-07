@@ -125,11 +125,11 @@ public class SwerveModule {
 		double optimizedWheelTurnAngle; //will be set to a value between -90 and 90
 	
 
-		if (wheelTurnAngle0to360 < 5 || wheelTurnAngle0to360 > 355) {
+		if (wheelTurnAngle0to360 < 2 || wheelTurnAngle0to360 > 358) {
 			// stop steering
 			steer.set(ControlMode.PercentOutput, 0);
 			setDriveSpeed(driveSpeed);
-		} else if (wheelTurnAngle0to360 > 175 && wheelTurnAngle0to360 < 185){
+		} else if (wheelTurnAngle0to360 > 178 && wheelTurnAngle0to360 < 188){
 			//stop steering
 			steer.set(ControlMode.PercentOutput, 0);
 			setDriveSpeed(-driveSpeed);
